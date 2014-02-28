@@ -13,13 +13,39 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <!-- Menu Principal -->
         <activity
-            android:name="com.kemas.Home"
+            android:name="com.kemas.activities.HomeActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Configuracion de la conexión con el servidor de OpenERP -->
+        <activity
+            android:name="com.kemas.activities.ConnectionActivity"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.kemas.activities.ConnectionActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Ver Datos del Colaborador -->
+        <activity
+            android:name="com.kemas.activities.CollaboratorActivity"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.kemas.activities.CollaboratorActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>
