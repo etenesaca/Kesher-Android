@@ -2,7 +2,65 @@
 <resources>
 
     <string name="app_name">Ke+</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="total_hours">Total de Horas</string>
+    <string name="cero">00:00:00</string>
+    <string name="last_registers">Entrada: 00:00:00</string>
+    <string name="options">Opciones</string>
+    <!-- Botones -->
+    <string name="refresh">Volver a Cargar</string>
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="register_attendance">--Registrar Asitencia--</string>
+
+    <!-- Settings -->
+    <string name="server">Servidor</string>
+    <string name="port">Puerto</string>
+    <string name="database">Base de Datos</string>
+    <string name="username">Nombre de Usuario</string>
+    <string name="password">Password</string>
+
+    <!-- Menu Perfil -->
+    <string name="action_back">Volver</string>
+    <string name="action_refresh_profile">Actualizar Datos</string>
+
+    <!-- Menu Register -->
+    <string name="action_refresh">Actualizar</string>
+    <string name="action_settings">Configuraciones</string>
+    <string name="action_exit">Salir</string>
+    <string name="action_acercade">Acerca de</string>
+    <string name="action_search_register">Consultas</string>
+    <string name="action_search_profile">Mi perfil</string>
+
+    <!-- Menu Search -->
+    <string name="action_search_yesterday">Ayer</string>
+    <string name="action_search_today">Hoy</string>
+    <string name="action_search_this_week">Ésta semana</string>
+    <string name="action_search_this_month">Este mes</string>
+
+    <!-- Layouts Titles -->
+    <string name="title_search">Registros de Asistencia</string>
+    <string name="title_config">Configuraciones</string>
+    <string name="title_register">Registrar asistencia</string>
+    <string name="title_user_profile">Perfíl de Usuario</string>
+
+    <!-- Messages -->
+    <string name="error_connection">Error de Conexión</string>
+    <string name="without_account">Primero agregue una Cuenta en Configuraciones</string>
+
+    <!-- Search -->
+    <string name="yesterday">Ayer</string>
+    <string name="today">Hoy</string>
+    <string name="this_week">Semana</string>
+    <string name="this_month">Mes</string>
+    <string name="search">Buscar</string>
+
+    <!-- Profile -->
+    <string name="photo">Foto</string>
+    <string name="name">Nombre</string>
+    <string name="ci">CI</string>
+    <string name="tz">Zona Horaria</string>
+    <string name="lang">Idioma</string>
+    <string name="email">E-mail</string>
+    <string name="company">Empresa</string>
 
 </resources>

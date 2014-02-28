@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.kemas.R;
 
@@ -45,11 +44,21 @@ public class HomeActivity extends Activity {
 		drawer.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				Toast.makeText(HomeActivity.this, "Pulsado: " + opciones[arg2], Toast.LENGTH_SHORT).show();
+				switch (arg2) {
+				case 0:
+					// Configurar Conexión
+					Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
+					startActivity(config_act);
+					break;
+				case 1:
+					// Datos del Colaborador
+					Intent collaborator_act = new Intent(HomeActivity.this, CollaboratorActivity.class);
+					startActivity(collaborator_act);
+					break;
+				default:
+					break;
+				}
 				drawerLayout.closeDrawers();
-				// Para ir a la ventana se Configuraciones
-				Intent config_act2 = new Intent(HomeActivity.this, CollaboratorActivity.class);
-				startActivity(config_act2);
 			}
 		});
 
@@ -61,7 +70,7 @@ public class HomeActivity extends Activity {
 				drawerLayout, // Panel del Navigation Drawer
 				R.drawable.ic_drawer, // Icono que va a utilizar
 				R.string.app_name, // Descripcion al abrir el drawer
-				R.string.hello_world // Descripcion al cerrar el drawer
+				R.string.app_name // Descripcion al cerrar el drawer
 		) {
 			public void onDrawerClosed(View view) {
 				// Drawer cerrado
