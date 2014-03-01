@@ -7,9 +7,26 @@ import java.util.Date;
 import java.util.HashMap;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 @SuppressLint("SimpleDateFormat")
 public class hupernikao {
+	public static boolean TestNetwork(Context Context) {
+		boolean result = false;
+		ConnectivityManager connec = (ConnectivityManager) Context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+		// No sólo wifi, también GPRS
+		NetworkInfo[] networks = connec.getAllNetworkInfo();
+		// este bucle debería no ser tan ñapa
+		for (int i = 0; i < networks.length; i++) {
+			// ¿Tenemos conexión? ponemos a true
+			if (networks[i].getState() == NetworkInfo.State.CONNECTED) {
+				result = true;
+			}
+		}
+		return result;
+	}
 
 	public static int ConvertStringtoDateSeconds(String date_str) {
 		return ConvertStringtoDateSeconds(date_str, "yyyy-MM-dd HH:mm:ss");

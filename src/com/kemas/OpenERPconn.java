@@ -27,8 +27,7 @@ import android.util.Log;
  * <li>browse</li>
  * <li>call (This is a generic method to call whatever you need)</li>
  * </ul>
- * You can extend OpenERPconn to implement more specific methods of your
- * need.
+ * You can extend OpenERPconn to implement more specific methods of your need.
  * 
  * @author Enric Caumons Gou <caumons@gmail.com>
  * */
@@ -104,8 +103,7 @@ public class OpenERPconn {
 	}
 
 	/**
-	 * @return An OpenERPconn instance, which you will use to call the
-	 *         methods.
+	 * @return An OpenERPconn instance, which you will use to call the methods.
 	 */
 	public static OpenERPconn connect(String server, Integer port, String db, String user, String pass) {
 		return login(server, port, db, user, pass);
@@ -531,7 +529,7 @@ public class OpenERPconn {
 		boolean result = false;
 		try {
 			XMLRPCClient client = new XMLRPCClient(mUrl);
-			Object resp = client.call("execute", mDatabase, getUserId(), mPassword, "control.horario.register", "module_installed", module_name);
+			Object resp = client.call("execute", mDatabase, getUserId(), mPassword, "kemas.func", "module_installed", module_name);
 			result = Boolean.parseBoolean(resp + "");
 		} catch (XMLRPCException e) {
 			e.printStackTrace();
