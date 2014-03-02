@@ -23,7 +23,7 @@ public class HomeActivity extends Activity {
 	private DrawerLayout drawerLayout;
 	private ListView drawer;
 	private ActionBarDrawerToggle toggle;
-	private static final String[] opciones = { "Configurar Conexión", "Mi Datos", "Eventos" };
+	private static final String[] opciones = { "Configurar Conexión", "Mi Datos", "Eventos", "Salir" };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +57,7 @@ public class HomeActivity extends Activity {
 					startActivity(collaborator_act);
 					break;
 				default:
+					finish();
 					break;
 				}
 			}
