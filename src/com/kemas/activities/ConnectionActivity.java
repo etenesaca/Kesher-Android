@@ -12,7 +12,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -60,13 +60,6 @@ public class ConnectionActivity extends Activity implements OnClickListener, OnT
 
 		// Crear una instancia de la Clase de Configuraciones
 		config = new Configuration(this);
-		// Boton Guardar
-		btnSave = (Button) findViewById(R.id.btnSave);
-		btnSave.setOnClickListener(this);
-
-		// Boton Cancelar
-		btnCancel = (Button) findViewById(R.id.btnCancel);
-		btnCancel.setOnClickListener(this);
 
 		// LIsta de Bases de Datos
 		cmbDb = (Spinner) findViewById(R.id.cmbDb);
@@ -183,112 +176,101 @@ public class ConnectionActivity extends Activity implements OnClickListener, OnT
 		return save_employee_info(config, employee_id, oerp_connection);
 	}
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.btnSave:
-			if (!hupernikao.TestNetwork(Context)) {
-				AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ConnectionActivity.this);
-				dlgAlert.setTitle("Error").setIcon(android.R.drawable.ic_delete);
-				dlgAlert.setPositiveButton("OK", null);
-				dlgAlert.setCancelable(true);
-				dlgAlert.setMessage("No se puede Establecer conexión. Revise su conexión a Internet");
-				dlgAlert.create().show();
-				break;
-			}
-
-			// Guardar Los datos del Empleado
-			String port_str = txtPort.getText().toString();
-			final String Server = txtServer.getText().toString();
-			String db = "";
-			try {
-				db = cmbDb.getSelectedItem().toString();
-			} catch (Exception e) {
-			}
-			final String user = txtUsername.getText().toString();
-			final String pass = txtPassword.getText().toString();
-
-			AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
-			dlgAlert.setTitle("Advertencia").setIcon(android.R.drawable.stat_sys_warning);
+	public void save() {
+		if (!hupernikao.TestNetwork(Context)) {
+			AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ConnectionActivity.this);
+			dlgAlert.setTitle("Error").setIcon(android.R.drawable.ic_delete);
 			dlgAlert.setPositiveButton("OK", null);
 			dlgAlert.setCancelable(true);
-			if ("".equals(Server)) {
-				dlgAlert.setMessage("Primero Ingrese la Dirección del Servidor.");
-				dlgAlert.create().show();
-			} else if ("".equals(port_str)) {
-				dlgAlert.setMessage("Primero Ingrese el Número del Puerto.");
-				dlgAlert.create().show();
-			} else if ("".equals(port_str)) {
-				dlgAlert.setMessage("Primero Ingrese el Número del Puerto.");
-				dlgAlert.create().show();
-			} else if ("".equals(db)) {
-				dlgAlert.setMessage("Primero Seleccione la Base de Datos.");
-				dlgAlert.create().show();
-			} else if ("".equals(user)) {
-				dlgAlert.setMessage("Ingrese el nombre de Usuario.");
-				dlgAlert.create().show();
-			} else if ("".equals(pass)) {
-				dlgAlert.setMessage("Ingrese el Password.");
-				dlgAlert.create().show();
-			} else {
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setTitle("Guardar").setMessage("¿Guardar los datos Ahora?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton("Si", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ConnectionActivity.this);
-						dlgAlert.setTitle("Error").setIcon(android.R.drawable.ic_delete);
-						dlgAlert.setPositiveButton("OK", null);
-						dlgAlert.setCancelable(true);
+			dlgAlert.setMessage("No se puede Establecer conexión. Revise su conexión a Internet");
+			dlgAlert.create().show();
+			return;
+		}
 
-						int Port = Integer.parseInt(txtPort.getText().toString());
+		// Guardar Los datos del Empleado
+		String port_str = txtPort.getText().toString();
+		final String Server = txtServer.getText().toString();
+		String db = "";
+		try {
+			db = cmbDb.getSelectedItem().toString();
+		} catch (Exception e) {
+		}
+		final String user = txtUsername.getText().toString();
+		final String pass = txtPassword.getText().toString();
 
-						if (OpenERPconn.TestConnection(Server, Port)) {
-							OpenERPconn oerp = OpenERPconn.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass);
+		AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
+		dlgAlert.setTitle("Advertencia").setIcon(android.R.drawable.stat_sys_warning);
+		dlgAlert.setPositiveButton("OK", null);
+		dlgAlert.setCancelable(true);
+		if ("".equals(Server)) {
+			dlgAlert.setMessage("Primero Ingrese la Dirección del Servidor.");
+			dlgAlert.create().show();
+		} else if ("".equals(port_str)) {
+			dlgAlert.setMessage("Primero Ingrese el Número del Puerto.");
+			dlgAlert.create().show();
+		} else if ("".equals(port_str)) {
+			dlgAlert.setMessage("Primero Ingrese el Número del Puerto.");
+			dlgAlert.create().show();
+		} else if ("".equals(db)) {
+			dlgAlert.setMessage("Primero Seleccione la Base de Datos.");
+			dlgAlert.create().show();
+		} else if ("".equals(user)) {
+			dlgAlert.setMessage("Ingrese el nombre de Usuario.");
+			dlgAlert.create().show();
+		} else if ("".equals(pass)) {
+			dlgAlert.setMessage("Ingrese el Password.");
+			dlgAlert.create().show();
+		} else {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Guardar").setMessage("¿Guardar los datos Ahora?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton("Si", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ConnectionActivity.this);
+					dlgAlert.setTitle("Error").setIcon(android.R.drawable.ic_delete);
+					dlgAlert.setPositiveButton("OK", null);
+					dlgAlert.setCancelable(true);
 
-							if (oerp == null) {
-								dlgAlert.setMessage("Usuario o Contraseña No Válidos.");
+					int Port = Integer.parseInt(txtPort.getText().toString());
+
+					if (OpenERPconn.TestConnection(Server, Port)) {
+						OpenERPconn oerp = OpenERPconn.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass);
+
+						if (oerp == null) {
+							dlgAlert.setMessage("Usuario o Contraseña No Válidos.");
+							dlgAlert.create().show();
+						} else {
+							// Verificar que la base de datos tenga
+							// instalado el modulo Control de Horario
+							if (!oerp.Module_Installed("kemas")) {
+								dlgAlert.setMessage("La base de datos seleccionada no tiene instalado el Modulo de Gestión del Eventos y Control de Actividades (ke+).");
 								dlgAlert.create().show();
 							} else {
-								// Verificar que la base de datos tenga
-								// instalado el modulo Control de Horario
-								if (!oerp.Module_Installed("kemas")) {
-									dlgAlert.setMessage("La base de datos seleccionada no tiene instalado el Modulo de Gestión del Eventos y Control de Actividades (ke+).");
+								// Verificar que el Usuario sea un empleado
+								Long[] employee_ids = oerp.search("kemas.collaborator", new Object[] { new Object[] { "user_id", "=", oerp.getUserId() } }, 1);
+								if (employee_ids.length < 1) {
+									dlgAlert.setMessage("La credenciales ingresadas no pertenecen a un Colaborador.");
 									dlgAlert.create().show();
 								} else {
-									// Verificar que el Usuario sea un empleado
-									Long[] employee_ids = oerp.search("kemas.collaborator", new Object[] { new Object[] { "user_id", "=", oerp.getUserId() } }, 1);
-									if (employee_ids.length < 1) {
-										dlgAlert.setMessage("La credenciales ingresadas no pertenecen a un Colaborador.");
-										dlgAlert.create().show();
-									} else {
-										// Guardar los datos del empleado
-										if (save_employee_info(config, employee_ids, oerp)) {
-											Toast.makeText(ConnectionActivity.this, "Lo Datos Se Guardaron Correctamente.", Toast.LENGTH_SHORT).show();
-											finish();
-										}
+									// Guardar los datos del empleado
+									if (save_employee_info(config, employee_ids, oerp)) {
+										Toast.makeText(ConnectionActivity.this, "Lo Datos Se Guardaron Correctamente.", Toast.LENGTH_SHORT).show();
+										finish();
 									}
 								}
 							}
-						} else {
-							dlgAlert.setMessage("No se pudo conectar al servidor, Verifique los parametros de Conexión.");
-							dlgAlert.create().show();
 						}
+					} else {
+						dlgAlert.setMessage("No se pudo conectar al servidor, Verifique los parametros de Conexión.");
+						dlgAlert.create().show();
 					}
-				});
-				builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
-				AlertDialog alert = builder.create();
-				alert.show();
-			}
-			break;
-		case R.id.btnCancel:
-			finish();
-			break;
-
-		default:
-			break;
+				}
+			});
+			builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
 	}
 
@@ -348,15 +330,28 @@ public class ConnectionActivity extends Activity implements OnClickListener, OnT
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// Para cerrara las ventana se busquedas
-			finish();
-			break;
-		default:
-			break;
-		}
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.menu_connection, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == R.id.mnConnectionSave || item.getItemId() == R.id.mnConnectionSave) {
+			save();
+
+		} else if (item.getItemId() == android.R.id.home) {
+			// Reggresar al activity de registro de asistencias
+			finish();
+		}
+
+		return true;
+	}
+
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+
 	}
 }

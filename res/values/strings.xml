@@ -21,6 +21,9 @@
     <string name="username">Nombre de Usuario</string>
     <string name="password">Password</string>
 
+    <!-- Menu Connection -->
+    <string name="action_save">Guardar</string>
+
     <!-- Menu Perfil -->
     <string name="action_back">Volver</string>
     <string name="action_refresh_profile">Actualizar Datos</string>
