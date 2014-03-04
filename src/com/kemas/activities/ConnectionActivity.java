@@ -99,40 +99,27 @@ public class ConnectionActivity extends Activity implements OnClickListener, OnT
 		}
 	}
 
-	public boolean save_employee_info(Configuration config, String employee_id, OpenERPconn oerp_connection) {
-		long ln_employee_id = Long.parseLong(employee_id + "");
-		return save_employee_info(config, ln_employee_id, oerp_connection);
+	public boolean save_collaborator_info(Configuration config, String collaborator_id, OpenERPconn oerp_connection) {
+		long ln_collaborator_id = Long.parseLong(collaborator_id + "");
+		return save_collaborator_info(config, ln_collaborator_id, oerp_connection);
 	}
 
-	public boolean save_employee_info(Configuration config, Long[] employee_ids, OpenERPconn oerp_connection) {
-		long employee_id = employee_ids[0];
-		return save_employee_info(config, employee_id, oerp_connection);
+	public boolean save_collaborator_info(Configuration config, Long[] collaborator_ids, OpenERPconn oerp_connection) {
+		long collaborator_id = collaborator_ids[0];
+		return save_collaborator_info(config, collaborator_id, oerp_connection);
 	}
 
-	public boolean save_employee_info(Configuration config, long employee_id, OpenERPconn oerp_connection) {
+	public boolean save_collaborator_info(Configuration config, long collaborator_id, OpenERPconn oerp_connection) {
 		String[] fields_to_read = {};
 
-		// Leer los datos del empleado
-		fields_to_read = new String[] { "user_id", "personal_id", "create_uid" };
-		HashMap<String, Object> Employee = oerp_connection.read("kemas.collaborator", employee_id, fields_to_read);
+		fields_to_read = new String[] { "user_id"};
+		HashMap<String, Object> Collaborator = oerp_connection.read("kemas.collaborator", collaborator_id, fields_to_read);
 
 		// Leer los datos del perfil del Usuario
-		Object[] User_tpl = (Object[]) Employee.get("user_id");
+		Object[] User_tpl = (Object[]) Collaborator.get("user_id");
 		fields_to_read = new String[] { "image", "partner_id" };
 		HashMap<String, Object> User = oerp_connection.read("res.users", Long.parseLong(User_tpl[0] + ""), fields_to_read);
 		User.put("name", User_tpl[1] + "");
-
-		// Leer los datos del Partner
-		Object[] Partner_tpl = (Object[]) User.get("partner_id");
-		fields_to_read = new String[] { "email", "tz", "company_id", "lang" };
-		HashMap<String, Object> Partner = oerp_connection.read("res.partner", Long.parseLong(Partner_tpl[0] + ""), fields_to_read);
-		Object[] Company_tpl = (Object[]) Partner.get("company_id");
-		String lang = Partner.get("lang") + "";
-		if (lang.equals("es_ES")) {
-			lang = "Español";
-		} else if (Partner.get("lang").equals("en_EN")) {
-			lang = "Inglés";
-		}
 
 		// Guardar los datos
 		config.setServer(oerp_connection.getServer());
@@ -141,36 +128,26 @@ public class ConnectionActivity extends Activity implements OnClickListener, OnT
 		config.setLogin(oerp_connection.getUserName() + "");
 		config.setPassword(oerp_connection.getPassword());
 		config.setUserID(oerp_connection.getUserId() + "");
-		config.setEmployeeID(employee_id + "");
-
-		config.setTz((String) Partner.get("tz"));
-		config.setLang(lang);
-		try {
-			config.setEmail((String) Partner.get("email"));
-		} catch (Exception e) {
-			config.setEmail(" -- ");
-		}
-		config.setCompany((String) Company_tpl[1]);
+		config.setCollaboratorID(collaborator_id + "");
 
 		config.setName((String) User.get("name"));
-		config.setCI((String) Employee.get("personal_id"));
 		config.setPhoto((String) User.get("image"));
 		return true;
 	}
 
-	public boolean save_employee_info(Configuration config, String employee_id, String Server, int Port, String user, String pass) {
-		long ln_employee_id = Long.parseLong(employee_id + "");
-		return save_employee_info(config, ln_employee_id, Server, Port, user, pass);
+	public boolean save_collaborator_info(Configuration config, String collaborator_id, String Server, int Port, String user, String pass) {
+		long ln_collaborator_id = Long.parseLong(collaborator_id + "");
+		return save_collaborator_info(config, ln_collaborator_id, Server, Port, user, pass);
 	}
 
-	public boolean save_employee_info(Configuration config, Long[] employee_ids, String Server, int Port, String user, String pass) {
-		long employee_id = employee_ids[0];
-		return save_employee_info(config, employee_id, Server, Port, user, pass);
+	public boolean save_collaborator_info(Configuration config, Long[] collaborator_ids, String Server, int Port, String user, String pass) {
+		long collaborator_id = collaborator_ids[0];
+		return save_collaborator_info(config, collaborator_id, Server, Port, user, pass);
 	}
 
-	public boolean save_employee_info(Configuration config, long employee_id, String Server, int Port, String user, String pass) {
+	public boolean save_collaborator_info(Configuration config, long collaborator_id, String Server, int Port, String user, String pass) {
 		OpenERPconn oerp_connection = OpenERPconn.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass);
-		return save_employee_info(config, employee_id, oerp_connection);
+		return save_collaborator_info(config, collaborator_id, oerp_connection);
 	}
 
 	public void save() {
@@ -242,13 +219,13 @@ public class ConnectionActivity extends Activity implements OnClickListener, OnT
 								dlgAlert.create().show();
 							} else {
 								// Verificar que el Usuario sea un empleado
-								Long[] employee_ids = oerp.search("kemas.collaborator", new Object[] { new Object[] { "user_id", "=", oerp.getUserId() } }, 1);
-								if (employee_ids.length < 1) {
+								Long[] collaborator_ids = oerp.search("kemas.collaborator", new Object[] { new Object[] { "user_id", "=", oerp.getUserId() } }, 1);
+								if (collaborator_ids.length < 1) {
 									dlgAlert.setMessage("La credenciales ingresadas no pertenecen a un Colaborador.");
 									dlgAlert.create().show();
 								} else {
 									// Guardar los datos del empleado
-									if (save_employee_info(config, employee_ids, oerp)) {
+									if (save_collaborator_info(config, collaborator_ids, oerp)) {
 										Toast.makeText(ConnectionActivity.this, "Lo Datos Se Guardaron Correctamente.", Toast.LENGTH_SHORT).show();
 										finish();
 									}

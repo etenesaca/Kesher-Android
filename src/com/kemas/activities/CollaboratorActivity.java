@@ -1,100 +1,54 @@
 package com.kemas.activities;
 
-import com.kemas.R;
-
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.os.StrictMode;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.kemas.R;
 
 @SuppressLint("NewApi")
 public class CollaboratorActivity extends Activity {
-
-	private DrawerLayout drawerLayout;
-	private ListView drawer;
-	private ActionBarDrawerToggle toggle;
-	private static final String[] opciones = { "Configurar Conexión", "Mi Datos", "Eventos" };
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_collaborator);
 
-		// Rescatamos el Action Bar y activamos el boton Home
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
+		// Lineas para habilitar el acceso a la red y poder conectarse al
+		// servidor de OpenERP en el Hilo Principal
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
 
-		// Declarar e inicializar componentes para el Navigation Drawer
-		drawer = (ListView) findViewById(R.id.drawer);
-		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		// Activar el Boton Home
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+	}
 
-		// Declarar adapter y eventos al hacer click
-		drawer.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, opciones));
+	void edit() {
 
-		drawer.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				switch (arg2) {
-				case 0:
-					// Configurar Conexión
-					Intent config_act = new Intent(CollaboratorActivity.this, ConnectionActivity.class);
-					startActivity(config_act);
-					break;
-				case 1:
-					break;
-				default:
-					break;
-				}
-			}
-		});
-
-		// Sombra del panel Navigation Drawer
-		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-
-		// Integracion boton oficial
-		toggle = new ActionBarDrawerToggle(this, // Activity
-				drawerLayout, // Panel del Navigation Drawer
-				R.drawable.ic_drawer, // Icono que va a utilizar
-				R.string.app_name, // Descripcion al abrir el drawer
-				R.string.app_name // Descripcion al cerrar el drawer
-		) {
-			public void onDrawerClosed(View view) {
-				// Drawer cerrado
-				getActionBar().setTitle(getResources().getString(R.string.app_name));
-				invalidateOptionsMenu();
-			}
-
-			public void onDrawerOpened(View drawerView) {
-				// Drawer abierto
-				getActionBar().setTitle("Menu");
-				invalidateOptionsMenu();
-			}
-		};
-
-		drawerLayout.setDrawerListener(toggle);
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.menu_collaborator, menu);
+		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (toggle.onOptionsItemSelected(item)) {
-			return true;
+		if (item.getItemId() == R.id.mnCollaboratorEdit || item.getItemId() == R.id.mnCollaboratorEdit) {
+			edit();
+
+		} else if (item.getItemId() == android.R.id.home) {
+			// Reggresar al activity de registro de asistencias
+			finish();
 		}
-		return super.onOptionsItemSelected(item);
+
+		return true;
 	}
 
-	// Activamos el toggle con el icono
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		toggle.syncState();
-	}
 }

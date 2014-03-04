@@ -633,4 +633,18 @@ public class OpenERPconn {
 		}
 		return result;
 	}
+
+	// Obtener el rango de fechas - Esta semana
+	@SuppressWarnings("unchecked")
+	public HashMap<String, Object> getCollaborator(int CollaboratorID) {
+		HashMap<String, Object> result = null;
+		try {
+			XMLRPCClient client = new XMLRPCClient(mUrl);
+			Object last_register = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "control.horario.register", "get_collaborator", CollaboratorID);
+			result = (HashMap<String, Object>) last_register;
+		} catch (XMLRPCException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 }

@@ -15,7 +15,7 @@ public class Configuration {
 	private final String KEY_PASSWORD = "pass";
 	private final String KEY_PHOTO = "photo";
 	private final String KEY_USERID = "userid";
-	private final String KEY_EMPLOYEEID = "employeeid";
+	private final String KEY_COLLABORATORID = "collaboratorid";
 	private final String KEY_CI = "ci";
 
 	private final String KEY_TZ = "tz";
@@ -143,15 +143,15 @@ public class Configuration {
 	}
 
 	/*
-	 * EMPLOYEEID
+	 * COLLABORATORID
 	 */
-	public String getEmployeeID() {
-		return getSettings().getString(KEY_EMPLOYEEID, null);
+	public String getCollaboratorID() {
+		return getSettings().getString(KEY_COLLABORATORID, null);
 	}
 
-	public void setEmployeeID(String EmployeeID) {
+	public void setCollaboratorID(String CollaboratorID) {
 		SharedPreferences.Editor editor = getSettings().edit();
-		editor.putString(KEY_EMPLOYEEID, EmployeeID);
+		editor.putString(KEY_COLLABORATORID, CollaboratorID);
 		editor.commit();
 	}
 

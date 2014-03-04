@@ -14,12 +14,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.kemas.Configuration;
 import com.kemas.R;
 
 @SuppressLint("NewApi")
 public class HomeActivity extends Activity {
-
+	private Configuration config;
 	private DrawerLayout drawerLayout;
 	private ListView drawer;
 	private ActionBarDrawerToggle toggle;
@@ -33,6 +35,9 @@ public class HomeActivity extends Activity {
 		// Rescatamos el Action Bar y activamos el boton Home
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
+
+		// Crear una instancia de la Clase de Configuraciones
+		config = new Configuration(this);
 
 		// Declarar e inicializar componentes para el Navigation Drawer
 		drawer = (ListView) findViewById(R.id.drawer);
@@ -52,9 +57,13 @@ public class HomeActivity extends Activity {
 					startActivity(config_act);
 					break;
 				case 1:
-					// Datos del Colaborador
-					Intent collaborator_act = new Intent(HomeActivity.this, CollaboratorActivity.class);
-					startActivity(collaborator_act);
+					if (config.getUserID() == null || (config.getUserID()).equals("")) {
+						Toast.makeText(HomeActivity.this, "Primero configure los datos de Conexión.", Toast.LENGTH_SHORT).show();
+					} else {
+						// Datos del Colaborador
+						Intent collaborator_act = new Intent(HomeActivity.this, CollaboratorActivity.class);
+						startActivity(collaborator_act);
+					}
 					break;
 				default:
 					finish();

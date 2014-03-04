@@ -24,6 +24,10 @@
     <!-- Menu Connection -->
     <string name="action_save">Guardar</string>
 
+    <!-- Menu Collaborator -->
+    <string name="action_edit">Editar</string>
+    <string name="my_info">Mi Datos</string>
+
     <!-- Menu Perfil -->
     <string name="action_back">Volver</string>
     <string name="action_refresh_profile">Actualizar Datos</string>
