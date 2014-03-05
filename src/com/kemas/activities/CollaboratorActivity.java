@@ -6,14 +6,18 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,8 +32,11 @@ public class CollaboratorActivity extends ActionBarActivity {
 	private Configuration config;
 	Context Context = (Context) this;
 
-	private TextView txtName;
 	private LinearLayout Contenedor;
+	private ImageView imgPhoto;
+	private TextView txtName;
+	private TextView txtNickname;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +55,10 @@ public class CollaboratorActivity extends ActionBarActivity {
 		config = new Configuration(this);
 
 		// Cargar los datos del colaborador
-		txtName = (TextView) findViewById(R.id.txtName);
 		Contenedor = (LinearLayout) findViewById(R.id.Contenedor);
+		imgPhoto = (ImageView) findViewById(R.id.imgPhoto);
+		txtName = (TextView) findViewById(R.id.txtName);
+		txtNickname = (TextView) findViewById(R.id.txtNickname);
 		new LoadInfo(Context).execute();
 	}
 
@@ -117,6 +126,14 @@ public class CollaboratorActivity extends ActionBarActivity {
 
 			if (Collaborator != null) {
 				txtName.setText(Collaborator.get("name").toString());
+				txtNickname.setText(Collaborator.get("nick_name").toString());
+				if (Collaborator.get("image_medium") != "") {
+					// Cargar la Foto
+					byte[] photo = Base64.decode(Collaborator.get("image_medium").toString(), Base64.DEFAULT);
+					Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+					imgPhoto.setImageBitmap(bmp);
+				}
+				
 				Contenedor.setVisibility(View.VISIBLE);
 			} else {
 				Toast.makeText(CollaboratorActivity.this, "No se pudieron recuperar los datos.", Toast.LENGTH_SHORT).show();

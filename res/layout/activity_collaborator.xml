@@ -11,15 +11,15 @@
 
         <ImageView
             android:id="@+id/imgPhoto"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
             android:contentDescription="@string/photo"
             android:src="@drawable/user_male" />
 
         <TextView
-            android:id="@+id/txtUsername"
+            android:id="@+id/txtNickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
