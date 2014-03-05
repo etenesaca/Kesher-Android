@@ -1,12 +1,12 @@
 package com.kemas.activities;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +20,7 @@ import com.kemas.Configuration;
 import com.kemas.R;
 
 @SuppressLint("NewApi")
-public class HomeActivity extends Activity {
+public class HomeActivity extends ActionBarActivity {
 	private Configuration config;
 	private DrawerLayout drawerLayout;
 	private ListView drawer;
@@ -33,8 +33,8 @@ public class HomeActivity extends Activity {
 		setContentView(R.layout.activity_home);
 
 		// Rescatamos el Action Bar y activamos el boton Home
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
 
 		// Crear una instancia de la Clase de Configuraciones
 		config = new Configuration(this);
@@ -84,14 +84,14 @@ public class HomeActivity extends Activity {
 		) {
 			public void onDrawerClosed(View view) {
 				// Drawer cerrado
-				getActionBar().setTitle(getResources().getString(R.string.app_name));
-				invalidateOptionsMenu();
+				getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+				// invalidateOptionsMenu();
 			}
 
 			public void onDrawerOpened(View drawerView) {
 				// Drawer abierto
-				getActionBar().setTitle("Menu");
-				invalidateOptionsMenu();
+				getSupportActionBar().setTitle("Menu");
+				// invalidateOptionsMenu();
 			}
 		};
 

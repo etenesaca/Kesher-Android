@@ -4,14 +4,13 @@ import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -30,7 +29,7 @@ import com.kemas.hupernikao;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 @SuppressLint("NewApi")
-public class ConnectionActivity extends Activity implements OnClickListener, OnTouchListener {
+public class ConnectionActivity extends ActionBarActivity implements OnClickListener, OnTouchListener {
 	// Declare Elements
 	private Spinner cmbDb;
 	private EditText txtServer;
@@ -52,8 +51,7 @@ public class ConnectionActivity extends Activity implements OnClickListener, OnT
 		StrictMode.setThreadPolicy(policy);
 
 		// Activar el Boton Home
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// Crear una instancia de la Clase de Configuraciones
 		config = new Configuration(this);
@@ -112,7 +110,7 @@ public class ConnectionActivity extends Activity implements OnClickListener, OnT
 	public boolean save_collaborator_info(Configuration config, long collaborator_id, OpenERPconn oerp_connection) {
 		String[] fields_to_read = {};
 
-		fields_to_read = new String[] { "user_id"};
+		fields_to_read = new String[] { "user_id" };
 		HashMap<String, Object> Collaborator = oerp_connection.read("kemas.collaborator", collaborator_id, fields_to_read);
 
 		// Leer los datos del perfil del Usuario
