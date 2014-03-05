@@ -4,6 +4,7 @@
     android:background="@drawable/bg6" >
 
     <LinearLayout
+        android:id="@+id/Contenedor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
