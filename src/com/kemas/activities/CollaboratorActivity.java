@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.kemas.Configuration;
 import com.kemas.OpenERPconn;
 import com.kemas.R;
+import com.kemas.hupernikao;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 @SuppressLint("NewApi")
@@ -34,9 +35,22 @@ public class CollaboratorActivity extends ActionBarActivity {
 
 	private LinearLayout Contenedor;
 	private ImageView imgPhoto;
+	private TextView txtCode;
 	private TextView txtName;
 	private TextView txtNickname;
-
+	private TextView txtBirth;
+	private TextView txtAge;
+	private TextView txtMaritalStatus;
+	private TextView txtAddress;
+	private TextView txtMobile;
+	private TextView txtTelef1;
+	private TextView txtTelef2;
+	private TextView txtEmail;
+	private TextView txtIM;
+	private TextView txtJoinDate;
+	private TextView txtAgeInMinistry;
+	private TextView txtPoints;
+	private TextView txtLevel;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +71,22 @@ public class CollaboratorActivity extends ActionBarActivity {
 		// Cargar los datos del colaborador
 		Contenedor = (LinearLayout) findViewById(R.id.Contenedor);
 		imgPhoto = (ImageView) findViewById(R.id.imgPhoto);
+		txtCode = (TextView) findViewById(R.id.txtCode);
 		txtName = (TextView) findViewById(R.id.txtName);
 		txtNickname = (TextView) findViewById(R.id.txtNickname);
+		txtBirth = (TextView) findViewById(R.id.txtBirth);
+		txtAge = (TextView) findViewById(R.id.txtAge);
+		txtMaritalStatus = (TextView) findViewById(R.id.txtMaritalStatus);
+		txtAddress = (TextView) findViewById(R.id.txtAddress);
+		txtMobile = (TextView) findViewById(R.id.txtMobile);
+		txtTelef1 = (TextView) findViewById(R.id.txtTelef1);
+		txtTelef2 = (TextView) findViewById(R.id.txtTelef2);
+		txtEmail = (TextView) findViewById(R.id.txtEmail);
+		txtIM = (TextView) findViewById(R.id.txtIM);
+		txtJoinDate = (TextView) findViewById(R.id.txtJoinDate);
+		txtAgeInMinistry = (TextView) findViewById(R.id.txtAgeInMinistry);
+		txtPoints = (TextView) findViewById(R.id.txtPoints);
+		txtLevel = (TextView) findViewById(R.id.txtLevel);
 		new LoadInfo(Context).execute();
 	}
 
@@ -98,7 +126,7 @@ public class CollaboratorActivity extends ActionBarActivity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			
+
 			Contenedor.setVisibility(View.INVISIBLE);
 			pDialog = new ProgressDialog(context);
 			pDialog.setMessage("Cargando Datos");
@@ -125,15 +153,36 @@ public class CollaboratorActivity extends ActionBarActivity {
 			super.onPostExecute(result);
 
 			if (Collaborator != null) {
+				/*
+				 * CAMPOS A MOSTAR - code - name - nick_name - birth -
+				 * marital_status - address - image_medium - mobile - telef1 -
+				 * telef2 - email - im_account - team - join_date - points -
+				 * level
+				 */
+				txtCode.setText(Collaborator.get("code").toString());
 				txtName.setText(Collaborator.get("name").toString());
 				txtNickname.setText(Collaborator.get("nick_name").toString());
+				txtBirth.setText(Collaborator.get("birth").toString());
+				txtAge.setText(Collaborator.get("age").toString());
+				txtMaritalStatus.setText(Collaborator.get("marital_status").toString());
+				txtAddress.setText(Collaborator.get("address").toString());
+				txtMobile.setText(Collaborator.get("mobile").toString());
+				txtTelef1.setText(Collaborator.get("telef1").toString());
+				txtTelef2.setText(Collaborator.get("telef2").toString());
+				txtEmail.setText(Collaborator.get("email").toString());
+				txtIM.setText(Collaborator.get("im_account").toString());
+				txtJoinDate.setText(Collaborator.get("join_date").toString());
+				txtAgeInMinistry.setText(Collaborator.get("age_in_ministry").toString());
+				txtPoints.setText(Collaborator.get("points").toString());
+				txtLevel.setText(Collaborator.get("level").toString());
 				if (Collaborator.get("image_medium") != "") {
+
 					// Cargar la Foto
 					byte[] photo = Base64.decode(Collaborator.get("image_medium").toString(), Base64.DEFAULT);
 					Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-					imgPhoto.setImageBitmap(bmp);
+					imgPhoto.setImageBitmap(hupernikao.getRoundedCornerBitmap(bmp, true));
 				}
-				
+
 				Contenedor.setVisibility(View.VISIBLE);
 			} else {
 				Toast.makeText(CollaboratorActivity.this, "No se pudieron recuperar los datos.", Toast.LENGTH_SHORT).show();
@@ -141,6 +190,5 @@ public class CollaboratorActivity extends ActionBarActivity {
 			}
 			pDialog.dismiss();
 		}
-
 	}
 }

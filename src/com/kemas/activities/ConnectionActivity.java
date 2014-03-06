@@ -115,7 +115,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 
 		// Leer los datos del perfil del Usuario
 		Object[] User_tpl = (Object[]) Collaborator.get("user_id");
-		fields_to_read = new String[] { "image", "partner_id" };
+		fields_to_read = new String[] { "image_medium", "partner_id" };
 		HashMap<String, Object> User = oerp_connection.read("res.users", Long.parseLong(User_tpl[0] + ""), fields_to_read);
 		User.put("name", User_tpl[1] + "");
 
@@ -129,7 +129,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 		config.setCollaboratorID(collaborator_id + "");
 
 		config.setName((String) User.get("name"));
-		config.setPhoto((String) User.get("image"));
+		config.setPhoto((String) User.get("image_medium"));
 		return true;
 	}
 

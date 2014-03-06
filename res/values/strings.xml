@@ -32,6 +32,23 @@
     <string name="action_back">Volver</string>
     <string name="action_refresh_profile">Actualizar Datos</string>
 
+    <!-- Collaborator -->
+    <string name="code">Código</string>
+    <string name="complete_name">Nombre completos</string>
+    <string name="nick_name">Nombre</string>
+    <string name="birth">Fecha de nacimiento</string>
+    <string name="age">Edad</string>
+    <string name="marital_status">Estado civíl</string>
+    <string name="address">Dirección</string>
+    <string name="mobile">Celular</string>
+    <string name="telef1">Teléfono 1</string>
+    <string name="telef2">Teléfono 1</string>
+    <string name="im_account">IM</string>
+    <string name="join_date">Fecha de ingreso</string>
+    <string name="age_in_ministry">Tiempo de servicio</string>
+    <string name="points">Puntos</string>
+    <string name="level">Nivel</string>
+
     <!-- Menu Register -->
     <string name="action_refresh">Actualizar</string>
     <string name="action_settings">Configuraciones</string>

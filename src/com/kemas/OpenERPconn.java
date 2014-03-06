@@ -640,9 +640,9 @@ public class OpenERPconn {
 		HashMap<String, Object> result = null;
 		try {
 			XMLRPCClient client = new XMLRPCClient(mUrl);
-			Object last_register = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.collaborator", "get_collaborator", CollaboratorID);
+			Object collaborator = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.collaborator", "get_collaborator", CollaboratorID);
 			try {
-				result = (HashMap<String, Object>) last_register;
+				result = (HashMap<String, Object>) collaborator;
 			} catch (Exception e) {
 			}
 		} catch (XMLRPCException e) {
