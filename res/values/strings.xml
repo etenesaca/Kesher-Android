@@ -6,6 +6,7 @@
     <string name="total_hours">Total de Horas</string>
     <string name="cero">00:00:00</string>
     <string name="last_registers">Entrada: 00:00:00</string>
+    <string name="guion"> - </string>
     <string name="options">Opciones</string>
 
     <!-- Botones -->
@@ -42,8 +43,8 @@
     <string name="address">Dirección</string>
     <string name="mobile">Celular</string>
     <string name="telef1">Teléfono 1</string>
-    <string name="telef2">Teléfono 1</string>
-    <string name="im_account">IM</string>
+    <string name="telef2">Teléfono 2</string>
+    <string name="im_account">Cuenta de chat</string>
     <string name="join_date">Fecha de ingreso</string>
     <string name="age_in_ministry">Tiempo de servicio</string>
     <string name="points">Puntos</string>
@@ -88,5 +89,26 @@
     <string name="lang">Idioma</string>
     <string name="email">E-mail</string>
     <string name="company">Empresa</string>
+    
+    <!-- Lista de titulos de navegacion-->    
+    <string-array name="nav_options">
+        <item>Perfil</item>
+        <item>Favoritos</item>
+        <item>Eventos</item>
+        <item>Lugares</item>
+        <item>Etiquetas</item>
+        <item>Configuración</item>
+        <item>Compartir</item>
+    </string-array>
+    <!-- Lista de iconos de navegacion-->
+    <array name="navigation_iconos">
+        <item>@drawable/ic_action_user</item>
+        <item>@drawable/ic_action_star</item>
+        <item>@drawable/ic_action_event</item>
+        <item>@drawable/ic_action_place</item>
+        <item>@drawable/ic_action_labels</item>
+        <item>@drawable/ic_action_settings</item>
+        <item>@drawable/ic_action_share</item>        
+    </array> 
 
 </resources>

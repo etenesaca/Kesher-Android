@@ -22,6 +22,9 @@ public class Configuration {
 	private final String KEY_LANG = "lang";
 	private final String KEY_COMPANY = "company";
 	private final String KEY_EMAIL = "email";
+	
+	private final String KEY_BACKGROUND = "background";
+	private final String KEY_TEXT_COLOR = "text_color";
 
 	// Datos del Perfil
 	private final String KEY_NAME = "name";
@@ -37,7 +40,7 @@ public class Configuration {
 	private SharedPreferences getSettings() {
 		return mContext.getSharedPreferences(SHARED_PREFS_FILE, 0);
 	}
-
+	
 	/*
 	 * SERVER
 	 */
@@ -217,6 +220,32 @@ public class Configuration {
 	public void setEmail(String Email) {
 		SharedPreferences.Editor editor = getSettings().edit();
 		editor.putString(KEY_EMAIL, Email);
+		editor.commit();
+	}
+	
+	/*
+	 * TEXT COLOR
+	 */
+	public String getTextColor() {
+		return getSettings().getString(KEY_TEXT_COLOR, null);
+	}
+
+	public void setTextColor(String TextColor) {
+		SharedPreferences.Editor editor = getSettings().edit();
+		editor.putString(KEY_TEXT_COLOR, TextColor);
+		editor.commit();
+	}
+	
+	/*
+	 * BACKGROUND
+	 */
+	public String getBackground() {
+		return getSettings().getString(KEY_BACKGROUND, null);
+	}
+
+	public void setBackground(String Background) {
+		SharedPreferences.Editor editor = getSettings().edit();
+		editor.putString(KEY_BACKGROUND, Background);
 		editor.commit();
 	}
 }

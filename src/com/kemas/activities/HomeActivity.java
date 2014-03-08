@@ -1,24 +1,41 @@
 package com.kemas.activities;
 
+import java.util.HashMap;
+
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kemas.Configuration;
+import com.kemas.OpenERPconn;
 import com.kemas.R;
+import com.kemas.hupernikao;
 
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
+@SuppressWarnings("deprecation")
 @SuppressLint("NewApi")
 public class HomeActivity extends ActionBarActivity {
 	private Configuration config;
@@ -28,9 +45,58 @@ public class HomeActivity extends ActionBarActivity {
 	private static final String[] opciones = { "Configurar Conexión", "Mi Datos", "Eventos", "Salir" };
 
 	@Override
+	protected void onStart() {
+		super.onStart();
+		// Declarar e inicializar componentes para el Navigation Drawer
+		drawer = (ListView) findViewById(R.id.drawer);
+		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+		if (config.getBackground() != null && drawer.getHeaderViewsCount() == 0) {
+			OpenERPconn oerp = OpenERPconn.connect(config.getServer(), Integer.parseInt(config.getPort().toString()), config.getDataBase(), config.getLogin(), config.getPassword());
+
+			Long config_id = oerp.search("kemas.config", new Object[] {}, 1)[0];
+			String[] fields_to_read = new String[] { "mobile_background", "mobile_background_text_color" };
+			HashMap<String, Object> System_Config = oerp.read("kemas.config", config_id, fields_to_read);
+
+			// Declaramos la cabecera
+			View header = getLayoutInflater().inflate(R.layout.header, null);
+			TextView txtLogin = (TextView) header.findViewById(R.id.txtLogin);
+			ImageView imgAvatar = (ImageView) header.findViewById(R.id.imgAvatar);
+			LinearLayout HeaderContainer = (LinearLayout) header.findViewById(R.id.HeaderContainer);
+
+			// Cargar el fondo
+			byte[] background = Base64.decode(System_Config.get("mobile_background").toString(), Base64.DEFAULT);
+			Bitmap bmp_background = BitmapFactory.decodeByteArray(background, 0, background.length);
+			Drawable dw = new BitmapDrawable(getResources(), bmp_background);
+
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+				HeaderContainer.setBackground(dw);
+			} else {
+				HeaderContainer.setBackgroundDrawable(dw);
+			}
+
+			// Cargar la Foto
+			byte[] photo = Base64.decode(config.getPhoto(), Base64.DEFAULT);
+			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+			imgAvatar.setImageBitmap(hupernikao.getRoundedCornerBitmap(bmp, true));
+
+			// Escribir el nombre del Colaborador
+			txtLogin.setText(config.getName().toString());
+			drawer.addHeaderView(header);
+		}
+		// Declarar adapter y eventos al hacer click
+		drawer.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, opciones));
+	}
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+
+		// Lineas para habilitar el acceso a la red y poder conectarse al
+		// servidor de OpenERP en el Hilo Principal
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
 
 		// Rescatamos el Action Bar y activamos el boton Home
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -42,9 +108,6 @@ public class HomeActivity extends ActionBarActivity {
 		// Declarar e inicializar componentes para el Navigation Drawer
 		drawer = (ListView) findViewById(R.id.drawer);
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-		// Declarar adapter y eventos al hacer click
-		drawer.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, opciones));
 
 		drawer.setOnItemClickListener(new OnItemClickListener() {
 			@Override

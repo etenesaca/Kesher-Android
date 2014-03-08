@@ -119,6 +119,10 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 		HashMap<String, Object> User = oerp_connection.read("res.users", Long.parseLong(User_tpl[0] + ""), fields_to_read);
 		User.put("name", User_tpl[1] + "");
 
+		Long config_id = oerp_connection.search("kemas.config", new Object[] {}, 1)[0];
+		fields_to_read = new String[] { "mobile_background", "mobile_background_text_color" };
+		HashMap<String, Object> System_Config = oerp_connection.read("kemas.config", config_id, fields_to_read);
+
 		// Guardar los datos
 		config.setServer(oerp_connection.getServer());
 		config.setPort(oerp_connection.getPort() + "");
@@ -127,6 +131,9 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 		config.setPassword(oerp_connection.getPassword());
 		config.setUserID(oerp_connection.getUserId() + "");
 		config.setCollaboratorID(collaborator_id + "");
+		
+		config.setBackground(System_Config.get("mobile_background").toString());
+		config.setTextColor(System_Config.get("mobile_background_text_color").toString());
 
 		config.setName((String) User.get("name"));
 		config.setPhoto((String) User.get("image_medium"));
