@@ -1,12 +1,15 @@
 package com.kemas.activities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -22,14 +25,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kemas.Configuration;
+import com.kemas.Item_objct;
+import com.kemas.NavigationAdapter;
 import com.kemas.OpenERPconn;
 import com.kemas.R;
 import com.kemas.hupernikao;
@@ -39,25 +42,44 @@ import com.kemas.hupernikao;
 @SuppressLint("NewApi")
 public class HomeActivity extends ActionBarActivity {
 	private Configuration config;
+	Context Context = (Context) this;
+	private ArrayList<Item_objct> NavItms;
+	NavigationAdapter NavAdapter;
+
 	private DrawerLayout drawerLayout;
 	private ListView drawer;
 	private ActionBarDrawerToggle toggle;
-	private static final String[] opciones = { "Configurar Conexión", "Mi Datos", "Eventos", "Salir" };
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		// Declarar e inicializar componentes para el Navigation Drawer
-		drawer = (ListView) findViewById(R.id.drawer);
-		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		boolean TestConnection = false;
 
-		if (config.getBackground() != null && drawer.getHeaderViewsCount() == 0) {
-			OpenERPconn oerp = OpenERPconn.connect(config.getServer(), Integer.parseInt(config.getPort().toString()), config.getDataBase(), config.getLogin(), config.getPassword());
+		// Listado de titulos de barra de navegacion
+		NavItms = new ArrayList<Item_objct>();
+		NavItms.add(new Item_objct("Configurar Conexión", R.drawable.ic_action_settings));
 
-			Long config_id = oerp.search("kemas.config", new Object[] {}, 1)[0];
-			String[] fields_to_read = new String[] { "mobile_background", "mobile_background_text_color" };
-			HashMap<String, Object> System_Config = oerp.read("kemas.config", config_id, fields_to_read);
+		// En el caso de que no tenga un background significa que nunca se ha
+		// conectado
+		if (config.getBackground() == null) {
+			NavAdapter = new NavigationAdapter(this, NavItms);
+			drawer.setAdapter(NavAdapter);
+			return;
+		}
 
+		if (drawer.getHeaderViewsCount() == 0) {
+			if (hupernikao.TestNetwork(Context)) {
+				TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
+				if (TestConnection) {
+					OpenERPconn oerp = OpenERPconn.connect(config.getServer(), Integer.parseInt(config.getPort().toString()), config.getDataBase(), config.getLogin(), config.getPassword());
+
+					Long config_id = oerp.search("kemas.config", new Object[] {}, 1)[0];
+					String[] fields_to_read = new String[] { "mobile_background", "mobile_background_text_color" };
+					HashMap<String, Object> System_Config = oerp.read("kemas.config", config_id, fields_to_read);
+					config.setBackground(System_Config.get("mobile_background").toString());
+					config.setTextColor(System_Config.get("mobile_background_text_color").toString());
+				}
+			}
 			// Declaramos la cabecera
 			View header = getLayoutInflater().inflate(R.layout.header, null);
 			TextView txtLogin = (TextView) header.findViewById(R.id.txtLogin);
@@ -65,7 +87,7 @@ public class HomeActivity extends ActionBarActivity {
 			LinearLayout HeaderContainer = (LinearLayout) header.findViewById(R.id.HeaderContainer);
 
 			// Cargar el fondo
-			byte[] background = Base64.decode(System_Config.get("mobile_background").toString(), Base64.DEFAULT);
+			byte[] background = Base64.decode(config.getBackground().toString(), Base64.DEFAULT);
 			Bitmap bmp_background = BitmapFactory.decodeByteArray(background, 0, background.length);
 			Drawable dw = new BitmapDrawable(getResources(), bmp_background);
 
@@ -80,12 +102,33 @@ public class HomeActivity extends ActionBarActivity {
 			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
 			imgAvatar.setImageBitmap(hupernikao.getRoundedCornerBitmap(bmp, true));
 
+			// Cambiar el color de letra del nombre de Colaborador
+			txtLogin.setTextColor(Color.parseColor(config.getTextColor().toString()));
+
 			// Escribir el nombre del Colaborador
 			txtLogin.setText(config.getName().toString());
 			drawer.addHeaderView(header);
+
+			if (TestConnection) {
+				// Perfil
+				NavItms.add(new Item_objct("Perfil", R.drawable.ic_action_person));
+				// Eventos
+				NavItms.add(new Item_objct("Eventos", R.drawable.ic_action_person));
+
+			}
+			NavAdapter = new NavigationAdapter(this, NavItms);
+			drawer.setAdapter(NavAdapter);
+		} else {
+			TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
+			if (TestConnection) {
+				// Perfil
+				NavItms.add(new Item_objct("Perfil", R.drawable.ic_action_person));
+				// Eventos
+				NavItms.add(new Item_objct("Eventos", R.drawable.ic_action_person));
+			}
+			NavAdapter = new NavigationAdapter(this, NavItms);
+			drawer.setAdapter(NavAdapter);
 		}
-		// Declarar adapter y eventos al hacer click
-		drawer.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, opciones));
 	}
 
 	@Override
@@ -115,18 +158,20 @@ public class HomeActivity extends ActionBarActivity {
 				drawerLayout.closeDrawers();
 				switch (arg2) {
 				case 0:
-					// Configurar Conexión
-					Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
-					startActivity(config_act);
-					break;
-				case 1:
 					if (config.getUserID() == null || (config.getUserID()).equals("")) {
-						Toast.makeText(HomeActivity.this, "Primero configure los datos de Conexión.", Toast.LENGTH_SHORT).show();
+						// Configurar Conexión
+						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
+						startActivity(config_act);
 					} else {
 						// Datos del Colaborador
 						Intent collaborator_act = new Intent(HomeActivity.this, CollaboratorActivity.class);
 						startActivity(collaborator_act);
 					}
+					break;
+				case 1:
+					// Configurar Conexión
+					Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
+					startActivity(config_act);
 					break;
 				default:
 					finish();
