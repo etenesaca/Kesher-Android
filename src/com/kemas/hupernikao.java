@@ -1,5 +1,6 @@
 package com.kemas;
 
+import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,9 +21,23 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 @SuppressLint("SimpleDateFormat")
 public class hupernikao {
+	public static OpenERPconn BuildOpenERPconn(Configuration config) {
+		OpenERPconn oerp = null;
+		if (config.getUserID() == null) {
+			return oerp;
+		}
+		try {
+			oerp = new OpenERPconn(config.getServer(), config.getPort(), config.getDataBase(), config.getLogin(), config.getPassword(), config.getUserID());
+		} catch (MalformedURLException e) {
+			Log.v("Crando Conector a OpenERP", "No se pudo crear el conector a OpenERP");
+		}
+		return oerp;
+	}
+
 	public static boolean TestNetwork(Context Context) {
 		boolean result = false;
 		ConnectivityManager connec = (ConnectivityManager) Context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);

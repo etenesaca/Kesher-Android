@@ -142,7 +142,7 @@ public class CollaboratorActivity extends ActionBarActivity {
 
 			boolean TestConnection = OpenERPconn.TestConnection(Server, Port);
 			if (TestConnection) {
-				OpenERPconn oerp = OpenERPconn.connect(Server, Port, config.getDataBase(), config.getLogin(), config.getPassword());
+				OpenERPconn oerp = hupernikao.BuildOpenERPconn(config);
 				Collaborator = oerp.getCollaborator(Integer.parseInt(config.getCollaboratorID().toString()));
 			}
 			return null;

@@ -92,13 +92,23 @@ public class OpenERPconn {
 	}
 
 	/** You should not use the constructor directly, use connect() instead */
-	public OpenERPconn(String server, Integer port, String db, String user, String pass, Integer id) throws MalformedURLException {
+	public OpenERPconn(String server, String port, String db, String user, String pass, String uid) throws MalformedURLException {
+		mServer = server;
+		mPort = Integer.parseInt(port);
+		mDatabase = db;
+		mUserName = user;
+		mPassword = pass;
+		mUserId = Integer.parseInt(uid);
+		mUrl = new URL("http", server, Integer.parseInt(port), "/xmlrpc/object");
+	}
+	
+	public OpenERPconn(String server, Integer port, String db, String user, String pass, Integer uid) throws MalformedURLException {
 		mServer = server;
 		mPort = port;
 		mDatabase = db;
 		mUserName = user;
 		mPassword = pass;
-		mUserId = id;
+		mUserId = uid;
 		mUrl = new URL("http", server, port, "/xmlrpc/object");
 	}
 

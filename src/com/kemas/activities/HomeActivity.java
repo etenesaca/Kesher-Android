@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kemas.Configuration;
 import com.kemas.Item_objct;
@@ -45,6 +46,7 @@ public class HomeActivity extends ActionBarActivity {
 	Context Context = (Context) this;
 	private ArrayList<Item_objct> NavItms;
 	NavigationAdapter NavAdapter;
+	boolean TestConnection = false;
 
 	private DrawerLayout drawerLayout;
 	private ListView drawer;
@@ -53,7 +55,6 @@ public class HomeActivity extends ActionBarActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		boolean TestConnection = false;
 
 		// Listado de titulos de barra de navegacion
 		NavItms = new ArrayList<Item_objct>();
@@ -71,14 +72,18 @@ public class HomeActivity extends ActionBarActivity {
 			if (hupernikao.TestNetwork(Context)) {
 				TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
 				if (TestConnection) {
-					OpenERPconn oerp = OpenERPconn.connect(config.getServer(), Integer.parseInt(config.getPort().toString()), config.getDataBase(), config.getLogin(), config.getPassword());
+					OpenERPconn oerp = hupernikao.BuildOpenERPconn(config);
 
 					Long config_id = oerp.search("kemas.config", new Object[] {}, 1)[0];
 					String[] fields_to_read = new String[] { "mobile_background", "mobile_background_text_color" };
 					HashMap<String, Object> System_Config = oerp.read("kemas.config", config_id, fields_to_read);
 					config.setBackground(System_Config.get("mobile_background").toString());
 					config.setTextColor(System_Config.get("mobile_background_text_color").toString());
+				} else {
+					Toast.makeText(this, "No se ha podido establecer conexión con el servidor.", Toast.LENGTH_SHORT).show();
 				}
+			} else {
+				Toast.makeText(this, "No se puede Establecer conexión. Revise su conexión a Internet.", Toast.LENGTH_SHORT).show();
 			}
 			// Declaramos la cabecera
 			View header = getLayoutInflater().inflate(R.layout.header, null);
@@ -119,7 +124,6 @@ public class HomeActivity extends ActionBarActivity {
 			NavAdapter = new NavigationAdapter(this, NavItms);
 			drawer.setAdapter(NavAdapter);
 		} else {
-			TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
 			if (TestConnection) {
 				// Perfil
 				NavItms.add(new Item_objct("Perfil", R.drawable.ic_action_person));
@@ -199,7 +203,7 @@ public class HomeActivity extends ActionBarActivity {
 			public void onDrawerOpened(View drawerView) {
 				// Drawer abierto
 				getSupportActionBar().setTitle("Menu");
-				// invalidateOptionsMenu();
+				//invalidateOptionsMenu();
 			}
 		};
 
@@ -209,9 +213,11 @@ public class HomeActivity extends ActionBarActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (toggle.onOptionsItemSelected(item)) {
-			return true;
+		} else if (item.getItemId() == R.id.mnHomeRefresh) {
+			TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
+			onStart();
 		}
-		return super.onOptionsItemSelected(item);
+		return true;
 	}
 
 	// Activamos el toggle con el icono
@@ -224,8 +230,7 @@ public class HomeActivity extends ActionBarActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.home, menu);
+		getMenuInflater().inflate(R.menu.menu_home, menu);
 		return true;
 	}
-
 }

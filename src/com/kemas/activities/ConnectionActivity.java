@@ -97,13 +97,19 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 		}
 	}
 
-	public boolean save_collaborator_info(Configuration config, String collaborator_id, OpenERPconn oerp_connection) {
-		long ln_collaborator_id = Long.parseLong(collaborator_id + "");
-		return save_collaborator_info(config, ln_collaborator_id, oerp_connection);
+	public boolean save_collaborator_info(Configuration config, Long[] collaborator_ids) {
+		OpenERPconn oerp_connection = hupernikao.BuildOpenERPconn(config);
+		long collaborator_id = collaborator_ids[0];
+		return save_collaborator_info(config, collaborator_id, oerp_connection);
 	}
 
 	public boolean save_collaborator_info(Configuration config, Long[] collaborator_ids, OpenERPconn oerp_connection) {
 		long collaborator_id = collaborator_ids[0];
+		return save_collaborator_info(config, collaborator_id, oerp_connection);
+	}
+
+	public boolean save_collaborator_info(Configuration config, long collaborator_id) {
+		OpenERPconn oerp_connection = hupernikao.BuildOpenERPconn(config);
 		return save_collaborator_info(config, collaborator_id, oerp_connection);
 	}
 
@@ -131,28 +137,13 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 		config.setPassword(oerp_connection.getPassword());
 		config.setUserID(oerp_connection.getUserId() + "");
 		config.setCollaboratorID(collaborator_id + "");
-		
+
 		config.setBackground(System_Config.get("mobile_background").toString());
 		config.setTextColor(System_Config.get("mobile_background_text_color").toString());
 
 		config.setName((String) User.get("name"));
 		config.setPhoto((String) User.get("image_medium"));
 		return true;
-	}
-
-	public boolean save_collaborator_info(Configuration config, String collaborator_id, String Server, int Port, String user, String pass) {
-		long ln_collaborator_id = Long.parseLong(collaborator_id + "");
-		return save_collaborator_info(config, ln_collaborator_id, Server, Port, user, pass);
-	}
-
-	public boolean save_collaborator_info(Configuration config, Long[] collaborator_ids, String Server, int Port, String user, String pass) {
-		long collaborator_id = collaborator_ids[0];
-		return save_collaborator_info(config, collaborator_id, Server, Port, user, pass);
-	}
-
-	public boolean save_collaborator_info(Configuration config, long collaborator_id, String Server, int Port, String user, String pass) {
-		OpenERPconn oerp_connection = OpenERPconn.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass);
-		return save_collaborator_info(config, collaborator_id, oerp_connection);
 	}
 
 	public void save() {
@@ -211,7 +202,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 					int Port = Integer.parseInt(txtPort.getText().toString());
 
 					if (OpenERPconn.TestConnection(Server, Port)) {
-						OpenERPconn oerp = OpenERPconn.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass);
+						OpenERPconn oerp = hupernikao.BuildOpenERPconn(config);
 
 						if (oerp == null) {
 							dlgAlert.setMessage("Usuario o Contraseña No Válidos.");

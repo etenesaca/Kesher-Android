@@ -8,7 +8,7 @@
     <LinearLayout
         android:id="@+id/HeaderContainer"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="80dp"
         android:background="@drawable/back"
         android:baselineAligned="false"
         tools:ignore="UselessParent" >
@@ -23,8 +23,8 @@
 
             <ImageView
                 android:id="@+id/imgAvatar"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 android:layout_marginBottom="5dp"
                 android:contentDescription="@string/photo"
                 android:src="@drawable/user_male" />
