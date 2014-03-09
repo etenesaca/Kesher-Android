@@ -202,7 +202,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 					int Port = Integer.parseInt(txtPort.getText().toString());
 
 					if (OpenERPconn.TestConnection(Server, Port)) {
-						OpenERPconn oerp = hupernikao.BuildOpenERPconn(config);
+						OpenERPconn oerp = OpenERPconn.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass); 
 
 						if (oerp == null) {
 							dlgAlert.setMessage("Usuario o Contraseña No Válidos.");
