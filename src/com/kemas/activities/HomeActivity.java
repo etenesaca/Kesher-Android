@@ -52,6 +52,14 @@ public class HomeActivity extends ActionBarActivity {
 	private ListView drawer;
 	private ActionBarDrawerToggle toggle;
 
+	/** Este metodo arma el menu Completo de los colaboradores **/
+	void BuildCompleteMenu() {
+		// Perfil
+		NavItms.add(new Item_objct("Perfil", R.drawable.ic_action_person));
+		// Eventos
+		NavItms.add(new Item_objct("Eventos", R.drawable.ic_action_person));
+	}
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -115,20 +123,13 @@ public class HomeActivity extends ActionBarActivity {
 			drawer.addHeaderView(header);
 
 			if (TestConnection) {
-				// Perfil
-				NavItms.add(new Item_objct("Perfil", R.drawable.ic_action_person));
-				// Eventos
-				NavItms.add(new Item_objct("Eventos", R.drawable.ic_action_person));
-
+				BuildCompleteMenu();
 			}
 			NavAdapter = new NavigationAdapter(this, NavItms);
 			drawer.setAdapter(NavAdapter);
 		} else {
 			if (TestConnection) {
-				// Perfil
-				NavItms.add(new Item_objct("Perfil", R.drawable.ic_action_person));
-				// Eventos
-				NavItms.add(new Item_objct("Eventos", R.drawable.ic_action_person));
+				BuildCompleteMenu();
 			}
 			NavAdapter = new NavigationAdapter(this, NavItms);
 			drawer.setAdapter(NavAdapter);
@@ -203,7 +204,7 @@ public class HomeActivity extends ActionBarActivity {
 			public void onDrawerOpened(View drawerView) {
 				// Drawer abierto
 				getSupportActionBar().setTitle("Menu");
-				//invalidateOptionsMenu();
+				// invalidateOptionsMenu();
 			}
 		};
 
