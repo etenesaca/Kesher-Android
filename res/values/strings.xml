@@ -34,6 +34,9 @@
     <string name="action_refresh_profile">Actualizar Datos</string>
 
     <!-- Collaborator -->
+    <string name="personalinfo">Información Personal</string>
+    <string name="contact">Contacto</string>
+    <string name="kemas">Ke+</string>
     <string name="code">Código</string>
     <string name="complete_name">Nombre completos</string>
     <string name="nick_name">Nombre</string>

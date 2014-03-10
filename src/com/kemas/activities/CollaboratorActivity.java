@@ -184,6 +184,7 @@ public class CollaboratorActivity extends ActionBarActivity {
 				}
 
 				Contenedor.setVisibility(View.VISIBLE);
+				getSupportActionBar().setTitle(Collaborator.get("nick_name").toString());
 			} else {
 				Toast.makeText(CollaboratorActivity.this, "No se pudieron recuperar los datos.", Toast.LENGTH_SHORT).show();
 				finish();

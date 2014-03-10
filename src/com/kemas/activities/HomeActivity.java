@@ -203,7 +203,7 @@ public class HomeActivity extends ActionBarActivity {
 
 			public void onDrawerOpened(View drawerView) {
 				// Drawer abierto
-				getSupportActionBar().setTitle("Menu");
+				getSupportActionBar().setTitle("Menú");
 				// invalidateOptionsMenu();
 			}
 		};
