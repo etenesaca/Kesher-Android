@@ -5,11 +5,14 @@ import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -35,6 +38,7 @@ import com.kemas.Configuration;
 import com.kemas.OpenERPconn;
 import com.kemas.R;
 import com.kemas.hupernikao;
+import com.kemas.fragments.PointsFragment;
 import com.kemas.item.adapters.NavigationMenuItem;
 import com.kemas.item.adapters.NavigationMenuItemAdapter;
 
@@ -53,18 +57,67 @@ public class HomeActivity extends ActionBarActivity {
 	private ActionBarDrawerToggle toggle;
 
 	private static final String[] MenuOptionsWithoutConfig = { "config", "exit" };
-	private static final String[] MenuOptionsComplete = { "profile", "config", "points", "exit" };
+	private static final String[] MenuOptionsWithoutConnnection = { "profile", "config", "exit" };
+	private static final String[] MenuOptionsComplete = { "profile", "home", "points", "config", "exit" };
 
 	/** Este metodo arma el menu Completo de los colaboradores **/
-	void BuildCompleteMenu() {
+	void BuildMenuOptionsComplete() {
 		// > Ver Datos del Colaborador
 
-		// > Configurar Conexión
-
+		// > Inicio
+		NavItms.add(new NavigationMenuItem("Inicio", R.drawable.ic_action_person));
 		// > Puntos
 		NavItms.add(new NavigationMenuItem("Puntos", R.drawable.ic_action_person));
+		// > Configuraciones
+		NavItms.add(new NavigationMenuItem("Configurar conexión", R.drawable.ic_action_person));
 		// > Salir
 		NavItms.add(new NavigationMenuItem("Salir", R.drawable.ic_action_person));
+		NavAdapter = new NavigationMenuItemAdapter(this, NavItms);
+		drawer.setAdapter(NavAdapter);
+	}
+
+	void BuildMenuOptionsWithoutConfig() {
+		// > Configuraciones
+		NavItms.add(new NavigationMenuItem("Configurar conexión", R.drawable.ic_action_person));
+		// > Salir
+		NavItms.add(new NavigationMenuItem("Salir", R.drawable.ic_action_person));
+		NavAdapter = new NavigationMenuItemAdapter(this, NavItms);
+		drawer.setAdapter(NavAdapter);
+	}
+
+	/** Este método arma la cabecera del navigation Drawer **/
+	void BuildNavigationHeader() {
+		View header = getLayoutInflater().inflate(R.layout.list_header_navigation_menu, null);
+		TextView txtLogin = (TextView) header.findViewById(R.id.txtLogin);
+		TextView txtTeam = (TextView) header.findViewById(R.id.txtTeam);
+		ImageView imgAvatar = (ImageView) header.findViewById(R.id.imgAvatar);
+		LinearLayout HeaderContainer = (LinearLayout) header.findViewById(R.id.HeaderContainer);
+
+		// Cargar el fondo
+		byte[] background = Base64.decode(config.getBackground().toString(), Base64.DEFAULT);
+		Bitmap bmp_background = BitmapFactory.decodeByteArray(background, 0, background.length);
+		Drawable dw = new BitmapDrawable(getResources(), bmp_background);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			HeaderContainer.setBackground(dw);
+		} else {
+			HeaderContainer.setBackgroundDrawable(dw);
+		}
+
+		// Cargar la Foto
+		byte[] photo = Base64.decode(config.getPhoto(), Base64.DEFAULT);
+		Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+		imgAvatar.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
+
+		Typeface Roboto_light_italic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-LightItalic.ttf");
+		// Cambiar el color de letra del nombre de Colaborador
+		txtLogin.setTextColor(Color.parseColor(config.getTextColor().toString()));
+		txtTeam.setTextColor(Color.parseColor(config.getTextColor().toString()));
+		txtTeam.setTypeface(Roboto_light_italic);
+
+		// Escribir el nombre del Colaborador
+		txtLogin.setText(config.getName().toString());
+		drawer.addHeaderView(header);
 	}
 
 	@Override
@@ -73,13 +126,11 @@ public class HomeActivity extends ActionBarActivity {
 
 		// Listado de titulos de barra de navegacion
 		NavItms = new ArrayList<NavigationMenuItem>();
-		NavItms.add(new NavigationMenuItem("Configurar Conexión", R.drawable.ic_action_settings));
 
 		// En el caso de que no tenga un background significa que nunca se ha
 		// conectado
 		if (config.getBackground() == null) {
-			NavAdapter = new NavigationMenuItemAdapter(this, NavItms);
-			drawer.setAdapter(NavAdapter);
+			BuildMenuOptionsWithoutConfig();
 			return;
 		}
 
@@ -94,52 +145,23 @@ public class HomeActivity extends ActionBarActivity {
 					HashMap<String, Object> System_Config = oerp.read("kemas.config", config_id, fields_to_read);
 					config.setBackground(System_Config.get("mobile_background").toString());
 					config.setTextColor(System_Config.get("mobile_background_text_color").toString());
+					BuildNavigationHeader();
+					BuildMenuOptionsComplete();
 				} else {
 					Toast.makeText(this, "No se ha podido establecer conexión con el servidor.", Toast.LENGTH_SHORT).show();
+					BuildNavigationHeader();
+					BuildMenuOptionsWithoutConfig();
 				}
 			} else {
 				Toast.makeText(this, "No se puede Establecer conexión. Revise su conexión a Internet.", Toast.LENGTH_SHORT).show();
+				BuildNavigationHeader();
+				BuildMenuOptionsWithoutConfig();
 			}
-			// Declaramos la cabecera
-			View header = getLayoutInflater().inflate(R.layout.list_header_navigation_menu, null);
-			TextView txtLogin = (TextView) header.findViewById(R.id.txtLogin);
-			ImageView imgAvatar = (ImageView) header.findViewById(R.id.imgAvatar);
-			LinearLayout HeaderContainer = (LinearLayout) header.findViewById(R.id.HeaderContainer);
-
-			// Cargar el fondo
-			byte[] background = Base64.decode(config.getBackground().toString(), Base64.DEFAULT);
-			Bitmap bmp_background = BitmapFactory.decodeByteArray(background, 0, background.length);
-			Drawable dw = new BitmapDrawable(getResources(), bmp_background);
-
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-				HeaderContainer.setBackground(dw);
-			} else {
-				HeaderContainer.setBackgroundDrawable(dw);
-			}
-
-			// Cargar la Foto
-			byte[] photo = Base64.decode(config.getPhoto(), Base64.DEFAULT);
-			Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-			imgAvatar.setImageBitmap(hupernikao.getRoundedCornerBitmap(bmp, true));
-
-			// Cambiar el color de letra del nombre de Colaborador
-			txtLogin.setTextColor(Color.parseColor(config.getTextColor().toString()));
-
-			// Escribir el nombre del Colaborador
-			txtLogin.setText(config.getName().toString());
-			drawer.addHeaderView(header);
-
-			if (TestConnection) {
-				BuildCompleteMenu();
-			}
-			NavAdapter = new NavigationMenuItemAdapter(this, NavItms);
-			drawer.setAdapter(NavAdapter);
 		} else {
-			if (TestConnection) {
-				BuildCompleteMenu();
-			}
-			NavAdapter = new NavigationMenuItemAdapter(this, NavItms);
-			drawer.setAdapter(NavAdapter);
+			if (TestConnection)
+				BuildMenuOptionsComplete();
+			else
+				BuildMenuOptionsWithoutConfig();
 		}
 	}
 
@@ -177,6 +199,16 @@ public class HomeActivity extends ActionBarActivity {
 					} else if (MenuOptionsWithoutConfig[arg2] == "exit") {
 						finish();
 					}
+				} else if (!TestConnection) {
+					if (MenuOptionsWithoutConnnection[arg2] == "profile") {
+						Toast.makeText(HomeActivity.this, "Sin Conexión", Toast.LENGTH_SHORT).show();
+					} else if (MenuOptionsWithoutConnnection[arg2] == "config") {
+						// Configurar Conexión
+						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
+						startActivity(config_act);
+					} else if (MenuOptionsWithoutConnnection[arg2] == "exit") {
+						finish();
+					}
 				} else {
 					if (MenuOptionsComplete[arg2] == "profile") {
 						// Datos del Colaborador
@@ -186,6 +218,11 @@ public class HomeActivity extends ActionBarActivity {
 						// Configurar Conexión
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
+					} else if (MenuOptionsComplete[arg2] == "points") {
+						Fragment fragment = new PointsFragment();
+						FragmentManager fragmentManager = getFragmentManager();
+						fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
 					} else if (MenuOptionsComplete[arg2] == "exit") {
 						finish();
 					}
