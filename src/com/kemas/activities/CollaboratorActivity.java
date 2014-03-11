@@ -1,6 +1,8 @@
 package com.kemas.activities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -19,13 +21,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kemas.Configuration;
+import com.kemas.ListViewDinamicSize;
 import com.kemas.OpenERPconn;
 import com.kemas.R;
 import com.kemas.hupernikao;
+import com.kemas.item.adapters.AreasItem;
+import com.kemas.item.adapters.AreasItemAdapter;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 @SuppressLint("NewApi")
@@ -35,6 +41,7 @@ public class CollaboratorActivity extends ActionBarActivity {
 
 	private LinearLayout Contenedor;
 	private ImageView imgPhoto;
+	private ImageView imgTeam;
 	private TextView txtCode;
 	private TextView txtName;
 	private TextView txtNickname;
@@ -51,6 +58,9 @@ public class CollaboratorActivity extends ActionBarActivity {
 	private TextView txtAgeInMinistry;
 	private TextView txtPoints;
 	private TextView txtLevel;
+	private TextView txtTeam;
+	private TextView txtTeam2;
+	private ListView lstAreas;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +81,7 @@ public class CollaboratorActivity extends ActionBarActivity {
 		// Cargar los datos del colaborador
 		Contenedor = (LinearLayout) findViewById(R.id.Contenedor);
 		imgPhoto = (ImageView) findViewById(R.id.imgPhoto);
+		imgTeam = (ImageView) findViewById(R.id.imgTeam);
 		txtCode = (TextView) findViewById(R.id.txtCode);
 		txtName = (TextView) findViewById(R.id.txtName);
 		txtNickname = (TextView) findViewById(R.id.txtNickname);
@@ -87,6 +98,9 @@ public class CollaboratorActivity extends ActionBarActivity {
 		txtAgeInMinistry = (TextView) findViewById(R.id.txtAgeInMinistry);
 		txtPoints = (TextView) findViewById(R.id.txtPoints);
 		txtLevel = (TextView) findViewById(R.id.txtLevel);
+		txtTeam = (TextView) findViewById(R.id.txtTeam);
+		txtTeam2 = (TextView) findViewById(R.id.txtTeam2);
+		lstAreas = (ListView) findViewById(R.id.lstAreas);
 		new LoadInfo(Context).execute();
 	}
 
@@ -119,6 +133,8 @@ public class CollaboratorActivity extends ActionBarActivity {
 		ProgressDialog pDialog;
 		HashMap<String, Object> Collaborator = null;
 
+		private String listview_array[] = { "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN" };
+
 		public LoadInfo(Context context) {
 			this.context = context;
 		}
@@ -148,6 +164,7 @@ public class CollaboratorActivity extends ActionBarActivity {
 			return null;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
@@ -176,11 +193,39 @@ public class CollaboratorActivity extends ActionBarActivity {
 				txtPoints.setText(Collaborator.get("points").toString());
 				txtLevel.setText(Collaborator.get("level").toString());
 				if (Collaborator.get("image_medium") != "") {
-
 					// Cargar la Foto
 					byte[] photo = Base64.decode(Collaborator.get("image_medium").toString(), Base64.DEFAULT);
 					Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
 					imgPhoto.setImageBitmap(hupernikao.getRoundedCornerBitmap(bmp, true));
+				}
+
+				txtTeam.setVisibility(View.INVISIBLE);
+				imgTeam.setVisibility(View.INVISIBLE);
+				if (Collaborator.get("team").toString() != "") {
+					HashMap<String, Object> Team = (HashMap<String, Object>) Collaborator.get("team");
+					txtTeam.setText(Team.get("name").toString());
+					txtTeam2.setText(Team.get("name").toString());
+					// Cargar la Logo del Equipo
+					byte[] logo = Base64.decode(Team.get("logo").toString(), Base64.DEFAULT);
+					Bitmap bmp = BitmapFactory.decodeByteArray(logo, 0, logo.length);
+					imgTeam.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
+
+					imgTeam.setVisibility(View.VISIBLE);
+					txtTeam.setVisibility(View.VISIBLE);
+				} else {
+					txtTeam2.setText("-- ");
+				}
+
+				// Procesar las areas
+				if (Collaborator.get("areas").toString() != "") {
+					List<AreasItem> ItemsAreas = new ArrayList<AreasItem>();
+					Object[] Areas = (Object[]) Collaborator.get("areas");
+					for (Object AreaObj : Areas) {
+						HashMap<String, Object> Area = (HashMap<String, Object>) AreaObj;
+						ItemsAreas.add(new AreasItem(Area.get("logo").toString(), Area.get("name").toString()));
+					}
+					lstAreas.setAdapter(new AreasItemAdapter(CollaboratorActivity.this, ItemsAreas));
+					ListViewDinamicSize.getListViewSize(lstAreas);
 				}
 
 				Contenedor.setVisibility(View.VISIBLE);

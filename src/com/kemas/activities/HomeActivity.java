@@ -32,11 +32,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kemas.Configuration;
-import com.kemas.Item_objct;
-import com.kemas.NavigationAdapter;
 import com.kemas.OpenERPconn;
 import com.kemas.R;
 import com.kemas.hupernikao;
+import com.kemas.item.adapters.NavigationMenuItem;
+import com.kemas.item.adapters.NavigationMenuItemAdapter;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 @SuppressWarnings("deprecation")
@@ -44,8 +44,8 @@ import com.kemas.hupernikao;
 public class HomeActivity extends ActionBarActivity {
 	private Configuration config;
 	Context Context = (Context) this;
-	private ArrayList<Item_objct> NavItms;
-	NavigationAdapter NavAdapter;
+	private ArrayList<NavigationMenuItem> NavItms;
+	NavigationMenuItemAdapter NavAdapter;
 	boolean TestConnection = false;
 
 	private DrawerLayout drawerLayout;
@@ -55,9 +55,9 @@ public class HomeActivity extends ActionBarActivity {
 	/** Este metodo arma el menu Completo de los colaboradores **/
 	void BuildCompleteMenu() {
 		// Perfil
-		NavItms.add(new Item_objct("Perfil", R.drawable.ic_action_person));
+		NavItms.add(new NavigationMenuItem("Perfil", R.drawable.ic_action_person));
 		// Eventos
-		NavItms.add(new Item_objct("Eventos", R.drawable.ic_action_person));
+		NavItms.add(new NavigationMenuItem("Eventos", R.drawable.ic_action_person));
 	}
 
 	@Override
@@ -65,13 +65,13 @@ public class HomeActivity extends ActionBarActivity {
 		super.onStart();
 
 		// Listado de titulos de barra de navegacion
-		NavItms = new ArrayList<Item_objct>();
-		NavItms.add(new Item_objct("Configurar Conexión", R.drawable.ic_action_settings));
+		NavItms = new ArrayList<NavigationMenuItem>();
+		NavItms.add(new NavigationMenuItem("Configurar Conexión", R.drawable.ic_action_settings));
 
 		// En el caso de que no tenga un background significa que nunca se ha
 		// conectado
 		if (config.getBackground() == null) {
-			NavAdapter = new NavigationAdapter(this, NavItms);
+			NavAdapter = new NavigationMenuItemAdapter(this, NavItms);
 			drawer.setAdapter(NavAdapter);
 			return;
 		}
@@ -94,7 +94,7 @@ public class HomeActivity extends ActionBarActivity {
 				Toast.makeText(this, "No se puede Establecer conexión. Revise su conexión a Internet.", Toast.LENGTH_SHORT).show();
 			}
 			// Declaramos la cabecera
-			View header = getLayoutInflater().inflate(R.layout.header, null);
+			View header = getLayoutInflater().inflate(R.layout.list_header_navigation_menu, null);
 			TextView txtLogin = (TextView) header.findViewById(R.id.txtLogin);
 			ImageView imgAvatar = (ImageView) header.findViewById(R.id.imgAvatar);
 			LinearLayout HeaderContainer = (LinearLayout) header.findViewById(R.id.HeaderContainer);
@@ -125,13 +125,13 @@ public class HomeActivity extends ActionBarActivity {
 			if (TestConnection) {
 				BuildCompleteMenu();
 			}
-			NavAdapter = new NavigationAdapter(this, NavItms);
+			NavAdapter = new NavigationMenuItemAdapter(this, NavItms);
 			drawer.setAdapter(NavAdapter);
 		} else {
 			if (TestConnection) {
 				BuildCompleteMenu();
 			}
-			NavAdapter = new NavigationAdapter(this, NavItms);
+			NavAdapter = new NavigationMenuItemAdapter(this, NavItms);
 			drawer.setAdapter(NavAdapter);
 		}
 	}

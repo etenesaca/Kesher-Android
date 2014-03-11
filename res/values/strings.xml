@@ -37,6 +37,7 @@
     <string name="personalinfo">Información Personal</string>
     <string name="contact">Contacto</string>
     <string name="kemas">Ke+</string>
+    <string name="areas">Áreas</string>
     <string name="code">Código</string>
     <string name="complete_name">Nombre completos</string>
     <string name="nick_name">Nombre</string>
@@ -51,6 +52,7 @@
     <string name="join_date">Fecha de ingreso</string>
     <string name="age_in_ministry">Tiempo de servicio</string>
     <string name="points">Puntos</string>
+    <string name="team">Equipo</string>
     <string name="level">Nivel</string>
 
     <!-- Menu Register -->
