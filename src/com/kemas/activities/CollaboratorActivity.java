@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -62,6 +63,11 @@ public class CollaboratorActivity extends ActionBarActivity {
 	private TextView txtTeam2;
 	private ListView lstAreas;
 
+	private TextView lblPersonalInfo;
+	private TextView lblContact;
+	private TextView lblkemas;
+	private TextView lblAreas;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -101,6 +107,20 @@ public class CollaboratorActivity extends ActionBarActivity {
 		txtTeam = (TextView) findViewById(R.id.txtTeam);
 		txtTeam2 = (TextView) findViewById(R.id.txtTeam2);
 		lstAreas = (ListView) findViewById(R.id.lstAreas);
+
+		lblPersonalInfo = (TextView) findViewById(R.id.lblPersonalInfo);
+		lblContact = (TextView) findViewById(R.id.lblContact);
+		lblkemas = (TextView) findViewById(R.id.lblkemas);
+		lblAreas = (TextView) findViewById(R.id.lblAreas);
+
+		Typeface Roboto_light = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+		Typeface Roboto_light_italic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-LightItalic.ttf");
+		
+		lblPersonalInfo.setTypeface(Roboto_light);
+		lblContact.setTypeface(Roboto_light);
+		lblkemas.setTypeface(Roboto_light);
+		lblAreas.setTypeface(Roboto_light);
+		txtTeam.setTypeface(Roboto_light_italic);
 		new LoadInfo(Context).execute();
 	}
 
@@ -132,8 +152,6 @@ public class CollaboratorActivity extends ActionBarActivity {
 		Context context;
 		ProgressDialog pDialog;
 		HashMap<String, Object> Collaborator = null;
-
-		private String listview_array[] = { "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN" };
 
 		public LoadInfo(Context context) {
 			this.context = context;
