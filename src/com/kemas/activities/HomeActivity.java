@@ -52,12 +52,19 @@ public class HomeActivity extends ActionBarActivity {
 	private ListView drawer;
 	private ActionBarDrawerToggle toggle;
 
+	private static final String[] MenuOptionsWithoutConfig = { "config", "exit" };
+	private static final String[] MenuOptionsComplete = { "profile", "config", "points", "exit" };
+
 	/** Este metodo arma el menu Completo de los colaboradores **/
 	void BuildCompleteMenu() {
-		// Perfil
-		NavItms.add(new NavigationMenuItem("Perfil", R.drawable.ic_action_person));
-		// Eventos
-		NavItms.add(new NavigationMenuItem("Eventos", R.drawable.ic_action_person));
+		// > Ver Datos del Colaborador
+
+		// > Configurar Conexión
+
+		// > Puntos
+		NavItms.add(new NavigationMenuItem("Puntos", R.drawable.ic_action_person));
+		// > Salir
+		NavItms.add(new NavigationMenuItem("Salir", R.drawable.ic_action_person));
 	}
 
 	@Override
@@ -161,26 +168,27 @@ public class HomeActivity extends ActionBarActivity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				drawerLayout.closeDrawers();
-				switch (arg2) {
-				case 0:
-					if (config.getUserID() == null || (config.getUserID()).equals("")) {
+
+				if (config.getUserID() == null) {
+					if (MenuOptionsWithoutConfig[arg2] == "config") {
 						// Configurar Conexión
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
-					} else {
+					} else if (MenuOptionsWithoutConfig[arg2] == "exit") {
+						finish();
+					}
+				} else {
+					if (MenuOptionsComplete[arg2] == "profile") {
 						// Datos del Colaborador
 						Intent collaborator_act = new Intent(HomeActivity.this, CollaboratorActivity.class);
 						startActivity(collaborator_act);
+					} else if (MenuOptionsComplete[arg2] == "config") {
+						// Configurar Conexión
+						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
+						startActivity(config_act);
+					} else if (MenuOptionsComplete[arg2] == "exit") {
+						finish();
 					}
-					break;
-				case 1:
-					// Configurar Conexión
-					Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
-					startActivity(config_act);
-					break;
-				default:
-					finish();
-					break;
 				}
 			}
 		});

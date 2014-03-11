@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +40,7 @@ import com.kemas.item.adapters.AreasItemAdapter;
 public class CollaboratorActivity extends ActionBarActivity {
 	private Configuration config;
 	Context Context = (Context) this;
-
+	private ScrollView scroll;
 	private LinearLayout Contenedor;
 	private ImageView imgPhoto;
 	private ImageView imgTeam;
@@ -115,13 +116,23 @@ public class CollaboratorActivity extends ActionBarActivity {
 
 		Typeface Roboto_light = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
 		Typeface Roboto_light_italic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-LightItalic.ttf");
-		
+
 		lblPersonalInfo.setTypeface(Roboto_light);
 		lblContact.setTypeface(Roboto_light);
 		lblkemas.setTypeface(Roboto_light);
 		lblAreas.setTypeface(Roboto_light);
 		txtTeam.setTypeface(Roboto_light_italic);
+
+		scroll = (ScrollView) findViewById(R.id.scroll);
 		new LoadInfo(Context).execute();
+	}
+
+	private void makeScroll(final int go) {
+		scroll.post(new Runnable() {
+			public void run() {
+				scroll.scrollTo(0, go * txtTeam.getLineHeight());
+			}
+		});
 	}
 
 	void edit() {
@@ -244,10 +255,11 @@ public class CollaboratorActivity extends ActionBarActivity {
 					}
 					lstAreas.setAdapter(new AreasItemAdapter(CollaboratorActivity.this, ItemsAreas));
 					ListViewDinamicSize.getListViewSize(lstAreas);
+					makeScroll(0);
 				}
 
-				Contenedor.setVisibility(View.VISIBLE);
 				getSupportActionBar().setTitle(Collaborator.get("nick_name").toString());
+				Contenedor.setVisibility(View.VISIBLE);
 			} else {
 				Toast.makeText(CollaboratorActivity.this, "No se pudieron recuperar los datos.", Toast.LENGTH_SHORT).show();
 				finish();
