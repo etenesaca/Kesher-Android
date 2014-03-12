@@ -52,7 +52,9 @@ public class HomeActivity extends ActionBarActivity {
 	Context Context = (Context) this;
 	private ArrayList<NavigationMenuItem> NavItms;
 	NavigationMenuItemAdapter NavAdapter;
+	View header;
 	boolean TestConnection = false;
+	boolean NavigationMenuLoaded = false;
 
 	private DrawerLayout drawerLayout;
 	private ListView drawer;
@@ -91,7 +93,20 @@ public class HomeActivity extends ActionBarActivity {
 
 	/** Este método arma la cabecera del navigation Drawer **/
 	void BuildNavigationHeader() {
-		View header = getLayoutInflater().inflate(R.layout.list_header_navigation_menu, null);
+		if (NavigationMenuLoaded) {
+			return;
+		}
+		if (TestConnection) {
+			OpenERPconn oerp = hupernikao.BuildOpenERPconn(config);
+			Long config_id = oerp.search("kemas.config", new Object[] {}, 1)[0];
+			String[] fields_to_read = new String[] { "mobile_background", "mobile_background_text_color" };
+			HashMap<String, Object> System_Config = oerp.read("kemas.config", config_id, fields_to_read);
+			config.setBackground(System_Config.get("mobile_background").toString());
+			config.setTextColor(System_Config.get("mobile_background_text_color").toString());
+		}
+		// Primero borro la cabecera actual
+		drawer.removeHeaderView(header);
+		header = getLayoutInflater().inflate(R.layout.list_header_navigation_menu, null);
 		TextView txtLogin = (TextView) header.findViewById(R.id.txtLogin);
 		TextView txtTeam = (TextView) header.findViewById(R.id.txtTeam);
 		ImageView imgAvatar = (ImageView) header.findViewById(R.id.imgAvatar);
@@ -121,7 +136,12 @@ public class HomeActivity extends ActionBarActivity {
 
 		// Escribir el nombre del Colaborador
 		txtLogin.setText(config.getName().toString());
+
+		if (drawer.getAdapter() != null)
+			drawer.setAdapter(null);
+
 		drawer.addHeaderView(header);
+		NavigationMenuLoaded = true;
 	}
 
 	@Override
@@ -137,17 +157,9 @@ public class HomeActivity extends ActionBarActivity {
 			BuildMenuOptionsWithoutConfig();
 			return;
 		}
-
 		if (hupernikao.TestNetwork(Context)) {
 			TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
 			if (TestConnection) {
-				OpenERPconn oerp = hupernikao.BuildOpenERPconn(config);
-
-				Long config_id = oerp.search("kemas.config", new Object[] {}, 1)[0];
-				String[] fields_to_read = new String[] { "mobile_background", "mobile_background_text_color" };
-				HashMap<String, Object> System_Config = oerp.read("kemas.config", config_id, fields_to_read);
-				config.setBackground(System_Config.get("mobile_background").toString());
-				config.setTextColor(System_Config.get("mobile_background_text_color").toString());
 				BuildNavigationHeader();
 				BuildMenuOptionsComplete();
 			} else {
@@ -160,7 +172,6 @@ public class HomeActivity extends ActionBarActivity {
 			BuildNavigationHeader();
 			BuildMenuOptionsWithoutConfig();
 		}
-
 	}
 
 	@Override
@@ -192,6 +203,7 @@ public class HomeActivity extends ActionBarActivity {
 				if (config.getUserID() == null) {
 					if (MenuOptionsWithoutConfig[arg2] == "config") {
 						// Configurar Conexión
+						NavigationMenuLoaded = false;
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
 					} else if (MenuOptionsWithoutConfig[arg2] == "exit") {
@@ -202,6 +214,7 @@ public class HomeActivity extends ActionBarActivity {
 						Toast.makeText(HomeActivity.this, "Sin Conexión", Toast.LENGTH_SHORT).show();
 					} else if (MenuOptionsWithoutConnnection[arg2] == "config") {
 						// Configurar Conexión
+						NavigationMenuLoaded = false;
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
 					} else if (MenuOptionsWithoutConnnection[arg2] == "exit") {
@@ -211,15 +224,12 @@ public class HomeActivity extends ActionBarActivity {
 					Fragment fragment = null;
 					if (MenuOptionsComplete[arg2] == "profile") {
 						// Datos del Colaborador
-						// Intent collaborator_act = new
-						// Intent(HomeActivity.this,
-						// CollaboratorActivity.class);
-						// startActivity(collaborator_act);
 						fragment = new CollaboratorFragment();
 						FragmentManager fragmentManager = getSupportFragmentManager();
 						fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 					} else if (MenuOptionsComplete[arg2] == "config") {
 						// Configurar Conexión
+						NavigationMenuLoaded = false;
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
 					} else if (MenuOptionsComplete[arg2] == "points") {
