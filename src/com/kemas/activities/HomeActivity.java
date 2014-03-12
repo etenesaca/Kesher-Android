@@ -5,8 +5,6 @@ import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,6 +17,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -38,6 +39,7 @@ import com.kemas.Configuration;
 import com.kemas.OpenERPconn;
 import com.kemas.R;
 import com.kemas.hupernikao;
+import com.kemas.fragments.CollaboratorFragment;
 import com.kemas.fragments.PointsFragment;
 import com.kemas.item.adapters.NavigationMenuItem;
 import com.kemas.item.adapters.NavigationMenuItemAdapter;
@@ -59,6 +61,8 @@ public class HomeActivity extends ActionBarActivity {
 	private static final String[] MenuOptionsWithoutConfig = { "config", "exit" };
 	private static final String[] MenuOptionsWithoutConnnection = { "profile", "config", "exit" };
 	private static final String[] MenuOptionsComplete = { "profile", "home", "points", "config", "exit" };
+
+	private boolean shouldGoInvisible;
 
 	/** Este metodo arma el menu Completo de los colaboradores **/
 	void BuildMenuOptionsComplete() {
@@ -134,35 +138,29 @@ public class HomeActivity extends ActionBarActivity {
 			return;
 		}
 
-		if (drawer.getHeaderViewsCount() == 0) {
-			if (hupernikao.TestNetwork(Context)) {
-				TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
-				if (TestConnection) {
-					OpenERPconn oerp = hupernikao.BuildOpenERPconn(config);
+		if (hupernikao.TestNetwork(Context)) {
+			TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
+			if (TestConnection) {
+				OpenERPconn oerp = hupernikao.BuildOpenERPconn(config);
 
-					Long config_id = oerp.search("kemas.config", new Object[] {}, 1)[0];
-					String[] fields_to_read = new String[] { "mobile_background", "mobile_background_text_color" };
-					HashMap<String, Object> System_Config = oerp.read("kemas.config", config_id, fields_to_read);
-					config.setBackground(System_Config.get("mobile_background").toString());
-					config.setTextColor(System_Config.get("mobile_background_text_color").toString());
-					BuildNavigationHeader();
-					BuildMenuOptionsComplete();
-				} else {
-					Toast.makeText(this, "No se ha podido establecer conexión con el servidor.", Toast.LENGTH_SHORT).show();
-					BuildNavigationHeader();
-					BuildMenuOptionsWithoutConfig();
-				}
+				Long config_id = oerp.search("kemas.config", new Object[] {}, 1)[0];
+				String[] fields_to_read = new String[] { "mobile_background", "mobile_background_text_color" };
+				HashMap<String, Object> System_Config = oerp.read("kemas.config", config_id, fields_to_read);
+				config.setBackground(System_Config.get("mobile_background").toString());
+				config.setTextColor(System_Config.get("mobile_background_text_color").toString());
+				BuildNavigationHeader();
+				BuildMenuOptionsComplete();
 			} else {
-				Toast.makeText(this, "No se puede Establecer conexión. Revise su conexión a Internet.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "No se ha podido establecer conexión con el servidor.", Toast.LENGTH_SHORT).show();
 				BuildNavigationHeader();
 				BuildMenuOptionsWithoutConfig();
 			}
 		} else {
-			if (TestConnection)
-				BuildMenuOptionsComplete();
-			else
-				BuildMenuOptionsWithoutConfig();
+			Toast.makeText(this, "No se puede Establecer conexión. Revise su conexión a Internet.", Toast.LENGTH_SHORT).show();
+			BuildNavigationHeader();
+			BuildMenuOptionsWithoutConfig();
 		}
+
 	}
 
 	@Override
@@ -210,17 +208,23 @@ public class HomeActivity extends ActionBarActivity {
 						finish();
 					}
 				} else {
+					Fragment fragment = null;
 					if (MenuOptionsComplete[arg2] == "profile") {
 						// Datos del Colaborador
-						Intent collaborator_act = new Intent(HomeActivity.this, CollaboratorActivity.class);
-						startActivity(collaborator_act);
+						// Intent collaborator_act = new
+						// Intent(HomeActivity.this,
+						// CollaboratorActivity.class);
+						// startActivity(collaborator_act);
+						fragment = new CollaboratorFragment();
+						FragmentManager fragmentManager = getSupportFragmentManager();
+						fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 					} else if (MenuOptionsComplete[arg2] == "config") {
 						// Configurar Conexión
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
 					} else if (MenuOptionsComplete[arg2] == "points") {
-						Fragment fragment = new PointsFragment();
-						FragmentManager fragmentManager = getFragmentManager();
+						fragment = new PointsFragment();
+						FragmentManager fragmentManager = getSupportFragmentManager();
 						fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
 					} else if (MenuOptionsComplete[arg2] == "exit") {
@@ -240,16 +244,37 @@ public class HomeActivity extends ActionBarActivity {
 				R.string.app_name, // Descripcion al abrir el drawer
 				R.string.app_name // Descripcion al cerrar el drawer
 		) {
+			float mPreviousOffset = 0f;
+
 			public void onDrawerClosed(View view) {
 				// Drawer cerrado
+				shouldGoInvisible = false;
+				ActivityCompat.invalidateOptionsMenu(HomeActivity.this);
 				getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-				// invalidateOptionsMenu();
 			}
 
 			public void onDrawerOpened(View drawerView) {
 				// Drawer abierto
+				shouldGoInvisible = true;
+				ActivityCompat.invalidateOptionsMenu(HomeActivity.this);
 				getSupportActionBar().setTitle("Menú");
-				// invalidateOptionsMenu();
+			}
+
+			public void onDrawerSlide(View arg0, float slideOffset) {
+				super.onDrawerSlide(arg0, slideOffset);
+				if (slideOffset > mPreviousOffset && !shouldGoInvisible) {
+					shouldGoInvisible = true;
+					ActivityCompat.invalidateOptionsMenu(HomeActivity.this);
+				} else if (mPreviousOffset > slideOffset && slideOffset < 0.5f && shouldGoInvisible) {
+					shouldGoInvisible = false;
+					ActivityCompat.invalidateOptionsMenu(HomeActivity.this);
+				}
+				mPreviousOffset = slideOffset;
+			}
+
+			public void onDrawerStateChanged(int arg0) {
+				// or use states of the drawer to hide/show the items
+
 			}
 		};
 
@@ -258,12 +283,13 @@ public class HomeActivity extends ActionBarActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		boolean result = super.onOptionsItemSelected(item);
 		if (toggle.onOptionsItemSelected(item)) {
 		} else if (item.getItemId() == R.id.mnHomeRefresh) {
 			TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
 			onStart();
 		}
-		return true;
+		return result;
 	}
 
 	// Activamos el toggle con el icono
@@ -273,10 +299,27 @@ public class HomeActivity extends ActionBarActivity {
 		toggle.syncState();
 	}
 
+	private void hideMenuItems(Menu menu, boolean visible) {
+		for (int i = 0; i < menu.size(); i++) {
+			menu.getItem(i).setVisible(visible);
+		}
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+
+		// If the nav drawer is open, hide action items related to the content
+		// view
+		boolean drawerOpen = shouldGoInvisible;
+		hideMenuItems(menu, !drawerOpen);
+		return super.onPrepareOptionsMenu(menu);
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		boolean result = super.onCreateOptionsMenu(menu);
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.menu_home, menu);
-		return true;
+		return result;
 	}
 }

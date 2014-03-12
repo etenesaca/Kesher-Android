@@ -2,9 +2,9 @@ package com.kemas.fragments;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Fragment;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +17,7 @@ import com.kemas.R;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class PointsFragment extends Fragment {
 	private TextView txtInit;
+
 	public PointsFragment() {
 	}
 
