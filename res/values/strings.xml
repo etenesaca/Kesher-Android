@@ -22,6 +22,10 @@
     <string name="username">Nombre de Usuario</string>
     <string name="password">Password</string>
 
+    <!-- Menu Home -->
+    <string name="without_connnection">Sin Conexión</string>
+    <string name="reintent">Reintentar</string>
+    
     <!-- Menu Connection -->
     <string name="action_save">Guardar</string>
 

@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -258,7 +259,7 @@ public class CollaboratorFragment extends Fragment {
 					makeScroll(0);
 				}
 
-				getActivity().getActionBar().setTitle("Mis Datos");
+				((ActionBarActivity) getActivity()).getSupportActionBar().setTitle("Mis Datos");
 				// getSupportActionBar().setTitle(Collaborator.get("nick_name").toString());
 				Contenedor.setVisibility(View.VISIBLE);
 			} else {

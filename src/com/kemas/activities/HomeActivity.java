@@ -27,8 +27,10 @@ import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -53,15 +55,19 @@ public class HomeActivity extends ActionBarActivity {
 	private ArrayList<NavigationMenuItem> NavItms;
 	NavigationMenuItemAdapter NavAdapter;
 	View header;
+	View headerRefreshConnection;
 	boolean TestConnection = false;
 	boolean NavigationMenuLoaded = false;
+	
+	@SuppressWarnings("unused")
+	private Button btnRefresh;
 
 	private DrawerLayout drawerLayout;
 	private ListView drawer;
 	private ActionBarDrawerToggle toggle;
 
 	private static final String[] MenuOptionsWithoutConfig = { "config", "exit" };
-	private static final String[] MenuOptionsWithoutConnnection = { "profile", "config", "exit" };
+	private static final String[] MenuOptionsWithoutConnnection = { "refresh", "profile", "config", "exit" };
 	private static final String[] MenuOptionsComplete = { "profile", "home", "points", "config", "exit" };
 
 	private boolean shouldGoInvisible;
@@ -91,6 +97,25 @@ public class HomeActivity extends ActionBarActivity {
 		drawer.setAdapter(NavAdapter);
 	}
 
+	/** Agregado item de Refrescar la conexión **/
+	void BuildNavigationHeaderRefreshConnection() {
+		headerRefreshConnection = getLayoutInflater().inflate(R.layout.list_header_navigation_menu_refresh, null);
+		Button btnRefresh = (Button) headerRefreshConnection.findViewById(R.id.btnRefresh);
+		btnRefresh.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
+				onStart();
+			}
+		});
+
+		drawer.removeHeaderView(header);
+		NavigationMenuLoaded = false;
+		if (drawer.getAdapter() != null)
+			drawer.setAdapter(null);
+		drawer.addHeaderView(headerRefreshConnection);
+	}
+
 	/** Este método arma la cabecera del navigation Drawer **/
 	void BuildNavigationHeader() {
 		if (NavigationMenuLoaded) {
@@ -105,7 +130,10 @@ public class HomeActivity extends ActionBarActivity {
 			config.setTextColor(System_Config.get("mobile_background_text_color").toString());
 		}
 		// Primero borro la cabecera actual
-		drawer.removeHeaderView(header);
+		try {
+			drawer.removeHeaderView(header);
+		} catch (Exception e) {
+		}
 		header = getLayoutInflater().inflate(R.layout.list_header_navigation_menu, null);
 		TextView txtLogin = (TextView) header.findViewById(R.id.txtLogin);
 		TextView txtTeam = (TextView) header.findViewById(R.id.txtTeam);
@@ -147,7 +175,6 @@ public class HomeActivity extends ActionBarActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-
 		// Listado de titulos de barra de navegacion
 		NavItms = new ArrayList<NavigationMenuItem>();
 
@@ -157,6 +184,8 @@ public class HomeActivity extends ActionBarActivity {
 			BuildMenuOptionsWithoutConfig();
 			return;
 		}
+
+		drawer.removeHeaderView(headerRefreshConnection);
 		if (hupernikao.TestNetwork(Context)) {
 			TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
 			if (TestConnection) {
@@ -164,11 +193,13 @@ public class HomeActivity extends ActionBarActivity {
 				BuildMenuOptionsComplete();
 			} else {
 				Toast.makeText(this, "No se ha podido establecer conexión con el servidor.", Toast.LENGTH_SHORT).show();
+				BuildNavigationHeaderRefreshConnection();
 				BuildNavigationHeader();
 				BuildMenuOptionsWithoutConfig();
 			}
 		} else {
 			Toast.makeText(this, "No se puede Establecer conexión. Revise su conexión a Internet.", Toast.LENGTH_SHORT).show();
+			BuildNavigationHeaderRefreshConnection();
 			BuildNavigationHeader();
 			BuildMenuOptionsWithoutConfig();
 		}
@@ -317,19 +348,10 @@ public class HomeActivity extends ActionBarActivity {
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-
 		// If the nav drawer is open, hide action items related to the content
 		// view
 		boolean drawerOpen = shouldGoInvisible;
 		hideMenuItems(menu, !drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		boolean result = super.onCreateOptionsMenu(menu);
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_home, menu);
-		return result;
 	}
 }

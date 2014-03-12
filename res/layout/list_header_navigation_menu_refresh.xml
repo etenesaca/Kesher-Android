@@ -7,10 +7,11 @@
 
     <LinearLayout
         android:id="@+id/contenedor_register"
-        android:layout_width="240dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:background="@color/LightYellow2"
         tools:ignore="UselessParent" >
 
         <TextView
@@ -18,6 +19,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="3dp"
+            android:textStyle="bold"
             android:text="@string/without_connnection"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -27,7 +31,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
             android:text="@string/reintent"
             tools:ignore="ObsoleteLayoutParam" />
     </LinearLayout>
