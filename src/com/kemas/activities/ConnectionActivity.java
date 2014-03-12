@@ -114,35 +114,24 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 	}
 
 	public boolean save_collaborator_info(Configuration config, long collaborator_id, OpenERPconn oerp_connection) {
-		String[] fields_to_read = {};
+		HashMap<String, Object> NavigationMenuInfo = oerp_connection.getNavigationmenuInfo(collaborator_id);
+		if (NavigationMenuInfo != null) {
+			// Guardar los datos
+			config.setServer(oerp_connection.getServer());
+			config.setPort(oerp_connection.getPort().toString());
+			config.setDataBase(oerp_connection.getDatabase());
+			config.setLogin(oerp_connection.getUserName().toString());
+			config.setPassword(oerp_connection.getPassword());
+			config.setUserID(oerp_connection.getUserId().toString());
+			config.setCollaboratorID(collaborator_id + "");
 
-		fields_to_read = new String[] { "user_id" };
-		HashMap<String, Object> Collaborator = oerp_connection.read("kemas.collaborator", collaborator_id, fields_to_read);
+			//Menu
+			config.setBackground(NavigationMenuInfo.get("mobile_background").toString());
+			config.setTextColor(NavigationMenuInfo.get("mobile_background_text_color").toString());
 
-		// Leer los datos del perfil del Usuario
-		Object[] User_tpl = (Object[]) Collaborator.get("user_id");
-		fields_to_read = new String[] { "image_medium", "partner_id" };
-		HashMap<String, Object> User = oerp_connection.read("res.users", Long.parseLong(User_tpl[0] + ""), fields_to_read);
-		User.put("name", User_tpl[1] + "");
-
-		Long config_id = oerp_connection.search("kemas.config", new Object[] {}, 1)[0];
-		fields_to_read = new String[] { "mobile_background", "mobile_background_text_color" };
-		HashMap<String, Object> System_Config = oerp_connection.read("kemas.config", config_id, fields_to_read);
-
-		// Guardar los datos
-		config.setServer(oerp_connection.getServer());
-		config.setPort(oerp_connection.getPort() + "");
-		config.setDataBase(oerp_connection.getDatabase());
-		config.setLogin(oerp_connection.getUserName() + "");
-		config.setPassword(oerp_connection.getPassword());
-		config.setUserID(oerp_connection.getUserId() + "");
-		config.setCollaboratorID(collaborator_id + "");
-
-		config.setBackground(System_Config.get("mobile_background").toString());
-		config.setTextColor(System_Config.get("mobile_background_text_color").toString());
-
-		config.setName((String) User.get("name"));
-		config.setPhoto((String) User.get("image_medium"));
+			config.setName(NavigationMenuInfo.get("name").toString());
+			config.setPhoto(NavigationMenuInfo.get("image").toString());
+			config.setTeam(NavigationMenuInfo.get("team").toString());}
 		return true;
 	}
 
@@ -202,7 +191,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 					int Port = Integer.parseInt(txtPort.getText().toString());
 
 					if (OpenERPconn.TestConnection(Server, Port)) {
-						OpenERPconn oerp = OpenERPconn.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass); 
+						OpenERPconn oerp = OpenERPconn.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass);
 
 						if (oerp == null) {
 							dlgAlert.setMessage("Usuario o Contraseña No Válidos.");

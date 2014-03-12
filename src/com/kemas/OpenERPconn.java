@@ -101,7 +101,7 @@ public class OpenERPconn {
 		mUserId = Integer.parseInt(uid);
 		mUrl = new URL("http", server, Integer.parseInt(port), "/xmlrpc/object");
 	}
-	
+
 	public OpenERPconn(String server, Integer port, String db, String user, String pass, Integer uid) throws MalformedURLException {
 		mServer = server;
 		mPort = port;
@@ -644,7 +644,7 @@ public class OpenERPconn {
 		return result;
 	}
 
-	// Obtener el rango de fechas - Esta semana
+	// Obtener los datos del Colaborador
 	@SuppressWarnings("unchecked")
 	public HashMap<String, Object> getCollaborator(int CollaboratorID) {
 		HashMap<String, Object> result = null;
@@ -660,4 +660,39 @@ public class OpenERPconn {
 		}
 		return result;
 	}
+
+	// Obtener los datos para la barra de Menu
+	@SuppressWarnings("unchecked")
+	public HashMap<String, Object> getNavigationmenuInfo(long CollaboratorID) {
+		HashMap<String, Object> result = null;
+		try {
+			XMLRPCClient client = new XMLRPCClient(mUrl);
+			Object NavigationmenuInfo = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.collaborator", "get_info_for_navigation", CollaboratorID);
+			try {
+				result = (HashMap<String, Object>) NavigationmenuInfo;
+			} catch (Exception e) {
+			}
+		} catch (XMLRPCException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/*
+	 * String[] fields_to_read = {}; fields_to_read = new String[] { "user_id"
+	 * }; HashMap<String, Object> Collaborator =
+	 * oerp_connection.read("kemas.collaborator", collaborator_id,
+	 * fields_to_read);
+	 * 
+	 * // Leer los datos del perfil del Usuario Object[] User_tpl = (Object[])
+	 * Collaborator.get("user_id"); fields_to_read = new String[] {
+	 * "image_medium", "partner_id" }; HashMap<String, Object> User =
+	 * oerp_connection.read("res.users", Long.parseLong(User_tpl[0] + ""),
+	 * fields_to_read); User.put("name", User_tpl[1] + "");
+	 * 
+	 * Long config_id = oerp_connection.search("kemas.config", new Object[] {},
+	 * 1)[0]; fields_to_read = new String[] { "mobile_background",
+	 * "mobile_background_text_color" }; HashMap<String, Object> System_Config =
+	 * oerp_connection.read("kemas.config", config_id, fields_to_read);
+	 */
 }

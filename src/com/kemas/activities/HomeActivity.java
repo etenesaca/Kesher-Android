@@ -58,7 +58,7 @@ public class HomeActivity extends ActionBarActivity {
 	View headerRefreshConnection;
 	boolean TestConnection = false;
 	boolean NavigationMenuLoaded = false;
-	
+
 	@SuppressWarnings("unused")
 	private Button btnRefresh;
 
@@ -123,11 +123,14 @@ public class HomeActivity extends ActionBarActivity {
 		}
 		if (TestConnection) {
 			OpenERPconn oerp = hupernikao.BuildOpenERPconn(config);
-			Long config_id = oerp.search("kemas.config", new Object[] {}, 1)[0];
-			String[] fields_to_read = new String[] { "mobile_background", "mobile_background_text_color" };
-			HashMap<String, Object> System_Config = oerp.read("kemas.config", config_id, fields_to_read);
-			config.setBackground(System_Config.get("mobile_background").toString());
-			config.setTextColor(System_Config.get("mobile_background_text_color").toString());
+			HashMap<String, Object> NavigationMenuInfo = oerp.getNavigationmenuInfo(Integer.parseInt(config.getCollaboratorID().toString()));
+			if (NavigationMenuInfo != null) {
+				config.setBackground(NavigationMenuInfo.get("mobile_background").toString());
+				config.setTextColor(NavigationMenuInfo.get("mobile_background_text_color").toString());
+				config.setName(NavigationMenuInfo.get("name").toString());
+				config.setPhoto(NavigationMenuInfo.get("image").toString());
+				config.setTeam(NavigationMenuInfo.get("team").toString());
+			}
 		}
 		// Primero borro la cabecera actual
 		try {
@@ -162,8 +165,9 @@ public class HomeActivity extends ActionBarActivity {
 		txtTeam.setTextColor(Color.parseColor(config.getTextColor().toString()));
 		txtTeam.setTypeface(Roboto_light_italic);
 
-		// Escribir el nombre del Colaborador
+		// Escribir el nombre y equipo del Colaborador
 		txtLogin.setText(config.getName().toString());
+		txtTeam.setText(config.getTeam().toString());
 
 		if (drawer.getAdapter() != null)
 			drawer.setAdapter(null);

@@ -28,6 +28,7 @@ public class Configuration {
 
 	// Datos del Perfil
 	private final String KEY_NAME = "name";
+	private final String KEY_TEAM = "team";
 
 	private Context mContext;
 
@@ -116,6 +117,19 @@ public class Configuration {
 	public void setName(String name) {
 		SharedPreferences.Editor editor = getSettings().edit();
 		editor.putString(KEY_NAME, name);
+		editor.commit();
+	}
+	
+	/*
+	 * NOMBRE DEL TEAM
+	 */
+	public String getTeam() {
+		return getSettings().getString(KEY_TEAM, null);
+	}
+
+	public void setTeam(String team) {
+		SharedPreferences.Editor editor = getSettings().edit();
+		editor.putString(KEY_TEAM, team);
 		editor.commit();
 	}
 
