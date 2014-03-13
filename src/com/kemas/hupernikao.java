@@ -25,13 +25,13 @@ import android.util.Log;
 
 @SuppressLint("SimpleDateFormat")
 public class hupernikao {
-	public static OpenERPconn BuildOpenERPconn(Configuration config) {
-		OpenERPconn oerp = null;
+	public static OpenERP BuildOpenERPconn(Configuration config) {
+		OpenERP oerp = null;
 		if (config.getUserID() == null) {
 			return oerp;
 		}
 		try {
-			oerp = new OpenERPconn(config.getServer(), config.getPort(), config.getDataBase(), config.getLogin(), config.getPassword(), config.getUserID());
+			oerp = new OpenERP(config.getServer(), config.getPort(), config.getDataBase(), config.getLogin(), config.getPassword(), config.getUserID());
 		} catch (MalformedURLException e) {
 			Log.v("Crando Conector a OpenERP", "No se pudo crear el conector a OpenERP");
 		}

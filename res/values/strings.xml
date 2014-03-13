@@ -25,7 +25,7 @@
     <!-- Menu Home -->
     <string name="without_connnection">Sin Conexión</string>
     <string name="reintent">Reintentar</string>
-    
+
     <!-- Menu Connection -->
     <string name="action_save">Guardar</string>
 
@@ -98,26 +98,13 @@
     <string name="lang">Idioma</string>
     <string name="email">E-mail</string>
     <string name="company">Empresa</string>
-    
-    <!-- Lista de titulos de navegacion-->    
-    <string-array name="nav_options">
-        <item>Perfil</item>
-        <item>Favoritos</item>
-        <item>Eventos</item>
-        <item>Lugares</item>
-        <item>Etiquetas</item>
-        <item>Configuración</item>
-        <item>Compartir</item>
+
+    <!-- Lista de opciones de Busqueda -->
+    <string-array name="lstOptionsAttendances">
+        <item>A tiempo</item>
+        <item>Atrazos</item>
+        <item>Inasistencias</item>
+        <item>Todo</item>
     </string-array>
-    <!-- Lista de iconos de navegacion-->
-    <array name="navigation_iconos">
-        <item>@drawable/ic_action_user</item>
-        <item>@drawable/ic_action_star</item>
-        <item>@drawable/ic_action_event</item>
-        <item>@drawable/ic_action_place</item>
-        <item>@drawable/ic_action_labels</item>
-        <item>@drawable/ic_action_settings</item>
-        <item>@drawable/ic_action_share</item>        
-    </array> 
 
 </resources>

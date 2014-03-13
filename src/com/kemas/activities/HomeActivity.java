@@ -38,9 +38,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kemas.Configuration;
-import com.kemas.OpenERPconn;
+import com.kemas.OpenERP;
 import com.kemas.R;
 import com.kemas.hupernikao;
+import com.kemas.fragments.AttendancesFragment;
 import com.kemas.fragments.CollaboratorFragment;
 import com.kemas.fragments.PointsFragment;
 import com.kemas.item.adapters.NavigationMenuItem;
@@ -68,7 +69,7 @@ public class HomeActivity extends ActionBarActivity {
 
 	private static final String[] MenuOptionsWithoutConfig = { "config", "exit" };
 	private static final String[] MenuOptionsWithoutConnnection = { "refresh", "profile", "config", "exit" };
-	private static final String[] MenuOptionsComplete = { "profile", "home", "points", "config", "exit" };
+	private static final String[] MenuOptionsComplete = { "profile", "home", "attendances", "points", "config", "exit" };
 
 	private boolean shouldGoInvisible;
 
@@ -78,7 +79,9 @@ public class HomeActivity extends ActionBarActivity {
 
 		// > Inicio
 		NavItms.add(new NavigationMenuItem("Inicio", R.drawable.ic_action_person));
-		// > Puntos
+		// > Registro de Asistencias
+		NavItms.add(new NavigationMenuItem("Asistencias", R.drawable.ic_action_person));
+		// > Historial de puntos
 		NavItms.add(new NavigationMenuItem("Puntos", R.drawable.ic_action_person));
 		// > Configuraciones
 		NavItms.add(new NavigationMenuItem("Configurar conexión", R.drawable.ic_action_person));
@@ -104,7 +107,7 @@ public class HomeActivity extends ActionBarActivity {
 		btnRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
+				TestConnection = OpenERP.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
 				onStart();
 			}
 		});
@@ -122,7 +125,7 @@ public class HomeActivity extends ActionBarActivity {
 			return;
 		}
 		if (TestConnection) {
-			OpenERPconn oerp = hupernikao.BuildOpenERPconn(config);
+			OpenERP oerp = hupernikao.BuildOpenERPconn(config);
 			HashMap<String, Object> NavigationMenuInfo = oerp.getNavigationmenuInfo(Integer.parseInt(config.getCollaboratorID().toString()));
 			if (NavigationMenuInfo != null) {
 				config.setBackground(NavigationMenuInfo.get("mobile_background").toString());
@@ -191,7 +194,7 @@ public class HomeActivity extends ActionBarActivity {
 
 		drawer.removeHeaderView(headerRefreshConnection);
 		if (hupernikao.TestNetwork(Context)) {
-			TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
+			TestConnection = OpenERP.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
 			if (TestConnection) {
 				BuildNavigationHeader();
 				BuildMenuOptionsComplete();
@@ -267,6 +270,10 @@ public class HomeActivity extends ActionBarActivity {
 						NavigationMenuLoaded = false;
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
+					} else if (MenuOptionsComplete[arg2] == "attendances") {
+						fragment = new AttendancesFragment();
+						FragmentManager fragmentManager = getSupportFragmentManager();
+						fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 					} else if (MenuOptionsComplete[arg2] == "points") {
 						fragment = new PointsFragment();
 						FragmentManager fragmentManager = getSupportFragmentManager();
@@ -331,7 +338,7 @@ public class HomeActivity extends ActionBarActivity {
 		boolean result = super.onOptionsItemSelected(item);
 		if (toggle.onOptionsItemSelected(item)) {
 		} else if (item.getItemId() == R.id.mnHomeRefresh) {
-			TestConnection = OpenERPconn.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
+			TestConnection = OpenERP.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
 			onStart();
 		}
 		return result;

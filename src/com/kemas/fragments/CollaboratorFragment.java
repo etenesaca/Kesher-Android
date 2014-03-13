@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 import com.kemas.Configuration;
 import com.kemas.ListViewDinamicSize;
-import com.kemas.OpenERPconn;
+import com.kemas.OpenERP;
 import com.kemas.R;
 import com.kemas.hupernikao;
 import com.kemas.item.adapters.AreasItem;
@@ -186,9 +186,9 @@ public class CollaboratorFragment extends Fragment {
 			int Port = Integer.parseInt(config.getPort().toString());
 			String Server = config.getServer().toString();
 
-			boolean TestConnection = OpenERPconn.TestConnection(Server, Port);
+			boolean TestConnection = OpenERP.TestConnection(Server, Port);
 			if (TestConnection) {
-				OpenERPconn oerp = hupernikao.BuildOpenERPconn(config);
+				OpenERP oerp = hupernikao.BuildOpenERPconn(config);
 				Collaborator = oerp.getCollaborator(Integer.parseInt(config.getCollaboratorID().toString()));
 			}
 			return null;

@@ -23,7 +23,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.kemas.Configuration;
-import com.kemas.OpenERPconn;
+import com.kemas.OpenERP;
 import com.kemas.R;
 import com.kemas.hupernikao;
 
@@ -79,10 +79,10 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 		// de base de dartos
 		if (Key_SERVER != null && Key_PORT != null && Key_DATABASE != null) {
 			int saved_port = Integer.parseInt(config.getPort());
-			boolean TestConnection = OpenERPconn.TestConnection(Key_SERVER, saved_port);
+			boolean TestConnection = OpenERP.TestConnection(Key_SERVER, saved_port);
 			ArrayAdapter<String> adaptador;
 			if (TestConnection) {
-				String[] list_db = OpenERPconn.getDatabaseList(Key_SERVER, saved_port);
+				String[] list_db = OpenERP.getDatabaseList(Key_SERVER, saved_port);
 				adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_db);
 				cmbDb.setAdapter(adaptador);
 				for (int i = 0; i < list_db.length; i++) {
@@ -98,22 +98,22 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 	}
 
 	public boolean save_collaborator_info(Configuration config, Long[] collaborator_ids) {
-		OpenERPconn oerp_connection = hupernikao.BuildOpenERPconn(config);
+		OpenERP oerp_connection = hupernikao.BuildOpenERPconn(config);
 		long collaborator_id = collaborator_ids[0];
 		return save_collaborator_info(config, collaborator_id, oerp_connection);
 	}
 
-	public boolean save_collaborator_info(Configuration config, Long[] collaborator_ids, OpenERPconn oerp_connection) {
+	public boolean save_collaborator_info(Configuration config, Long[] collaborator_ids, OpenERP oerp_connection) {
 		long collaborator_id = collaborator_ids[0];
 		return save_collaborator_info(config, collaborator_id, oerp_connection);
 	}
 
 	public boolean save_collaborator_info(Configuration config, long collaborator_id) {
-		OpenERPconn oerp_connection = hupernikao.BuildOpenERPconn(config);
+		OpenERP oerp_connection = hupernikao.BuildOpenERPconn(config);
 		return save_collaborator_info(config, collaborator_id, oerp_connection);
 	}
 
-	public boolean save_collaborator_info(Configuration config, long collaborator_id, OpenERPconn oerp_connection) {
+	public boolean save_collaborator_info(Configuration config, long collaborator_id, OpenERP oerp_connection) {
 		HashMap<String, Object> NavigationMenuInfo = oerp_connection.getNavigationmenuInfo(collaborator_id);
 		if (NavigationMenuInfo != null) {
 			// Guardar los datos
@@ -125,13 +125,14 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 			config.setUserID(oerp_connection.getUserId().toString());
 			config.setCollaboratorID(collaborator_id + "");
 
-			//Menu
+			// Menu
 			config.setBackground(NavigationMenuInfo.get("mobile_background").toString());
 			config.setTextColor(NavigationMenuInfo.get("mobile_background_text_color").toString());
 
 			config.setName(NavigationMenuInfo.get("name").toString());
 			config.setPhoto(NavigationMenuInfo.get("image").toString());
-			config.setTeam(NavigationMenuInfo.get("team").toString());}
+			config.setTeam(NavigationMenuInfo.get("team").toString());
+		}
 		return true;
 	}
 
@@ -190,8 +191,8 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 
 					int Port = Integer.parseInt(txtPort.getText().toString());
 
-					if (OpenERPconn.TestConnection(Server, Port)) {
-						OpenERPconn oerp = OpenERPconn.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass);
+					if (OpenERP.TestConnection(Server, Port)) {
+						OpenERP oerp = OpenERP.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass);
 
 						if (oerp == null) {
 							dlgAlert.setMessage("Usuario o Contraseña No Válidos.");
@@ -199,7 +200,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 						} else {
 							// Verificar que la base de datos tenga
 							// instalado el modulo Control de Horario
-							if (!oerp.Module_Installed("kemas")) {
+							if (!oerp.Module_Installed()) {
 								dlgAlert.setMessage("La base de datos seleccionada no tiene instalado el Modulo de Gestión del Eventos y Control de Actividades (ke+).");
 								dlgAlert.create().show();
 							} else {
@@ -254,7 +255,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 			if (value_server != "" && value_port != "") {
 				int port = Integer.parseInt(txtPort.getText().toString());
 
-				boolean TestConnection = OpenERPconn.TestConnection(server, port);
+				boolean TestConnection = OpenERP.TestConnection(server, port);
 				ArrayAdapter<String> adaptador;
 				if (TestConnection) {
 					String value_database = "";
@@ -262,7 +263,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 						value_database = cmbDb.getSelectedItem().toString();
 					} catch (Exception e) {
 					}
-					String[] list_db = OpenERPconn.getDatabaseList(server, port);
+					String[] list_db = OpenERP.getDatabaseList(server, port);
 					adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_db);
 					cmbDb.setAdapter(adaptador);
 					if (value_database != "") {
