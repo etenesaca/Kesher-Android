@@ -83,7 +83,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 			ArrayAdapter<String> adaptador;
 			if (TestConnection) {
 				String[] list_db = OpenERP.getDatabaseList(Key_SERVER, saved_port);
-				adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_db);
+				adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list_db);
 				cmbDb.setAdapter(adaptador);
 				for (int i = 0; i < list_db.length; i++) {
 					if (list_db[i].equals(Key_DATABASE)) {
@@ -92,13 +92,13 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 				}
 			} else {
 				String[] list_db = {};
-				adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_db);
+				adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list_db);
 			}
 		}
 	}
 
 	public boolean save_collaborator_info(Configuration config, Long[] collaborator_ids) {
-		OpenERP oerp_connection = hupernikao.BuildOpenERPconn(config);
+		OpenERP oerp_connection = hupernikao.BuildOpenERPConnection(config);
 		long collaborator_id = collaborator_ids[0];
 		return save_collaborator_info(config, collaborator_id, oerp_connection);
 	}
@@ -109,7 +109,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 	}
 
 	public boolean save_collaborator_info(Configuration config, long collaborator_id) {
-		OpenERP oerp_connection = hupernikao.BuildOpenERPconn(config);
+		OpenERP oerp_connection = hupernikao.BuildOpenERPConnection(config);
 		return save_collaborator_info(config, collaborator_id, oerp_connection);
 	}
 
@@ -264,7 +264,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 					} catch (Exception e) {
 					}
 					String[] list_db = OpenERP.getDatabaseList(server, port);
-					adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_db);
+					adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list_db);
 					cmbDb.setAdapter(adaptador);
 					if (value_database != "") {
 						for (int i = 0; i < list_db.length; i++) {
@@ -277,7 +277,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 					Toast msg = Toast.makeText(this, "No se pudo conectar al servidor, Verifique los parametros de Conexión.", Toast.LENGTH_SHORT);
 					msg.show();
 					String[] list_db = {};
-					adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_db);
+					adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list_db);
 					cmbDb.setAdapter(adaptador);
 				}
 			}

@@ -188,7 +188,7 @@ public class CollaboratorFragment extends Fragment {
 
 			boolean TestConnection = OpenERP.TestConnection(Server, Port);
 			if (TestConnection) {
-				OpenERP oerp = hupernikao.BuildOpenERPconn(config);
+				OpenERP oerp = hupernikao.BuildOpenERPConnection(config);
 				Collaborator = oerp.getCollaborator(Integer.parseInt(config.getCollaboratorID().toString()));
 			}
 			return null;

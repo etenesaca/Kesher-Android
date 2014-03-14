@@ -23,7 +23,7 @@ public class PointsFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_points, container, false);
+		View rootView = inflater.inflate(R.layout.activity_points, container, false);
 		txtInit = (TextView) rootView.findViewById(R.id.txtInit);
 		txtInit.setText("Pio Pio");
 		return rootView;

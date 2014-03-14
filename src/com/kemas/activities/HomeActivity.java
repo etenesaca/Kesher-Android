@@ -125,7 +125,7 @@ public class HomeActivity extends ActionBarActivity {
 			return;
 		}
 		if (TestConnection) {
-			OpenERP oerp = hupernikao.BuildOpenERPconn(config);
+			OpenERP oerp = hupernikao.BuildOpenERPConnection(config);
 			HashMap<String, Object> NavigationMenuInfo = oerp.getNavigationmenuInfo(Integer.parseInt(config.getCollaboratorID().toString()));
 			if (NavigationMenuInfo != null) {
 				config.setBackground(NavigationMenuInfo.get("mobile_background").toString());

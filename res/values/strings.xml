@@ -101,7 +101,7 @@
 
     <!-- Lista de opciones de Busqueda -->
     <string-array name="lstOptionsAttendances">
-        <item>A tiempo</item>
+        <item name="android:actionMenuTextColor">@color/White</item>
         <item>Atrazos</item>
         <item>Inasistencias</item>
         <item>Todo</item>

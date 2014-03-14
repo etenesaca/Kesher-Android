@@ -25,7 +25,11 @@ import android.util.Log;
 
 @SuppressLint("SimpleDateFormat")
 public class hupernikao {
-	public static OpenERP BuildOpenERPconn(Configuration config) {
+	/**
+	 * Este método devuelve una conexión a OpenERP en el caso de que ya se
+	 * tengan todas las credenciales necesarias
+	 **/
+	public static OpenERP BuildOpenERPConnection(Configuration config) {
 		OpenERP oerp = null;
 		if (config.getUserID() == null) {
 			return oerp;
@@ -38,6 +42,7 @@ public class hupernikao {
 		return oerp;
 	}
 
+	/** Este método Verifica si hay conexión a internet **/
 	public static boolean TestNetwork(Context Context) {
 		boolean result = false;
 		ConnectivityManager connec = (ConnectivityManager) Context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
@@ -117,6 +122,10 @@ public class hupernikao {
 		return range_dates;
 	}
 
+	/**
+	 * Este método devuelve la hora en ton formato de texto para presentar en
+	 * pantalla: 20:00
+	 **/
 	public static String ConvertToHourFormat(float hour) {
 		return ConvertToHourFormat(hour, false);
 	}
@@ -142,6 +151,9 @@ public class hupernikao {
 		return result;
 	}
 
+	/**
+	 * Metodo para completar una cadena con alguna caracter
+	 **/
 	public static String CompletarCadena(String cadena) {
 		return CompletarCadena(cadena, 2);
 	}
@@ -165,28 +177,29 @@ public class hupernikao {
 		return cadena;
 	}
 
+	/** Metodo para poner un marco Ligeramente redondeado a una imagen **/
 	public static Bitmap getRoundedCornerBitmapSimple(Bitmap bitmap) {
-	    Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-	        bitmap.getHeight(), Config.ARGB_8888);
-	    Canvas canvas = new Canvas(output);
-	 
-	    final int color = 0xff424242;
-	    final Paint paint = new Paint();
-	    final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-	    final RectF rectF = new RectF(rect);
-	    final float roundPx = 12;
-	 
-	    paint.setAntiAlias(true);
-	    canvas.drawARGB(0, 0, 0, 0);
-	    paint.setColor(color);
-	    canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-	 
-	    paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-	    canvas.drawBitmap(bitmap, rect, rect, paint);
-	 
-	    return output;
-	  }
-	
+		Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
+		Canvas canvas = new Canvas(output);
+
+		final int color = 0xff424242;
+		final Paint paint = new Paint();
+		final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+		final RectF rectF = new RectF(rect);
+		final float roundPx = 12;
+
+		paint.setAntiAlias(true);
+		canvas.drawARGB(0, 0, 0, 0);
+		paint.setColor(color);
+		canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+
+		paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+		canvas.drawBitmap(bitmap, rect, rect, paint);
+
+		return output;
+	}
+
+	/** Metodo para poner un marco Totalmente redondeado a una imagen **/
 	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, boolean square) {
 		int width = 0;
 		int height = 0;
