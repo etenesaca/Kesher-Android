@@ -39,19 +39,10 @@ public class DataSourceAttendance {
 	private OpenERP oerp_connection;
 	// Singleton pattern
 	private static DataSourceAttendance datasource = null;
-
 	private List<Long> data = null;
+	private static int SIZE = 0;
 
-	private static final int SIZE = 74;
-
-	public static DataSourceAttendance getInstance(Context CTX) {
-		if (datasource == null) {
-			datasource = new DataSourceAttendance(CTX);
-		}
-		return datasource;
-	}
-
-	private DataSourceAttendance(Context CTX) {
+	public DataSourceAttendance(Context CTX) {
 		// Lineas para habilitar el acceso a la red
 		// y poder conectarse al
 		// servidor de OpenERP en el Hilo Principal
@@ -60,6 +51,7 @@ public class DataSourceAttendance {
 		config = new Configuration(CTX);
 		oerp_connection = hupernikao.BuildOpenERPConnection(config);
 		Long[] attendance_ids = oerp_connection.search("kemas.attendance", new Object[] {});
+		SIZE = attendance_ids.length;
 		data = new ArrayList<Long>(SIZE);
 		for (Long id : attendance_ids) {
 			data.add(id);

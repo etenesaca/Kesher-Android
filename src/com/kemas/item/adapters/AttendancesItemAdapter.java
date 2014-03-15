@@ -35,11 +35,11 @@ import com.kemas.R;
  * @author danielme.com
  * 
  */
-public class AttendancesItemAdapter extends ArrayAdapter<String> {
+public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 	private LayoutInflater layoutInflater;
 
-	public AttendancesItemAdapter(Context context, List<HashMap<String, Object>> list) {
-		super(context, 0);
+	public AttendancesItemAdapter(Context context, List<HashMap<String, Object>> objects) {
+		super(context, 0, objects);
 		layoutInflater = LayoutInflater.from(context);
 	}
 
@@ -51,16 +51,12 @@ public class AttendancesItemAdapter extends ArrayAdapter<String> {
 			holder = new AttendancesItem();
 
 			convertView = layoutInflater.inflate(R.layout.list_item_attendance, null);
-			holder.setTextView1((TextView) convertView.findViewById(R.id.textView1));
-			holder.setTextView2((TextView) convertView.findViewById(R.id.textView2));
+			TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+			tvTitle.setText(getItem(position).get("code").toString());
 			convertView.setTag(holder);
 		} else {
 			holder = (AttendancesItem) convertView.getTag();
 		}
-
-		holder.getTextView1().setText(getItem(position));
-		holder.getTextView2().setText(getItem(position));
 		return convertView;
 	}
-
 }

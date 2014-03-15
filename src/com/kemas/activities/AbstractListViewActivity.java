@@ -22,7 +22,6 @@ import java.util.List;
 
 import android.app.ListActivity;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,7 +34,7 @@ import com.kemas.item.adapters.AttendancesItemAdapter;
 public abstract class AbstractListViewActivity extends ListActivity {
 
 	protected DataSourceAttendance datasource;
-	protected static final int PAGESIZE = 10;
+	protected static final int PAGESIZE = 15;
 	protected TextView textViewDisplaying;
 	protected View footerView;
 	protected boolean loading = false;
@@ -45,12 +44,6 @@ public abstract class AbstractListViewActivity extends ListActivity {
 
 		@Override
 		protected String doInBackground(String... arg0) {
-			// para que de tiempo a ver el footer ;)
-			try {
-				Thread.sleep(1500);
-			} catch (InterruptedException e) {
-				Log.e("AbstractListActivity", e.getMessage());
-			}
 			newData = datasource.getData(getListAdapter().getCount(), PAGESIZE);
 			return null;
 		}
@@ -59,8 +52,7 @@ public abstract class AbstractListViewActivity extends ListActivity {
 		protected void onPostExecute(String result) {
 			AttendancesItemAdapter customArrayAdapter = ((AttendancesItemAdapter) getListAdapter());
 			for (HashMap<String, Object> value : newData) {
-				customArrayAdapter.add(value.get("code").toString());
-				//customArrayAdapter.add(value);
+				customArrayAdapter.add(value);
 			}
 			customArrayAdapter.notifyDataSetChanged();
 

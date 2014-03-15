@@ -34,7 +34,7 @@ public class EndlessListViewActivity extends AbstractListViewActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.endless);
-		datasource = DataSourceAttendance.getInstance(this);
+		datasource = new DataSourceAttendance(this);
 		footerView = ((LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_list, null, false);
 		getListView().addFooterView(footerView, null, false);
 		setListAdapter(new AttendancesItemAdapter(this, datasource.getData(0, PAGESIZE)));
