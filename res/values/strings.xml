@@ -8,8 +8,6 @@
     <string name="last_registers">Entrada: 00:00:00</string>
     <string name="guion"> - </string>
     <string name="options">Opciones</string>
-    
-    
     <string name="display">Mostrando %1$s de %2$s</string>
     <string name="selected"> seleccionada</string>
     <string name="endless">Endless ListView</string>
@@ -24,8 +22,7 @@
     <string name="last">last</string>
     <string name="image">image</string>
     <string name="test">test</string>
-    
-    
+
     <!-- Botones -->
     <string name="refresh">Volver a Cargar</string>
     <string name="save">Guardar</string>
@@ -115,13 +112,5 @@
     <string name="lang">Idioma</string>
     <string name="email">E-mail</string>
     <string name="company">Empresa</string>
-
-    <!-- Lista de opciones de Busqueda -->
-    <string-array name="lstOptionsAttendances">
-        <item name="android:actionMenuTextColor">@color/White</item>
-        <item>Atrazos</item>
-        <item>Inasistencias</item>
-        <item>Todo</item>
-    </string-array>
 
 </resources>

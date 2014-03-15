@@ -49,14 +49,13 @@ public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>
 		AttendancesItem holder = null;
 		if (convertView == null) {
 			holder = new AttendancesItem();
-
 			convertView = layoutInflater.inflate(R.layout.list_item_attendance, null);
-			TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-			tvTitle.setText(getItem(position).get("code").toString());
 			convertView.setTag(holder);
 		} else {
 			holder = (AttendancesItem) convertView.getTag();
 		}
+		TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+		tvTitle.setText(getItem(position).get("code").toString());
 		return convertView;
 	}
 }

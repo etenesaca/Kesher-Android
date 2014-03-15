@@ -17,20 +17,28 @@
  */
 package com.kemas.activities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.ListActivity;
-import android.os.AsyncTask;
+import android.content.Context;
+import android.os.Build;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kemas.Configuration;
+import com.kemas.OpenERP;
 import com.kemas.R;
-import com.kemas.datasources.DataSourceAttendance;
-import com.kemas.item.adapters.AttendancesItemAdapter;
+import com.kemas.hupernikao;
 
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
+@SuppressLint("NewApi")
 public abstract class AbstractListViewActivity extends ListActivity {
 
 	protected DataSourceAttendance datasource;
@@ -38,48 +46,55 @@ public abstract class AbstractListViewActivity extends ListActivity {
 	protected TextView textViewDisplaying;
 	protected View footerView;
 	protected boolean loading = false;
-
-	protected class LoadNextPage extends AsyncTask<String, Void, String> {
-		private List<HashMap<String, Object>> newData = null;
-
-		@Override
-		protected String doInBackground(String... arg0) {
-			newData = datasource.getData(getListAdapter().getCount(), PAGESIZE);
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			AttendancesItemAdapter customArrayAdapter = ((AttendancesItemAdapter) getListAdapter());
-			for (HashMap<String, Object> value : newData) {
-				customArrayAdapter.add(value);
-			}
-			customArrayAdapter.notifyDataSetChanged();
-
-			getListView().removeFooterView(footerView);
-			updateDisplayingTextView();
-			loading = false;
-		}
-
-	}
-
-	protected void updateDisplayingTextView() {
-		textViewDisplaying = (TextView) findViewById(R.id.displaying);
-		String text = getString(R.string.display);
-		text = String.format(text, getListAdapter().getCount(), datasource.getSize());
-		textViewDisplaying.setText(text);
-	}
-
+	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		Toast.makeText(this, getListAdapter().getItem(position) + " " + getString(R.string.selected), Toast.LENGTH_SHORT).show();
 	}
 
-	protected boolean load(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		boolean lastItem = firstVisibleItem + visibleItemCount == totalItemCount && getListView().getChildAt(visibleItemCount - 1) != null
-				&& getListView().getChildAt(visibleItemCount - 1).getBottom() <= getListView().getHeight();
-		boolean moreRows = getListAdapter().getCount() < datasource.getSize();
-		return moreRows && lastItem && !loading;
+	public class DataSourceAttendance {
+		private Configuration config;
+		private OpenERP oerp_connection;
+		// Singleton pattern
+		private List<Long> data = null;
+		private int SIZE = 0;
+
+		public DataSourceAttendance(Context CTX) {
+			// Lineas para habilitar el acceso a la red
+			// y poder conectarse al
+			// servidor de OpenERP en el Hilo Principal
+			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+			StrictMode.setThreadPolicy(policy);
+			config = new Configuration(CTX);
+			oerp_connection = hupernikao.BuildOpenERPConnection(config);
+			Long[] attendance_ids = oerp_connection.search("kemas.attendance", new Object[] {});
+			SIZE = attendance_ids.length;
+			data = new ArrayList<Long>(SIZE);
+			for (Long id : attendance_ids) {
+				data.add(id);
+			}
+		}
+
+		public int getSize() {
+			return SIZE;
+		}
+
+		/**
+		 * Returns the elements in a <b>NEW</b> list.
+		 */
+		public List<HashMap<String, Object>> getData(int offset, int limit) {
+			List<HashMap<String, Object>> result = null;
+			String[] fields_to_read = new String[] { "code" };
+			List<Long> newList = new ArrayList<Long>(limit);
+
+			int end = offset + limit;
+			if (end > data.size()) {
+				end = data.size();
+			}
+			newList.addAll(data.subList(offset, end));
+			result = oerp_connection.read("kemas.attendance", newList, fields_to_read);
+			return result;
+		}
 
 	}
 }

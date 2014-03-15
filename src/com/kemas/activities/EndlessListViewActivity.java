@@ -18,22 +18,29 @@
 
 package com.kemas.activities;
 
+import java.util.HashMap;
+import java.util.List;
+
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.kemas.R;
-import com.kemas.datasources.DataSourceAttendance;
 import com.kemas.item.adapters.AttendancesItemAdapter;
 
 public class EndlessListViewActivity extends AbstractListViewActivity {
+	private ListView lvAttendance;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.endless);
+
 		datasource = new DataSourceAttendance(this);
 		footerView = ((LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_list, null, false);
 		getListView().addFooterView(footerView, null, false);
@@ -56,5 +63,43 @@ public class EndlessListViewActivity extends AbstractListViewActivity {
 			}
 		});
 		updateDisplayingTextView();
+	}
+
+	protected void updateDisplayingTextView() {
+		textViewDisplaying = (TextView) findViewById(R.id.displaying);
+		String text = getString(R.string.display);
+		text = String.format(text, getListAdapter().getCount(), datasource.getSize());
+		textViewDisplaying.setText(text);
+	}
+
+	protected boolean load(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		boolean lastItem = firstVisibleItem + visibleItemCount == totalItemCount && getListView().getChildAt(visibleItemCount - 1) != null
+				&& getListView().getChildAt(visibleItemCount - 1).getBottom() <= getListView().getHeight();
+		boolean moreRows = getListAdapter().getCount() < datasource.getSize();
+		return moreRows && lastItem && !loading;
+
+	}
+
+	protected class LoadNextPage extends AsyncTask<String, Void, String> {
+		private List<HashMap<String, Object>> newData = null;
+
+		@Override
+		protected String doInBackground(String... arg0) {
+			newData = datasource.getData(getListAdapter().getCount(), PAGESIZE);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			AttendancesItemAdapter customArrayAdapter = ((AttendancesItemAdapter) getListAdapter());
+			for (HashMap<String, Object> value : newData) {
+				customArrayAdapter.add(value);
+			}
+			customArrayAdapter.notifyDataSetChanged();
+
+			getListView().removeFooterView(footerView);
+			updateDisplayingTextView();
+			loading = false;
+		}
 	}
 }
