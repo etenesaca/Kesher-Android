@@ -1,6 +1,5 @@
 package com.kemas;
 
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -245,6 +244,17 @@ public class OpenERPConnection {
 	 *            Specifying an empty fields array as: new String[0] will return
 	 *            all the fields
 	 * */
+	public List<HashMap<String, Object>> read(String model, List<Long> ids, String[] fields) {
+		Object[] object_ids = (Object[]) ids.toArray();
+		Long[] res_ids = new Long[object_ids.length];
+		for (int i = 0; i < object_ids.length; i++) {
+			if (object_ids[i] instanceof Long) {
+				res_ids[i] = (Long) object_ids[i];
+			}
+		}
+		return read(model, res_ids, fields);
+	}
+
 	public HashMap<String, Object> read(String model, long id, String[] fields) {
 		HashMap<String, Object> Record = null;
 		try {

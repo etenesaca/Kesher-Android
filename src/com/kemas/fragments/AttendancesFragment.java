@@ -16,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.kemas.R;
-import com.kemas.activities.ConnectionActivity;
 
 /*  Fragment para ver las asistencias */
 @SuppressLint("NewApi")
@@ -41,7 +40,7 @@ public class AttendancesFragment extends Fragment {
 		((ActionBarActivity) getActivity()).getSupportActionBar().setListNavigationCallbacks(ActionBarListAdapter, new OnNavigationListener() {
 			@Override
 			public boolean onNavigationItemSelected(int arg0, long arg1) {
-				Toast.makeText(getActivity(), "Seleccionada opcion: " + OptionsListNavigation[arg0] , Toast.LENGTH_SHORT).show();
+				Toast.makeText(getActivity(), "Seleccionada opcion: " + OptionsListNavigation[arg0], Toast.LENGTH_SHORT).show();
 				return false;
 			}
 		});
