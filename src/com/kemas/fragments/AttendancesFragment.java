@@ -6,6 +6,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -45,6 +46,7 @@ public class AttendancesFragment extends Fragment {
 	private ListView lvAttendance;
 
 	String[] OptionsListNavigation = new String[] { "Todos", "A Tiempo", "Atrazos", "Inasistencias" };
+	String[] AttendanceTypes = new String[] { "all", "just_time", "late", "absence" };
 
 	public AttendancesFragment() {
 	}
@@ -63,7 +65,9 @@ public class AttendancesFragment extends Fragment {
 		((ActionBarActivity) getActivity()).getSupportActionBar().setListNavigationCallbacks(ActionBarListAdapter, new OnNavigationListener() {
 			@Override
 			public boolean onNavigationItemSelected(int arg0, long arg1) {
-				Toast.makeText(getActivity(), "Seleccionada opcion: " + OptionsListNavigation[arg0], Toast.LENGTH_SHORT).show();
+				// Toast.makeText(getActivity(), "Seleccionada opcion: " +
+				// OptionsListNavigation[arg0], Toast.LENGTH_SHORT).show();
+				new SearchRegisters(AttendanceTypes[arg0]).execute();
 				return false;
 			}
 		});
@@ -71,13 +75,7 @@ public class AttendancesFragment extends Fragment {
 		lvAttendance = (ListView) rootView.findViewById(R.id.lvAttendanceList);
 		textViewDisplaying = (TextView) rootView.findViewById(R.id.displaying);
 
-		DataSource = new DataSourceAttendance(getActivity());
 		footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_list, null, false);
-		lvAttendance.addFooterView(footerView, null, false);
-		CurrentAdapter = new AttendancesItemAdapter(getActivity(), DataSource.getData(0, PAGESIZE));
-		lvAttendance.setAdapter(CurrentAdapter);
-		lvAttendance.removeFooterView(footerView);
-
 		lvAttendance.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScrollStateChanged(AbsListView arg0, int arg1) {
@@ -100,7 +98,6 @@ public class AttendancesFragment extends Fragment {
 				Toast.makeText(getActivity(), lvAttendance.getAdapter().getItem(position) + " " + getString(R.string.selected), Toast.LENGTH_SHORT).show();
 			}
 		});
-		updateDisplayingTextView();
 		return rootView;
 	}
 
@@ -111,10 +108,53 @@ public class AttendancesFragment extends Fragment {
 	}
 
 	protected boolean load(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		int aux = firstVisibleItem + visibleItemCount;
-		boolean lastItem = aux == totalItemCount && lvAttendance.getChildAt(visibleItemCount - 1) != null && lvAttendance.getChildAt(visibleItemCount - 1).getBottom() <= lvAttendance.getHeight();
-		boolean moreRows = lvAttendance.getAdapter().getCount() < DataSource.getSize();
-		return moreRows && lastItem && !loading;
+		boolean result = false;
+		if (lvAttendance.getAdapter() != null) {
+			int aux = firstVisibleItem + visibleItemCount;
+			boolean lastItem = aux == totalItemCount && lvAttendance.getChildAt(visibleItemCount - 1) != null && lvAttendance.getChildAt(visibleItemCount - 1).getBottom() <= lvAttendance.getHeight();
+			boolean moreRows = lvAttendance.getAdapter().getCount() < DataSource.getSize();
+			result = moreRows && lastItem && !loading;
+		}
+		return result;
+	}
+
+	protected class SearchRegisters extends AsyncTask<String, Void, String> {
+		ProgressDialog pDialog;
+		String AttendancesType;
+
+		public SearchRegisters(String AttendancesType) {
+			this.AttendancesType = AttendancesType;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+			pDialog = new ProgressDialog(getActivity());
+			pDialog.setMessage("Cargando Datos");
+			pDialog.setCancelable(true);
+			pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDialog.show();
+			lvAttendance.addFooterView(footerView, null, false);
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			DataSource = new DataSourceAttendance(getActivity(), this.AttendancesType);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+
+			CurrentAdapter = new AttendancesItemAdapter(getActivity(), DataSource.getData(0, PAGESIZE));
+			lvAttendance.setAdapter(CurrentAdapter);
+			lvAttendance.removeFooterView(footerView);
+			updateDisplayingTextView();
+			pDialog.dismiss();
+		}
+
 	}
 
 	protected class LoadNextPage extends AsyncTask<String, Void, String> {

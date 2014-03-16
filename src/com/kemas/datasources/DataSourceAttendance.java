@@ -34,10 +34,15 @@ public class DataSourceAttendance {
 	private List<Long> data = null;
 	private int SIZE = 0;
 
-	public DataSourceAttendance(Context CTX) {
+	public DataSourceAttendance(Context CTX, String AttendancesType) {
 		config = new Configuration(CTX);
 		oerp_connection = hupernikao.BuildOpenERPConnection(config);
-		Long[] attendance_ids = oerp_connection.search("kemas.attendance", new Object[] {});
+		Object[] args;
+		args = new Object[] { new Object[] { "collaborator_id", "=", Integer.parseInt(config.getCollaboratorID()) } };
+		if (AttendancesType != "all") {
+			args = new Object[] { new Object[] { "collaborator_id", "=", Integer.parseInt(config.getCollaboratorID()) }, new Object[] { "type", "=", AttendancesType } };
+		}
+		Long[] attendance_ids = oerp_connection.search("kemas.attendance", args);
 		SIZE = attendance_ids.length;
 		data = new ArrayList<Long>(SIZE);
 		for (Long id : attendance_ids) {
