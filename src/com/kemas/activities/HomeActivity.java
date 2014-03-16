@@ -41,6 +41,7 @@ import com.kemas.Configuration;
 import com.kemas.OpenERP;
 import com.kemas.R;
 import com.kemas.hupernikao;
+import com.kemas.fragments.AttendancesFragment;
 import com.kemas.fragments.CollaboratorFragment;
 import com.kemas.fragments.PointsFragment;
 import com.kemas.item.adapters.NavigationMenuItem;
@@ -198,7 +199,7 @@ public class HomeActivity extends ActionBarActivity {
 				BuildNavigationHeader();
 				BuildMenuOptionsComplete();
 			} else {
-				Toast.makeText(this, "No se ha podido establecer conexión con http://" + config.getServer() + ":" + config.getPort() , Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "No se ha podido establecer conexión con http://" + config.getServer() + ":" + config.getPort(), Toast.LENGTH_SHORT).show();
 				BuildNavigationHeaderRefreshConnection();
 				BuildNavigationHeader();
 				BuildMenuOptionsWithoutConfig();
@@ -270,14 +271,13 @@ public class HomeActivity extends ActionBarActivity {
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
 					} else if (MenuOptionsComplete[arg2] == "attendances") {
-						// fragment = new AttendancesFragment();
-						// FragmentManager fragmentManager =
-						// getSupportFragmentManager();
-						// fragmentManager.beginTransaction().replace(R.id.content_frame,
-						// fragment).commit();
+						fragment = new AttendancesFragment();
+						FragmentManager fragmentManager = getSupportFragmentManager();
+						fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-						Intent config_act = new Intent(HomeActivity.this, EndlessListViewActivity.class);
-						startActivity(config_act);
+						// Intent config_act = new Intent(HomeActivity.this,
+						// EndlessListViewActivity.class);
+						// startActivity(config_act);
 					} else if (MenuOptionsComplete[arg2] == "points") {
 						fragment = new PointsFragment();
 						FragmentManager fragmentManager = getSupportFragmentManager();

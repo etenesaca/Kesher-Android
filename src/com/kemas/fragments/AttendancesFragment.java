@@ -1,8 +1,13 @@
 package com.kemas.fragments;
 
+import java.util.HashMap;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -12,15 +17,33 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kemas.R;
+import com.kemas.datasources.DataSourceAttendance;
+import com.kemas.item.adapters.AttendancesItemAdapter;
 
 /*  Fragment para ver las asistencias */
 @SuppressLint("NewApi")
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class AttendancesFragment extends Fragment {
+	private DataSourceAttendance DataSource;
+	private static final int PAGESIZE = 15;
+	private View footerView;
+	private boolean loading = false;
+	private ListAdapter CurrentAdapter;
+
+	private TextView textViewDisplaying;
+	private ListView lvAttendance;
+
 	String[] OptionsListNavigation = new String[] { "Todos", "A Tiempo", "Atrazos", "Inasistencias" };
 
 	public AttendancesFragment() {
@@ -44,7 +67,77 @@ public class AttendancesFragment extends Fragment {
 				return false;
 			}
 		});
+
+		lvAttendance = (ListView) rootView.findViewById(R.id.lvAttendanceList);
+		textViewDisplaying = (TextView) rootView.findViewById(R.id.displaying);
+
+		DataSource = new DataSourceAttendance(getActivity());
+		footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_list, null, false);
+		lvAttendance.addFooterView(footerView, null, false);
+		CurrentAdapter = new AttendancesItemAdapter(getActivity(), DataSource.getData(0, PAGESIZE));
+		lvAttendance.setAdapter(CurrentAdapter);
+		lvAttendance.removeFooterView(footerView);
+
+		lvAttendance.setOnScrollListener(new OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(AbsListView arg0, int arg1) {
+				// nothing here
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				if (load(firstVisibleItem, visibleItemCount, totalItemCount)) {
+					loading = true;
+					lvAttendance.addFooterView(footerView, null, false);
+					(new LoadNextPage()).execute("");
+				}
+			}
+		});
+
+		lvAttendance.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
+				Toast.makeText(getActivity(), lvAttendance.getAdapter().getItem(position) + " " + getString(R.string.selected), Toast.LENGTH_SHORT).show();
+			}
+		});
+		updateDisplayingTextView();
 		return rootView;
+	}
+
+	protected void updateDisplayingTextView() {
+		String text = getString(R.string.display);
+		text = String.format(text, lvAttendance.getCount(), DataSource.getSize());
+		textViewDisplaying.setText(text);
+	}
+
+	protected boolean load(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		int aux = firstVisibleItem + visibleItemCount;
+		boolean lastItem = aux == totalItemCount && lvAttendance.getChildAt(visibleItemCount - 1) != null && lvAttendance.getChildAt(visibleItemCount - 1).getBottom() <= lvAttendance.getHeight();
+		boolean moreRows = lvAttendance.getAdapter().getCount() < DataSource.getSize();
+		return moreRows && lastItem && !loading;
+	}
+
+	protected class LoadNextPage extends AsyncTask<String, Void, String> {
+		private List<HashMap<String, Object>> newData = null;
+
+		@Override
+		protected String doInBackground(String... arg0) {
+			newData = DataSource.getData(lvAttendance.getAdapter().getCount() - 1, PAGESIZE);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			AttendancesItemAdapter adp = (AttendancesItemAdapter) CurrentAdapter;
+			for (HashMap<String, Object> value : newData) {
+				adp.add(value);
+			}
+			adp.notifyDataSetChanged();
+			CurrentAdapter = (ListAdapter) adp;
+			lvAttendance.removeFooterView(footerView);
+			updateDisplayingTextView();
+			loading = false;
+		}
 	}
 
 }
