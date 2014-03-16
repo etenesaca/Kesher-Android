@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -137,12 +136,12 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 	}
 
 	public void save() {
+		AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ConnectionActivity.this);
 		if (!hupernikao.TestNetwork(Context)) {
-			AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ConnectionActivity.this);
 			dlgAlert.setTitle("Error").setIcon(android.R.drawable.ic_delete);
 			dlgAlert.setPositiveButton("OK", null);
 			dlgAlert.setCancelable(true);
-			dlgAlert.setMessage("No se puede Establecer conexión. Revise su conexión a Internet");
+			dlgAlert.setMessage("No se puede Establecer conexión. Revise su conexión a Internet y vuelva a intentarlo");
 			dlgAlert.create().show();
 			return;
 		}
@@ -158,7 +157,6 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 		final String user = txtUsername.getText().toString();
 		final String pass = txtPassword.getText().toString();
 
-		AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
 		dlgAlert.setTitle("Advertencia").setIcon(android.R.drawable.stat_sys_warning);
 		dlgAlert.setPositiveButton("OK", null);
 		dlgAlert.setCancelable(true);
@@ -181,56 +179,44 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 			dlgAlert.setMessage("Ingrese el Password.");
 			dlgAlert.create().show();
 		} else {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Guardar").setMessage("¿Guardar los datos Ahora?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton("Si", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ConnectionActivity.this);
-					dlgAlert.setTitle("Error").setIcon(android.R.drawable.ic_delete);
-					dlgAlert.setPositiveButton("OK", null);
-					dlgAlert.setCancelable(true);
+			dlgAlert.setTitle("Error").setIcon(android.R.drawable.ic_delete);
+			dlgAlert.setPositiveButton("OK", null);
+			dlgAlert.setCancelable(true);
 
-					int Port = Integer.parseInt(txtPort.getText().toString());
+			int Port = Integer.parseInt(txtPort.getText().toString());
+			if (!OpenERP.TestConnection(Server, Port)) {
+				dlgAlert.setMessage("No se pudo conectar al servidor, Verifique los parametros de Conexión.");
+				dlgAlert.create().show();
+				return;
+			}
 
-					if (OpenERP.TestConnection(Server, Port)) {
-						OpenERP oerp = OpenERP.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass);
+			OpenERP oerp = OpenERP.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass);
+			if (oerp == null) {
+				dlgAlert.setMessage("Usuario o Contraseña No Válidos.");
+				dlgAlert.create().show();
+				return;
+			}
 
-						if (oerp == null) {
-							dlgAlert.setMessage("Usuario o Contraseña No Válidos.");
-							dlgAlert.create().show();
-						} else {
-							// Verificar que la base de datos tenga
-							// instalado el modulo Control de Horario
-							if (!oerp.Module_Installed()) {
-								dlgAlert.setMessage("La base de datos seleccionada no tiene instalado el Modulo de Gestión del Eventos y Control de Actividades (ke+).");
-								dlgAlert.create().show();
-							} else {
-								// Verificar que el Usuario sea un empleado
-								Long[] collaborator_ids = oerp.search("kemas.collaborator", new Object[] { new Object[] { "user_id", "=", oerp.getUserId() } }, 1);
-								if (collaborator_ids.length < 1) {
-									dlgAlert.setMessage("La credenciales ingresadas no pertenecen a un Colaborador.");
-									dlgAlert.create().show();
-								} else {
-									// Guardar los datos del empleado
-									if (save_collaborator_info(config, collaborator_ids, oerp)) {
-										Toast.makeText(ConnectionActivity.this, "Lo Datos Se Guardaron Correctamente.", Toast.LENGTH_SHORT).show();
-										finish();
-									}
-								}
-							}
-						}
-					} else {
-						dlgAlert.setMessage("No se pudo conectar al servidor, Verifique los parametros de Conexión.");
-						dlgAlert.create().show();
-					}
+			// Verificar que la base de datos tenga
+			// instalado el modulo Control de Horario
+			if (!oerp.Module_Installed()) {
+				dlgAlert.setMessage("La base de datos seleccionada no tiene instalado el Modulo de Gestión del Eventos y Control de Actividades (ke+).");
+				dlgAlert.create().show();
+				return;
+			}
+			
+			// Verificar que el Usuario sea un empleado
+			Long[] collaborator_ids = oerp.search("kemas.collaborator", new Object[] { new Object[] { "user_id", "=", oerp.getUserId() } }, 1);
+			if (collaborator_ids.length < 1) {
+				dlgAlert.setMessage("La credenciales ingresadas no pertenecen a un Colaborador.");
+				dlgAlert.create().show();
+			} else {
+				// Guardar los datos del empleado
+				if (save_collaborator_info(config, collaborator_ids, oerp)) {
+					Toast.makeText(ConnectionActivity.this, "Lo Datos Se Guardaron Correctamente.", Toast.LENGTH_SHORT).show();
+					finish();
 				}
-			});
-			builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
-			AlertDialog alert = builder.create();
-			alert.show();
+			}
 		}
 	}
 
