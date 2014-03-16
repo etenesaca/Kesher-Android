@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2012 Daniel Medina <http://danielme.com>
- * 
- * This file is part of "Android Paginated ListView Demo".
- * 
- * "Android Paginated ListView Demo" is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, version 3.
- *
- * "Android Paginated ListView Demo" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License version 3
- * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html/>
- */
-
 package com.kemas.datasources;
 
 import java.util.ArrayList;
@@ -37,10 +19,10 @@ public class DataSourceAttendance {
 	public DataSourceAttendance(Context CTX, String AttendancesType) {
 		config = new Configuration(CTX);
 		oerp_connection = hupernikao.BuildOpenERPConnection(config);
-		Object[] args;
-		args = new Object[] { new Object[] { "collaborator_id", "=", Integer.parseInt(config.getCollaboratorID()) } };
+		List<Object> args = new ArrayList<Object>();
+		args.add(new Object[] { "collaborator_id", "=", Integer.parseInt(config.getCollaboratorID()) });
 		if (AttendancesType != "all") {
-			args = new Object[] { new Object[] { "collaborator_id", "=", Integer.parseInt(config.getCollaboratorID()) }, new Object[] { "type", "=", AttendancesType } };
+			args.add(new Object[] { "type", "=", AttendancesType });
 		}
 		Long[] attendance_ids = oerp_connection.search("kemas.attendance", args);
 		SIZE = attendance_ids.length;

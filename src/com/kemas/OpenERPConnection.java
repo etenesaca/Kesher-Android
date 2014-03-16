@@ -166,6 +166,29 @@ public class OpenERPConnection {
 		return newObjectId;
 	}
 
+	//Cuando se mande las condiciones como una Arreglo
+	public Long[] search(String model, List<Object> conditions) {
+		return search(model, false, 0, 0, null, false, conditions);
+	}
+
+	public Long[] search(String model, List<Object> conditions, Integer limit) {
+		return search(model, false, 0, limit, null, false, conditions);
+	}
+
+	public Long[] search(String model, boolean count, List<Object> conditions) {
+		return search(model, count, 0, 0, null, false, conditions);
+	}
+
+	public Long[] search(String model, boolean count, Integer limit, String order, boolean reverseOrder, List<Object> conditions) {
+		return search(model, count, 0, limit, order, reverseOrder, conditions);
+	}
+
+	public Long[] search(String model, boolean count, Integer offset, Integer limit, String order, boolean reverseOrder, List<Object> conditions) {
+		Object[] ConditionsArray = (Object[]) conditions.toArray();
+		return search(model, count, offset, limit, order, reverseOrder, ConditionsArray);
+	}
+
+	//Cuando se mande las condiciones como una Arreglo
 	public Long[] search(String model, Object[] conditions) {
 		return search(model, false, 0, 0, null, false, conditions);
 	}
