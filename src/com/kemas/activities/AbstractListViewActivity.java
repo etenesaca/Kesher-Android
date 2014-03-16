@@ -40,61 +40,9 @@ import com.kemas.hupernikao;
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 @SuppressLint("NewApi")
 public abstract class AbstractListViewActivity extends ListActivity {
-
-	protected DataSourceAttendance datasource;
-	protected static final int PAGESIZE = 15;
-	protected TextView textViewDisplaying;
-	protected View footerView;
-	protected boolean loading = false;
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		Toast.makeText(this, getListAdapter().getItem(position) + " " + getString(R.string.selected), Toast.LENGTH_SHORT).show();
-	}
-
-	public class DataSourceAttendance {
-		private Configuration config;
-		private OpenERP oerp_connection;
-		// Singleton pattern
-		private List<Long> data = null;
-		private int SIZE = 0;
-
-		public DataSourceAttendance(Context CTX) {
-			// Lineas para habilitar el acceso a la red
-			// y poder conectarse al
-			// servidor de OpenERP en el Hilo Principal
-			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-			StrictMode.setThreadPolicy(policy);
-			config = new Configuration(CTX);
-			oerp_connection = hupernikao.BuildOpenERPConnection(config);
-			Long[] attendance_ids = oerp_connection.search("kemas.attendance", new Object[] {});
-			SIZE = attendance_ids.length;
-			data = new ArrayList<Long>(SIZE);
-			for (Long id : attendance_ids) {
-				data.add(id);
-			}
-		}
-
-		public int getSize() {
-			return SIZE;
-		}
-
-		/**
-		 * Returns the elements in a <b>NEW</b> list.
-		 */
-		public List<HashMap<String, Object>> getData(int offset, int limit) {
-			List<HashMap<String, Object>> result = null;
-			String[] fields_to_read = new String[] { "code" };
-			List<Long> newList = new ArrayList<Long>(limit);
-
-			int end = offset + limit;
-			if (end > data.size()) {
-				end = data.size();
-			}
-			newList.addAll(data.subList(offset, end));
-			result = oerp_connection.read("kemas.attendance", newList, fields_to_read);
-			return result;
-		}
-
+		
 	}
 }

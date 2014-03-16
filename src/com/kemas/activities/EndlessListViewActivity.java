@@ -18,22 +18,46 @@
 
 package com.kemas.activities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.kemas.Configuration;
+import com.kemas.OpenERP;
 import com.kemas.R;
+import com.kemas.hupernikao;
 import com.kemas.item.adapters.AttendancesItemAdapter;
 
-public class EndlessListViewActivity extends AbstractListViewActivity {
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
+@SuppressLint("NewApi")
+public class EndlessListViewActivity extends Activity {
+	private DataSourceAttendance DataSource;
+	private static final int PAGESIZE = 15;
+	private View footerView;
+	private boolean loading = false;
+	private ListAdapter CurrentAdapter;
+
+	private TextView textViewDisplaying;
 	private ListView lvAttendance;
 
 	@Override
@@ -41,13 +65,23 @@ public class EndlessListViewActivity extends AbstractListViewActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.endless);
 
-		datasource = new DataSourceAttendance(this);
-		footerView = ((LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_list, null, false);
-		getListView().addFooterView(footerView, null, false);
-		setListAdapter(new AttendancesItemAdapter(this, datasource.getData(0, PAGESIZE)));
-		getListView().removeFooterView(footerView);
+		// Lineas para habilitar el acceso a la red
+		// y poder conectarse al
+		// servidor de OpenERP en el Hilo Principal
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
 
-		getListView().setOnScrollListener(new OnScrollListener() {
+		lvAttendance = (ListView) findViewById(R.id.lvAttendanceList);
+		textViewDisplaying = (TextView) findViewById(R.id.displaying);
+
+		DataSource = new DataSourceAttendance(this);
+		footerView = ((LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_list, null, false);
+		lvAttendance.addFooterView(footerView, null, false);
+		CurrentAdapter = new AttendancesItemAdapter(this, DataSource.getData(0, PAGESIZE));
+		lvAttendance.setAdapter(CurrentAdapter);
+		lvAttendance.removeFooterView(footerView);
+
+		lvAttendance.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScrollStateChanged(AbsListView arg0, int arg1) {
 				// nothing here
@@ -55,11 +89,22 @@ public class EndlessListViewActivity extends AbstractListViewActivity {
 
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				Log.v("===============================", "===============================");
+				Log.v("firstVisibleItem", firstVisibleItem + "");
+				Log.v("visibleItemCount", visibleItemCount + "");
+				Log.v("totalItemCount", totalItemCount + "");
 				if (load(firstVisibleItem, visibleItemCount, totalItemCount)) {
 					loading = true;
-					getListView().addFooterView(footerView, null, false);
+					lvAttendance.addFooterView(footerView, null, false);
 					(new LoadNextPage()).execute("");
 				}
+			}
+		});
+
+		lvAttendance.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
+				Toast.makeText(EndlessListViewActivity.this, lvAttendance.getAdapter().getItem(position) + " " + getString(R.string.selected), Toast.LENGTH_SHORT).show();
 			}
 		});
 		updateDisplayingTextView();
@@ -68,16 +113,15 @@ public class EndlessListViewActivity extends AbstractListViewActivity {
 	protected void updateDisplayingTextView() {
 		textViewDisplaying = (TextView) findViewById(R.id.displaying);
 		String text = getString(R.string.display);
-		text = String.format(text, getListAdapter().getCount(), datasource.getSize());
+		text = String.format(text, lvAttendance.getCount(), DataSource.getSize());
 		textViewDisplaying.setText(text);
 	}
 
 	protected boolean load(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		boolean lastItem = firstVisibleItem + visibleItemCount == totalItemCount && getListView().getChildAt(visibleItemCount - 1) != null
-				&& getListView().getChildAt(visibleItemCount - 1).getBottom() <= getListView().getHeight();
-		boolean moreRows = getListAdapter().getCount() < datasource.getSize();
+		int aux = firstVisibleItem + visibleItemCount;
+		boolean lastItem = aux == totalItemCount && lvAttendance.getChildAt(visibleItemCount - 1) != null && lvAttendance.getChildAt(visibleItemCount - 1).getBottom() <= lvAttendance.getHeight();
+		boolean moreRows = lvAttendance.getAdapter().getCount() < DataSource.getSize();
 		return moreRows && lastItem && !loading;
-
 	}
 
 	protected class LoadNextPage extends AsyncTask<String, Void, String> {
@@ -85,21 +129,58 @@ public class EndlessListViewActivity extends AbstractListViewActivity {
 
 		@Override
 		protected String doInBackground(String... arg0) {
-			newData = datasource.getData(getListAdapter().getCount(), PAGESIZE);
+			newData = DataSource.getData(lvAttendance.getAdapter().getCount() - 1, PAGESIZE);
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
-			AttendancesItemAdapter customArrayAdapter = ((AttendancesItemAdapter) getListAdapter());
+			AttendancesItemAdapter adp = (AttendancesItemAdapter) CurrentAdapter;
 			for (HashMap<String, Object> value : newData) {
-				customArrayAdapter.add(value);
+				adp.add(value);
 			}
-			customArrayAdapter.notifyDataSetChanged();
-
-			getListView().removeFooterView(footerView);
+			adp.notifyDataSetChanged();
+			CurrentAdapter = (ListAdapter) adp;
+			lvAttendance.removeFooterView(footerView);
 			updateDisplayingTextView();
 			loading = false;
 		}
+	}
+
+	public class DataSourceAttendance {
+		private Configuration config;
+		private OpenERP oerp_connection;
+		private List<Long> data = null;
+		private int SIZE = 0;
+
+		public DataSourceAttendance(Context CTX) {
+			config = new Configuration(CTX);
+			oerp_connection = hupernikao.BuildOpenERPConnection(config);
+			Long[] attendance_ids = oerp_connection.search("kemas.attendance", new Object[] {});
+			SIZE = attendance_ids.length;
+			data = new ArrayList<Long>(SIZE);
+			for (Long id : attendance_ids) {
+				data.add(id);
+			}
+		}
+
+		public int getSize() {
+			return SIZE;
+		}
+
+		public List<HashMap<String, Object>> getData(int offset, int limit) {
+			List<HashMap<String, Object>> result = null;
+			String[] fields_to_read = new String[] { "code" };
+			List<Long> newList = new ArrayList<Long>(limit);
+
+			int end = offset + limit;
+			if (end > data.size()) {
+				end = data.size();
+			}
+			newList.addAll(data.subList(offset, end));
+			result = oerp_connection.read("kemas.attendance", newList, fields_to_read);
+			return result;
+		}
+
 	}
 }

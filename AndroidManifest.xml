@@ -43,26 +43,10 @@
 
         <!-- Ver Datos del Colaborador -->
         <activity
-            android:name="com.kemas.activities.CollaboratorActivity"
-            android:icon="@drawable/ic_launcher"
-            android:label="@string/my_info" >
-            <intent-filter>
-                <action android:name="com.kemas.activities.CollaboratorActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".activities.EndlessListViewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name" >
         </activity>
-        <activity
-            android:name=".activities.LoadMoreListViewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity
-            android:name=".activities.PagingButtonsListViewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
     </application>
 
 </manifest>
