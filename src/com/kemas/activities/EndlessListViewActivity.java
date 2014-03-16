@@ -18,7 +18,6 @@
 
 package com.kemas.activities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,7 +29,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -42,10 +40,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kemas.Configuration;
-import com.kemas.OpenERP;
 import com.kemas.R;
-import com.kemas.hupernikao;
+import com.kemas.datasources.DataSourceAttendance;
 import com.kemas.item.adapters.AttendancesItemAdapter;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -89,10 +85,6 @@ public class EndlessListViewActivity extends Activity {
 
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				Log.v("===============================", "===============================");
-				Log.v("firstVisibleItem", firstVisibleItem + "");
-				Log.v("visibleItemCount", visibleItemCount + "");
-				Log.v("totalItemCount", totalItemCount + "");
 				if (load(firstVisibleItem, visibleItemCount, totalItemCount)) {
 					loading = true;
 					lvAttendance.addFooterView(footerView, null, false);
@@ -145,42 +137,5 @@ public class EndlessListViewActivity extends Activity {
 			updateDisplayingTextView();
 			loading = false;
 		}
-	}
-
-	public class DataSourceAttendance {
-		private Configuration config;
-		private OpenERP oerp_connection;
-		private List<Long> data = null;
-		private int SIZE = 0;
-
-		public DataSourceAttendance(Context CTX) {
-			config = new Configuration(CTX);
-			oerp_connection = hupernikao.BuildOpenERPConnection(config);
-			Long[] attendance_ids = oerp_connection.search("kemas.attendance", new Object[] {});
-			SIZE = attendance_ids.length;
-			data = new ArrayList<Long>(SIZE);
-			for (Long id : attendance_ids) {
-				data.add(id);
-			}
-		}
-
-		public int getSize() {
-			return SIZE;
-		}
-
-		public List<HashMap<String, Object>> getData(int offset, int limit) {
-			List<HashMap<String, Object>> result = null;
-			String[] fields_to_read = new String[] { "code" };
-			List<Long> newList = new ArrayList<Long>(limit);
-
-			int end = offset + limit;
-			if (end > data.size()) {
-				end = data.size();
-			}
-			newList.addAll(data.subList(offset, end));
-			result = oerp_connection.read("kemas.attendance", newList, fields_to_read);
-			return result;
-		}
-
 	}
 }
