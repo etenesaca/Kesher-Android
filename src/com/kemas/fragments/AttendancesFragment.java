@@ -37,7 +37,7 @@ import com.kemas.item.adapters.AttendancesItemAdapter;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class AttendancesFragment extends Fragment {
 	private DataSourceAttendance DataSource;
-	private static final int PAGESIZE = 10;
+	private static final int PAGESIZE = 15;
 	private View footerView;
 	private boolean loading = false;
 	private ListAdapter CurrentAdapter;

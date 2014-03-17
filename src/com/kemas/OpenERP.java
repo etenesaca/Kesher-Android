@@ -1,7 +1,9 @@
 package com.kemas;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
@@ -61,6 +63,41 @@ public class OpenERP extends OpenERPConnection {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	/**
+	 * Obtene una lista de registros de asisterncia
+	 **/
+	public List<HashMap<String, Object>> getAttendances(List<Long> ids) {
+		Object[] object_ids = (Object[]) ids.toArray();
+		Long[] res_ids = new Long[object_ids.length];
+		for (int i = 0; i < object_ids.length; i++) {
+			if (object_ids[i] instanceof Long) {
+				res_ids[i] = (Long) object_ids[i];
+			}
+		}
+		return getAttendances(res_ids);
+	}
+
+	public List<HashMap<String, Object>> getAttendances(Long[] ids) {
+		List<HashMap<String, Object>> Records = null;
+		try {
+			XMLRPCClient client = new XMLRPCClient(mUrl);
+			Object[] Attendances = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.attendance", "get_attendances_to_mobilapp", ids);
+			Records = new ArrayList<HashMap<String, Object>>(Attendances.length);
+			for (Object Record : Attendances) {
+				Object[] AttendandeArray = (Object[]) Record;
+				HashMap<String, Object> Attendance = new HashMap<String, Object>();
+				Attendance.put("id", AttendandeArray[0]);
+				Attendance.put("service", AttendandeArray[1]);
+				Attendance.put("type", AttendandeArray[2]);
+				Attendance.put("date", AttendandeArray[3]);
+				Records.add((HashMap<String, Object>) Attendance);
+			}
+		} catch (XMLRPCException e) {
+			e.printStackTrace();
+		}
+		return Records;
 	}
 
 	/** Constructor con el uid en Integer **/
