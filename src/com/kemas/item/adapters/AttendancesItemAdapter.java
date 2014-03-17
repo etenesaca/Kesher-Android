@@ -20,6 +20,7 @@ package com.kemas.item.adapters;
 import java.util.HashMap;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,11 +36,15 @@ import com.kemas.R;
  * @author danielme.com
  * 
  */
+@SuppressLint("NewApi")
+@SuppressWarnings("deprecation")
 public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 	private LayoutInflater layoutInflater;
+	private Context CTX;
 
 	public AttendancesItemAdapter(Context context, List<HashMap<String, Object>> objects) {
 		super(context, 0, objects);
+		this.CTX = context;
 		layoutInflater = LayoutInflater.from(context);
 	}
 
@@ -54,8 +59,29 @@ public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>
 		} else {
 			holder = (AttendancesItem) convertView.getTag();
 		}
-		TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-		tvTitle.setText(getItem(position).get("code").toString());
+
+		HashMap<String, Object> Record = getItem(position);
+
+		TextView tvService = (TextView) convertView.findViewById(R.id.tvService);
+		TextView tvNumber = (TextView) convertView.findViewById(R.id.tvNumber);
+		TextView tvType = (TextView) convertView.findViewById(R.id.tvType);
+		TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
+		TextView tvHour = (TextView) convertView.findViewById(R.id.tvHour);
+
+		tvService.setText(Record.get("service").toString());
+		tvNumber.setText("#" + Record.get("id").toString());
+		tvDate.setText(Record.get("date").toString());
+		tvHour.setText(Record.get("hour").toString());
+		if ((Record.get("type").toString()).equals("just_time")) {
+			tvType.setText("A Tiempo");
+			tvType.setBackgroundDrawable(CTX.getResources().getDrawable(R.drawable.shape_atiempo));
+		} else if ((Record.get("type").toString()).equals("late")) {
+			tvType.setText("Atrazo");
+			tvType.setBackgroundDrawable(CTX.getResources().getDrawable(R.drawable.shape_tarde));
+		} else {
+			tvType.setText("Insistencia");
+			tvType.setBackgroundDrawable(CTX.getResources().getDrawable(R.drawable.shape_falta));
+		}
 		return convertView;
 	}
 }

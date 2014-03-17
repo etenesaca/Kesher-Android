@@ -1,34 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="48dp" >
-
-    <ImageView
-        android:id="@+id/ivItem"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentLeft="true"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/user_male" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/tvSpace"
-        android:layout_width="4dp"
+        android:id="@+id/tvService"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/ivItem"
-        android:singleLine="true"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/birth"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textIsSelectable="false" />
-    
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/tvSpace"
-        android:singleLine="true"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textIsSelectable="false" />
+        android:textStyle="bold" />
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" >
+
+        <TextView
+            android:id="@+id/tvNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Numero"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Fecha"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" >
+
+            <TextView
+                android:id="@+id/tvType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_tarde"
+                android:text="Tipo"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/White"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvHour"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Hora"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+</LinearLayout>

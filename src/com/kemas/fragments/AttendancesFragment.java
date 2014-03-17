@@ -37,7 +37,7 @@ import com.kemas.item.adapters.AttendancesItemAdapter;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class AttendancesFragment extends Fragment {
 	private DataSourceAttendance DataSource;
-	private static final int PAGESIZE = 15;
+	private static final int PAGESIZE = 10;
 	private View footerView;
 	private boolean loading = false;
 	private ListAdapter CurrentAdapter;
@@ -85,9 +85,8 @@ public class AttendancesFragment extends Fragment {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				if (load(firstVisibleItem, visibleItemCount, totalItemCount)) {
-					loading = true;
 					lvAttendance.addFooterView(footerView, null, false);
-					(new LoadNextPage()).execute("");
+					new LoadNextPage().execute();
 				}
 			}
 		});
@@ -159,6 +158,15 @@ public class AttendancesFragment extends Fragment {
 
 	protected class LoadNextPage extends AsyncTask<String, Void, String> {
 		private List<HashMap<String, Object>> newData = null;
+
+		public LoadNextPage() {
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			loading = true;
+		}
 
 		@Override
 		protected String doInBackground(String... arg0) {

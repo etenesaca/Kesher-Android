@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -25,6 +26,65 @@ import android.util.Log;
 
 @SuppressLint("SimpleDateFormat")
 public class hupernikao {
+	public static HashMap<String, Object> Convert_UTCtoGMT_Str(String DateToConvert) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return Convert_UTCtoGMT_Str(DateToConvert, simpleDateFormat);
+	}
+
+	public static HashMap<String, Object> Convert_UTCtoGMT_Str(String DateToConvert, SimpleDateFormat simpleDateFormat) {
+		HashMap<String, Object> result = new HashMap<String, Object>();
+
+		Date resDate = Convert_UTCtoGMT(DateToConvert, simpleDateFormat);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(resDate);
+
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		int year = cal.get(Calendar.YEAR);
+
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int minute = cal.get(Calendar.MINUTE);
+		int seconds = cal.get(Calendar.SECOND);
+
+		String date = CompletarCadena(day) + "/" + CompletarCadena(month) + "/" + CompletarCadena(year);
+		String hours = CompletarCadena(hour) + ":" + CompletarCadena(minute) + ":" + CompletarCadena(seconds);
+		result.put("date", date);
+		result.put("hour", hours);
+
+		return result;
+	}
+
+	public static Date Convert_UTCtoGMT(String DateToConvert) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return Convert_UTCtoGMT(DateToConvert, simpleDateFormat);
+	}
+
+	public static Date Convert_UTCtoGMT(String DateToConvert, SimpleDateFormat simpleDateFormat) {
+		Date result = null;
+		try {
+			simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+			result = simpleDateFormat.parse(DateToConvert);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public static String Convert_UTCtoTZ(String DatoToConvert, String TzName) {
+		String result = null;
+		try {
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date parsed;
+			parsed = format.parse(DatoToConvert);
+			TimeZone tz = TimeZone.getTimeZone(TzName);
+			format.setTimeZone(tz);
+			result = format.format(parsed);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 	/**
 	 * Este método devuelve una conexión a OpenERP en el caso de que ya se
 	 * tengan todas las credenciales necesarias
@@ -154,6 +214,22 @@ public class hupernikao {
 	/**
 	 * Metodo para completar una cadena con alguna caracter
 	 **/
+	public static String CompletarCadena(int cadena) {
+		return CompletarCadena(cadena, 2);
+	}
+
+	public static String CompletarCadena(int cadena, int num) {
+		return CompletarCadena(cadena, num, false);
+	}
+
+	public static String CompletarCadena(int cadena, int num, boolean right) {
+		return CompletarCadena(cadena, num, right, "0");
+	}
+
+	public static String CompletarCadena(int cadena, int num, boolean right, String character) {
+		return CompletarCadena(cadena + "", num, right, character);
+	}
+
 	public static String CompletarCadena(String cadena) {
 		return CompletarCadena(cadena, 2);
 	}

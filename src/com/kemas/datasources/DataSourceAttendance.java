@@ -38,7 +38,6 @@ public class DataSourceAttendance {
 
 	public List<HashMap<String, Object>> getData(int offset, int limit) {
 		List<HashMap<String, Object>> result = null;
-		String[] fields_to_read = new String[] { "code" };
 		List<Long> newList = new ArrayList<Long>(limit);
 
 		int end = offset + limit;
@@ -46,7 +45,19 @@ public class DataSourceAttendance {
 			end = data.size();
 		}
 		newList.addAll(data.subList(offset, end));
-		result = oerp_connection.read("kemas.attendance", newList, fields_to_read);
+		result = oerp_connection.read("kemas.attendance", newList, new String[] { "code", "event_id", "type", "date" });
+		for (HashMap<String, Object> Record : result) {
+			HashMap<String, Object> DateAttendance = hupernikao.Convert_UTCtoGMT_Str(Record.get("date").toString());
+			Record.remove("date");
+			Record.put("date", DateAttendance.get("date"));
+			Record.put("hour", DateAttendance.get("hour"));
+
+			int event_id = (Integer) ((Object[]) Record.get("event_id"))[0];
+			HashMap<String, Object> Event = oerp_connection.read("kemas.event", event_id, new String[] { "service_id" });
+			String Service = (String) ((Object[]) Event.get("service_id"))[1];
+			Record.put("service", Service);
+			Record.remove("event_id");
+		}
 		return result;
 	}
 
