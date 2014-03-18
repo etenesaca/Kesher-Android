@@ -26,6 +26,8 @@ import android.util.Log;
 
 @SuppressLint("SimpleDateFormat")
 public class hupernikao {
+	public static String[] DaysOfWeek = { "Sábado", "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado" };
+
 	public static HashMap<String, Object> Convert_UTCtoGMT_Str(String DateToConvert) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return Convert_UTCtoGMT_Str(DateToConvert, simpleDateFormat);
@@ -51,6 +53,9 @@ public class hupernikao {
 		result.put("date", date);
 		result.put("hour", hours);
 
+		int NumDay = cal.get(Calendar.DAY_OF_WEEK);
+		String NameDay = DaysOfWeek[NumDay];
+		result.put("day", NameDay);
 		return result;
 	}
 

@@ -85,7 +85,6 @@ public class AttendancesFragment extends Fragment {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				if (load(firstVisibleItem, visibleItemCount, totalItemCount)) {
-					lvAttendance.addFooterView(footerView, null, false);
 					new LoadNextPage().execute();
 				}
 			}
@@ -117,6 +116,10 @@ public class AttendancesFragment extends Fragment {
 		return result;
 	}
 
+	/**
+	 * Clase Asincrona para recuparar los datos la primera ves que se muestrar
+	 * la activity al usuario
+	 **/
 	protected class SearchRegisters extends AsyncTask<String, Void, String> {
 		ProgressDialog pDialog;
 		String AttendancesType;
@@ -131,7 +134,7 @@ public class AttendancesFragment extends Fragment {
 
 			pDialog = new ProgressDialog(getActivity());
 			pDialog.setMessage("Cargando Datos");
-			pDialog.setCancelable(true);
+			pDialog.setCancelable(false);
 			pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			pDialog.show();
 			lvAttendance.addFooterView(footerView, null, false);
@@ -156,6 +159,7 @@ public class AttendancesFragment extends Fragment {
 
 	}
 
+	/** Clase Asincrona para recuparar los datos de la paginación **/
 	protected class LoadNextPage extends AsyncTask<String, Void, String> {
 		private List<HashMap<String, Object>> newData = null;
 
@@ -166,6 +170,7 @@ public class AttendancesFragment extends Fragment {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			loading = true;
+			lvAttendance.addFooterView(footerView, null, false);
 		}
 
 		@Override

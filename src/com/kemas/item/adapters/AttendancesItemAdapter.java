@@ -22,6 +22,7 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,11 +68,18 @@ public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>
 		TextView tvType = (TextView) convertView.findViewById(R.id.tvType);
 		TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
 		TextView tvHour = (TextView) convertView.findViewById(R.id.tvHour);
+		TextView tvDay = (TextView) convertView.findViewById(R.id.tvDay);
 
+		Typeface Roboto_Light = Typeface.createFromAsset(CTX.getAssets(), "fonts/Roboto-Light.ttf");
+		Typeface Roboto_Bold = Typeface.createFromAsset(CTX.getAssets(), "fonts/Roboto-Bold.ttf");
+
+		tvService.setTypeface(Roboto_Bold);
 		tvService.setText(Record.get("service").toString());
 		tvNumber.setText("#" + Record.get("id").toString());
 		tvDate.setText(Record.get("date").toString());
 		tvHour.setText(Record.get("hour").toString());
+		tvDay.setText(Record.get("day").toString());
+		tvDay.setTypeface(Roboto_Light);
 		if ((Record.get("type").toString()).equals("just_time")) {
 			tvType.setText("A Tiempo");
 			tvType.setBackgroundDrawable(CTX.getResources().getDrawable(R.drawable.shape_atiempo));

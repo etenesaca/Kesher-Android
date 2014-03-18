@@ -176,7 +176,7 @@ public class CollaboratorFragment extends Fragment {
 			Contenedor.setVisibility(View.INVISIBLE);
 			pDialog = new ProgressDialog(getActivity());
 			pDialog.setMessage("Cargando Datos");
-			pDialog.setCancelable(true);
+			pDialog.setCancelable(false);
 			pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			pDialog.show();
 		}
