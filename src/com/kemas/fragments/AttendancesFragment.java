@@ -16,6 +16,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar.OnNavigationListener;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -47,6 +50,7 @@ public class AttendancesFragment extends Fragment {
 
 	String[] OptionsListNavigation = new String[] { "Todos", "A Tiempo", "Atrazos", "Inasistencias" };
 	String[] AttendanceTypes = new String[] { "all", "just_time", "late", "absence" };
+	int CurrentAttendanceType;
 
 	public AttendancesFragment() {
 	}
@@ -54,7 +58,7 @@ public class AttendancesFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.activity_attedances, container, false);
-
+		
 		// Lineas para habilitar el acceso a la red y poder conectarse al
 		// servidor de OpenERP en el Hilo Principal
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -67,7 +71,8 @@ public class AttendancesFragment extends Fragment {
 			public boolean onNavigationItemSelected(int arg0, long arg1) {
 				// Toast.makeText(getActivity(), "Seleccionada opcion: " +
 				// OptionsListNavigation[arg0], Toast.LENGTH_SHORT).show();
-				new SearchRegisters(AttendanceTypes[arg0]).execute();
+				CurrentAttendanceType = arg0;
+				new SearchRegisters(AttendanceTypes[CurrentAttendanceType]).execute();
 				return false;
 			}
 		});
@@ -96,6 +101,8 @@ public class AttendancesFragment extends Fragment {
 				Toast.makeText(getActivity(), lvAttendance.getAdapter().getItem(position) + " " + getString(R.string.selected), Toast.LENGTH_SHORT).show();
 			}
 		});
+		
+		setHasOptionsMenu(true);
 		return rootView;
 	}
 
@@ -112,6 +119,21 @@ public class AttendancesFragment extends Fragment {
 			boolean lastItem = aux == totalItemCount && lvAttendance.getChildAt(visibleItemCount - 1) != null && lvAttendance.getChildAt(visibleItemCount - 1).getBottom() <= lvAttendance.getHeight();
 			boolean moreRows = lvAttendance.getAdapter().getCount() < DataSource.getSize();
 			result = moreRows && lastItem && !loading;
+		}
+		return result;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.menu_attendances, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		boolean result = super.onOptionsItemSelected(item);
+		if (item.getItemId() == R.id.mnAttendancesRefresh || item.getItemId() == R.id.mnAttendancesRefresh) {
+			new SearchRegisters(AttendanceTypes[CurrentAttendanceType]).execute();
 		}
 		return result;
 	}
