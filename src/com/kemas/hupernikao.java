@@ -260,6 +260,14 @@ public class hupernikao {
 
 	/** Metodo para poner un marco Ligeramente redondeado a una imagen **/
 	public static Bitmap getRoundedCornerBitmapSimple(Bitmap bitmap) {
+		int size = 0;
+
+		if (bitmap.getWidth() < bitmap.getHeight()) {
+			size = bitmap.getWidth();
+		} else {
+			size = bitmap.getHeight();
+		}
+
 		Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
 		Canvas canvas = new Canvas(output);
 
@@ -267,7 +275,7 @@ public class hupernikao {
 		final Paint paint = new Paint();
 		final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
 		final RectF rectF = new RectF(rect);
-		final float roundPx = 12;
+		final float roundPx = (float) (size * 0.1);
 
 		paint.setAntiAlias(true);
 		canvas.drawARGB(0, 0, 0, 0);
@@ -280,7 +288,6 @@ public class hupernikao {
 		return output;
 	}
 
-	/** Metodo para poner un marco Totalmente redondeado a una imagen **/
 	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, boolean square) {
 		int width = 0;
 		int height = 0;
@@ -305,7 +312,7 @@ public class hupernikao {
 		final Paint paint = new Paint();
 		final Rect rect = new Rect(0, 0, width, height);
 		final RectF rectF = new RectF(rect);
-		final float roundPx = 90;
+		final float roundPx = 100000000;
 
 		paint.setAntiAlias(true);
 		canvas.drawARGB(0, 0, 0, 0);
