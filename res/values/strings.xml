@@ -114,7 +114,7 @@
     <!-- Profile -->
     <string name="photo">Foto</string>
     <string name="name">Nombre</string>
-    <string name="ci">CI</string>
+    <string name="ci">CI/PASS</string>
     <string name="tz">Zona Horaria</string>
     <string name="lang">Idioma</string>
     <string name="email">E-mail</string>

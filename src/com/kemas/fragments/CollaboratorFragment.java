@@ -49,6 +49,7 @@ public class CollaboratorFragment extends Fragment {
 	private ImageView imgPhoto;
 	private ImageView imgTeam;
 	private TextView txtCode;
+	private TextView txtCI;
 	private TextView txtName;
 	private TextView txtNickname;
 	private TextView txtBirth;
@@ -80,7 +81,7 @@ public class CollaboratorFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.activity_collaborator, container, false);
 		setHasOptionsMenu(true);
-		
+
 		((ActionBarActivity) getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
 		// Lineas para habilitar el acceso a la red y poder conectarse al
@@ -96,6 +97,7 @@ public class CollaboratorFragment extends Fragment {
 		imgPhoto = (ImageView) rootView.findViewById(R.id.imgPhoto);
 		imgTeam = (ImageView) rootView.findViewById(R.id.imgTeam);
 		txtCode = (TextView) rootView.findViewById(R.id.txtCode);
+		txtCI = (TextView) rootView.findViewById(R.id.txtCI);
 		txtName = (TextView) rootView.findViewById(R.id.txtName);
 		txtNickname = (TextView) rootView.findViewById(R.id.txtNickname);
 		txtBirth = (TextView) rootView.findViewById(R.id.txtBirth);
@@ -210,6 +212,10 @@ public class CollaboratorFragment extends Fragment {
 				 * level
 				 */
 				txtCode.setText(Collaborator.get("code").toString());
+				txtCI.setText(Collaborator.get("personal_id").toString());
+				if ((Collaborator.get("personal_id").toString()).equals("")) {
+					txtCI.setText("--");
+				}
 				txtName.setText(Collaborator.get("name").toString());
 				txtNickname.setText(Collaborator.get("nick_name").toString());
 				txtBirth.setText(Collaborator.get("birth").toString());
