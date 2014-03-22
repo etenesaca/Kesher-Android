@@ -43,6 +43,7 @@ public class AttendancesFragment extends Fragment {
 	private static final int PAGESIZE = 15;
 	private View footerView;
 	private boolean loading = false;
+	private boolean ScrollComplete = false;
 	private ListAdapter CurrentAdapter;
 
 	private TextView textViewDisplaying;
@@ -58,7 +59,7 @@ public class AttendancesFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.activity_attedances, container, false);
-		
+
 		// Lineas para habilitar el acceso a la red y poder conectarse al
 		// servidor de OpenERP en el Hilo Principal
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -89,6 +90,8 @@ public class AttendancesFragment extends Fragment {
 
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				if (ScrollComplete)
+					return;
 				if (load(firstVisibleItem, visibleItemCount, totalItemCount)) {
 					new LoadNextPage().execute();
 				}
@@ -101,7 +104,7 @@ public class AttendancesFragment extends Fragment {
 				Toast.makeText(getActivity(), lvAttendance.getAdapter().getItem(position) + " " + getString(R.string.selected), Toast.LENGTH_SHORT).show();
 			}
 		});
-		
+
 		setHasOptionsMenu(true);
 		return rootView;
 	}
@@ -116,9 +119,13 @@ public class AttendancesFragment extends Fragment {
 		boolean result = false;
 		if (lvAttendance.getAdapter() != null) {
 			int aux = firstVisibleItem + visibleItemCount;
+			int numItems = lvAttendance.getAdapter().getCount();
 			boolean lastItem = aux == totalItemCount && lvAttendance.getChildAt(visibleItemCount - 1) != null && lvAttendance.getChildAt(visibleItemCount - 1).getBottom() <= lvAttendance.getHeight();
-			boolean moreRows = lvAttendance.getAdapter().getCount() < DataSource.getSize();
+			boolean moreRows = numItems < DataSource.getSize();
 			result = moreRows && lastItem && !loading;
+			if (numItems == DataSource.getSize()) {
+				ScrollComplete = true;
+			}
 		}
 		return result;
 	}
@@ -165,6 +172,7 @@ public class AttendancesFragment extends Fragment {
 		@Override
 		protected String doInBackground(String... params) {
 			DataSource = new DataSourceAttendance(getActivity(), this.AttendancesType);
+			ScrollComplete = false;
 			return null;
 		}
 
