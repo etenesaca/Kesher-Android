@@ -66,6 +66,40 @@ public class OpenERP extends OpenERPConnection {
 	}
 
 	/**
+	 * Obtene una lista del historial de Puntos
+	 **/
+	public List<HashMap<String, Object>> getPoints(List<Long> ids) {
+		Object[] object_ids = (Object[]) ids.toArray();
+		Long[] res_ids = new Long[object_ids.length];
+		for (int i = 0; i < object_ids.length; i++) {
+			if (object_ids[i] instanceof Long) {
+				res_ids[i] = (Long) object_ids[i];
+			}
+		}
+		return getPoints(res_ids);
+	}
+
+	public List<HashMap<String, Object>> getPoints(Long[] ids) {
+		List<HashMap<String, Object>> Records = null;
+		try {
+			XMLRPCClient client = new XMLRPCClient(mUrl);
+			Object[] Points = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.history.points", "get_points_to_mobilapp", ids);
+			Records = new ArrayList<HashMap<String, Object>>(Points.length);
+			for (Object Record : Points) {
+				Object[] PointArray = (Object[]) Record;
+				HashMap<String, Object> Point = new HashMap<String, Object>();
+				Point.put("points", PointArray[0]);
+				Point.put("type", PointArray[1]);
+				Point.put("date", PointArray[2]);
+				Records.add((HashMap<String, Object>) Point);
+			}
+		} catch (XMLRPCException e) {
+			e.printStackTrace();
+		}
+		return Records;
+	}
+
+	/**
 	 * Obtene una lista de registros de asisterncia
 	 **/
 	public List<HashMap<String, Object>> getAttendances(List<Long> ids) {
@@ -86,12 +120,12 @@ public class OpenERP extends OpenERPConnection {
 			Object[] Attendances = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.attendance", "get_attendances_to_mobilapp", ids);
 			Records = new ArrayList<HashMap<String, Object>>(Attendances.length);
 			for (Object Record : Attendances) {
-				Object[] AttendandeArray = (Object[]) Record;
+				Object[] AttendanceArray = (Object[]) Record;
 				HashMap<String, Object> Attendance = new HashMap<String, Object>();
-				Attendance.put("id", AttendandeArray[0]);
-				Attendance.put("service", AttendandeArray[1]);
-				Attendance.put("type", AttendandeArray[2]);
-				Attendance.put("date", AttendandeArray[3]);
+				Attendance.put("id", AttendanceArray[0]);
+				Attendance.put("service", AttendanceArray[1]);
+				Attendance.put("type", AttendanceArray[2]);
+				Attendance.put("date", AttendanceArray[3]);
 				Records.add((HashMap<String, Object>) Attendance);
 			}
 		} catch (XMLRPCException e) {

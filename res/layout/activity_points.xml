@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/txtInit"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/displaying"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        tools:ignore="TextFields" >
+        android:gravity="center_horizontal"
+        android:textSize="12sp" />
 
-        <requestFocus />
-    </EditText>
+    <ListView
+        android:id="@+id/lvPointsList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:drawSelectorOnTop="false" >
+    </ListView>
 
 </LinearLayout>
