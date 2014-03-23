@@ -133,7 +133,7 @@ public class CollaboratorFragment extends Fragment {
 
 		scroll = (ScrollView) rootView.findViewById(R.id.scroll);
 		new LoadInfo().execute();
-
+		((ActionBarActivity) getActivity()).getSupportActionBar().setSubtitle("Mis Datos");
 		return rootView;
 	}
 
@@ -268,7 +268,8 @@ public class CollaboratorFragment extends Fragment {
 					makeScroll(0);
 				}
 
-				((ActionBarActivity) getActivity()).getSupportActionBar().setTitle("Mis Datos");
+				// ((ActionBarActivity)
+				// getActivity()).getSupportActionBar().setTitle("Mis Datos");
 				// getSupportActionBar().setTitle(Collaborator.get("nick_name").toString());
 				Contenedor.setVisibility(View.VISIBLE);
 			} else {

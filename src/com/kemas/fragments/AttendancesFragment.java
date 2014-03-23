@@ -106,6 +106,7 @@ public class AttendancesFragment extends Fragment {
 		});
 
 		setHasOptionsMenu(true);
+		((ActionBarActivity) getActivity()).getSupportActionBar().setSubtitle("Asistencias");
 		return rootView;
 	}
 
