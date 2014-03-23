@@ -22,6 +22,7 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +39,7 @@ import com.kemas.R;
  * @author danielme.com
  * 
  */
-@SuppressLint("NewApi")
+@SuppressLint({ "NewApi" })
 public class PointsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 	private LayoutInflater layoutInflater;
 	private Context CTX;
@@ -81,8 +82,10 @@ public class PointsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 		if ((Record.get("type").toString()).equals("increase")) {
 			imgType.setImageDrawable(CTX.getResources().getDrawable(R.drawable.add));
 		} else if ((Record.get("type").toString()).equals("decrease")) {
+			tvPoints.setTextColor(Color.parseColor("#DF0101"));
 			imgType.setImageDrawable(CTX.getResources().getDrawable(R.drawable.remove));
 		} else {
+			tvPoints.setTextColor(Color.parseColor("#0B610B"));
 			imgType.setImageDrawable(CTX.getResources().getDrawable(R.drawable.ok));
 		}
 		return convertView;
