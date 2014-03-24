@@ -32,7 +32,7 @@ import android.util.Log;
  * @author Enric Caumons Gou <caumons@gmail.com>
  * */
 public class OpenERPConnection {
-
+	protected static int SecondsToWait = 5000;
 	protected String mServer;
 	protected Integer mPort;
 	protected String mDatabase;
@@ -166,7 +166,7 @@ public class OpenERPConnection {
 		return newObjectId;
 	}
 
-	//Cuando se mande las condiciones como una Arreglo
+	// Cuando se mande las condiciones como una Arreglo
 	public Long[] search(String model, List<Object> conditions) {
 		return search(model, false, 0, 0, null, false, conditions);
 	}
@@ -188,7 +188,7 @@ public class OpenERPConnection {
 		return search(model, count, offset, limit, order, reverseOrder, ConditionsArray);
 	}
 
-	//Cuando se mande las condiciones como una Arreglo
+	// Cuando se mande las condiciones como una Arreglo
 	public Long[] search(String model, Object[] conditions) {
 		return search(model, false, 0, 0, null, false, conditions);
 	}
@@ -537,7 +537,7 @@ public class OpenERPConnection {
 			}
 		});
 		thread.start();
-		long endTimeMillis = System.currentTimeMillis() + 2000;
+		long endTimeMillis = System.currentTimeMillis() + SecondsToWait;
 		while (thread.isAlive()) {
 			if (System.currentTimeMillis() > endTimeMillis) {
 				gl.connected = false;
