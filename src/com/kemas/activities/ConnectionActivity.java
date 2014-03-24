@@ -69,6 +69,8 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 		txtUsername = (EditText) findViewById(R.id.txtUsername);
 		txtPassword = (EditText) findViewById(R.id.txtPassword);
 
+		if (config.getServer() == null)
+			txtServer.requestFocus();
 		new LoadCredentials().execute();
 	}
 

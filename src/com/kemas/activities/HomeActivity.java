@@ -108,7 +108,7 @@ public class HomeActivity extends ActionBarActivity {
 		btnRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				TestConnection = OpenERP.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
+				NavigationMenuLoaded = false;
 				onStart();
 			}
 		});
@@ -339,7 +339,7 @@ public class HomeActivity extends ActionBarActivity {
 		boolean result = super.onOptionsItemSelected(item);
 		if (toggle.onOptionsItemSelected(item)) {
 		} else if (item.getItemId() == R.id.mnHomeRefresh) {
-			TestConnection = OpenERP.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
+			NavigationMenuLoaded = false;
 			onStart();
 		}
 		return result;
