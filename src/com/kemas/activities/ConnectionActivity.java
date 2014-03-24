@@ -5,7 +5,9 @@ import java.util.HashMap;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -28,6 +30,10 @@ import com.kemas.hupernikao;
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 @SuppressLint("NewApi")
 public class ConnectionActivity extends ActionBarActivity implements OnTouchListener {
+	enum ResultSave {
+		Successful, ConnectionError, BadLogin, NotModuleKemas, UserNotCollaborator, SaveError
+	}
+
 	// Declare Elements
 	private Spinner cmbDb;
 	private EditText txtServer;
@@ -95,45 +101,6 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 		}
 	}
 
-	public boolean save_collaborator_info(Configuration config, Long[] collaborator_ids) {
-		OpenERP oerp_connection = hupernikao.BuildOpenERPConnection(config);
-		long collaborator_id = collaborator_ids[0];
-		return save_collaborator_info(config, collaborator_id, oerp_connection);
-	}
-
-	public boolean save_collaborator_info(Configuration config, Long[] collaborator_ids, OpenERP oerp_connection) {
-		long collaborator_id = collaborator_ids[0];
-		return save_collaborator_info(config, collaborator_id, oerp_connection);
-	}
-
-	public boolean save_collaborator_info(Configuration config, long collaborator_id) {
-		OpenERP oerp_connection = hupernikao.BuildOpenERPConnection(config);
-		return save_collaborator_info(config, collaborator_id, oerp_connection);
-	}
-
-	public boolean save_collaborator_info(Configuration config, long collaborator_id, OpenERP oerp_connection) {
-		HashMap<String, Object> NavigationMenuInfo = oerp_connection.getNavigationmenuInfo(collaborator_id);
-		if (NavigationMenuInfo != null) {
-			// Guardar los datos
-			config.setServer(oerp_connection.getServer());
-			config.setPort(oerp_connection.getPort().toString());
-			config.setDataBase(oerp_connection.getDatabase());
-			config.setLogin(oerp_connection.getUserName().toString());
-			config.setPassword(oerp_connection.getPassword());
-			config.setUserID(oerp_connection.getUserId().toString());
-			config.setCollaboratorID(collaborator_id + "");
-
-			// Menu
-			config.setBackground(NavigationMenuInfo.get("mobile_background").toString());
-			config.setTextColor(NavigationMenuInfo.get("mobile_background_text_color").toString());
-
-			config.setName(NavigationMenuInfo.get("name").toString());
-			config.setPhoto(NavigationMenuInfo.get("image").toString());
-			config.setTeam(NavigationMenuInfo.get("team").toString());
-		}
-		return true;
-	}
-
 	public void save() {
 		AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ConnectionActivity.this);
 		if (!hupernikao.TestNetwork(Context)) {
@@ -178,44 +145,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 			dlgAlert.setMessage("Ingrese el Password.");
 			dlgAlert.create().show();
 		} else {
-			dlgAlert.setTitle("Error").setIcon(android.R.drawable.ic_delete);
-			dlgAlert.setPositiveButton("OK", null);
-			dlgAlert.setCancelable(true);
-
-			int Port = Integer.parseInt(txtPort.getText().toString());
-			if (!OpenERP.TestConnection(Server, Port)) {
-				dlgAlert.setMessage("No se pudo conectar al servidor, Verifique los parametros de Conexión.");
-				dlgAlert.create().show();
-				return;
-			}
-
-			OpenERP oerp = OpenERP.connect(Server, Port, cmbDb.getSelectedItem().toString(), user, pass);
-			if (oerp == null) {
-				dlgAlert.setMessage("Usuario o Contraseña No Válidos.");
-				dlgAlert.create().show();
-				return;
-			}
-
-			// Verificar que la base de datos tenga
-			// instalado el modulo Control de Horario
-			if (!oerp.Module_Installed()) {
-				dlgAlert.setMessage("La base de datos seleccionada no tiene instalado el Modulo de Gestión del Eventos y Control de Actividades (ke+).");
-				dlgAlert.create().show();
-				return;
-			}
-
-			// Verificar que el Usuario sea un empleado
-			Long[] collaborator_ids = oerp.search("kemas.collaborator", new Object[] { new Object[] { "user_id", "=", oerp.getUserId() } }, 1);
-			if (collaborator_ids.length < 1) {
-				dlgAlert.setMessage("La credenciales ingresadas no pertenecen a un Colaborador.");
-				dlgAlert.create().show();
-			} else {
-				// Guardar los datos del empleado
-				if (save_collaborator_info(config, collaborator_ids, oerp)) {
-					Toast.makeText(ConnectionActivity.this, "Lo Datos Se Guardaron Correctamente.", Toast.LENGTH_SHORT).show();
-					finish();
-				}
-			}
+			new SaveInfo(Server, txtPort.getText().toString(), cmbDb.getSelectedItem().toString(), user, pass).execute();
 		}
 	}
 
@@ -292,5 +222,135 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 		}
 
 		return true;
+	}
+
+	/**
+	 * Clase Asincrona para recuparar los datos la primera ves que se muestrar
+	 * la activity al usuario
+	 **/
+	@SuppressWarnings("static-access")
+	protected class SaveInfo extends AsyncTask<String, Void, String> {
+		String Server, DataBase, User, Pass;
+		int Port;
+		OpenERP oerp;
+		ProgressDialog pDialog;
+		ResultSave result;
+
+		public SaveInfo(String Server, String Port, String DataBase, String User, String Pass) {
+			this.Server = Server;
+			this.Port = Integer.parseInt(Port);
+			this.DataBase = DataBase;
+			this.User = User;
+			this.Pass = Pass;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+			pDialog = new ProgressDialog(ConnectionActivity.this);
+			pDialog.setMessage("Guardando");
+			pDialog.setCancelable(false);
+			pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDialog.show();
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			if (!OpenERP.TestConnection(this.Server, this.Port)) {
+				result = result.ConnectionError;
+				return null;
+			}
+			oerp = OpenERP.connect(Server, Port, this.DataBase, this.User, this.Pass);
+			if (oerp == null) {
+				result = result.BadLogin;
+				return null;
+			}
+
+			// Verificar que la base de datos tenga
+			// instalado el modulo Control de Horario
+			if (!oerp.Module_Installed()) {
+				result = result.NotModuleKemas;
+				return null;
+			}
+
+			// Verificar que el Usuario sea un Colaborador
+			Long[] collaborator_ids = oerp.search("kemas.collaborator", new Object[] { new Object[] { "user_id", "=", oerp.getUserId() } }, 1);
+			if (collaborator_ids.length < 1) {
+				result = result.UserNotCollaborator;
+				return null;
+			}
+			// Guardar los datos del Colaborador
+			if (save_collaborator_info(collaborator_ids[0]))
+				result = result.Successful;
+			else
+				result = result.SaveError;
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ConnectionActivity.this);
+			dlgAlert.setTitle("Error").setIcon(android.R.drawable.ic_delete);
+			dlgAlert.setPositiveButton("OK", null);
+			dlgAlert.setCancelable(true);
+
+			super.onPostExecute(result);
+
+			switch (this.result) {
+			case ConnectionError:
+				dlgAlert.setMessage("No se pudo conectar al servidor, Verifique los parametros de Conexión.");
+				dlgAlert.create().show();
+			case BadLogin:
+				dlgAlert.setMessage("Usuario o Contraseña No Válidos.");
+				dlgAlert.create().show();
+			case NotModuleKemas:
+				dlgAlert.setMessage("La base de datos seleccionada no tiene instalado el Modulo de Gestión del Eventos y Control de Actividades (ke+).");
+				dlgAlert.create().show();
+			case UserNotCollaborator:
+				dlgAlert.setMessage("La credenciales ingresadas no pertenecen a un Colaborador.");
+				dlgAlert.create().show();
+			case Successful:
+				Toast.makeText(ConnectionActivity.this, "Lo Datos Se Guardaron Correctamente.", Toast.LENGTH_SHORT).show();
+				finish();
+			case SaveError:
+				Toast.makeText(ConnectionActivity.this, "No se pudieron guardar los datos, vuelve a intentarlo.", Toast.LENGTH_SHORT).show();
+				finish();
+			default:
+				break;
+			}
+			pDialog.dismiss();
+		}
+
+		public boolean save_collaborator_info(long collaborator_id) {
+			boolean result = false;
+			try {
+				HashMap<String, Object> NavigationMenuInfo = oerp.getNavigationmenuInfo(collaborator_id);
+				if (NavigationMenuInfo == null) {
+					result = false;
+				} else {
+					// Guardar los datos
+					config.setServer(oerp.getServer());
+					config.setPort(oerp.getPort().toString());
+					config.setDataBase(oerp.getDatabase());
+					config.setLogin(oerp.getUserName().toString());
+					config.setPassword(oerp.getPassword());
+					config.setUserID(oerp.getUserId().toString());
+					config.setCollaboratorID(collaborator_id + "");
+
+					// Menu
+					config.setBackground(NavigationMenuInfo.get("mobile_background").toString());
+					config.setTextColor(NavigationMenuInfo.get("mobile_background_text_color").toString());
+
+					config.setName(NavigationMenuInfo.get("name").toString());
+					config.setPhoto(NavigationMenuInfo.get("image").toString());
+					config.setTeam(NavigationMenuInfo.get("team").toString());
+					result = true;
+				}
+			} catch (Exception e) {
+				result = false;
+			}
+			return result;
+		}
 	}
 }

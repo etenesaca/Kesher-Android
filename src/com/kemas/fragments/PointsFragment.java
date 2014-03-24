@@ -192,7 +192,6 @@ public class PointsFragment extends Fragment {
 			updateDisplayingTextView();
 			pDialog.dismiss();
 		}
-
 	}
 
 	/** Clase Asincrona para recuparar los datos de la paginación **/
