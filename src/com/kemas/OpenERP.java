@@ -88,9 +88,10 @@ public class OpenERP extends OpenERPConnection {
 			for (Object Record : Points) {
 				Object[] PointArray = (Object[]) Record;
 				HashMap<String, Object> Point = new HashMap<String, Object>();
-				Point.put("points", PointArray[0]);
-				Point.put("type", PointArray[1]);
-				Point.put("date", PointArray[2]);
+				Point.put("id", PointArray[0]);
+				Point.put("points", PointArray[1]);
+				Point.put("type", PointArray[2]);
+				Point.put("date", PointArray[3]);
 				Records.add((HashMap<String, Object>) Point);
 			}
 		} catch (XMLRPCException e) {

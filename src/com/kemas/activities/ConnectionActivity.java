@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -28,7 +27,7 @@ import com.kemas.hupernikao;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 @SuppressLint("NewApi")
-public class ConnectionActivity extends ActionBarActivity implements OnClickListener, OnTouchListener {
+public class ConnectionActivity extends ActionBarActivity implements OnTouchListener {
 	// Declare Elements
 	private Spinner cmbDb;
 	private EditText txtServer;
@@ -204,7 +203,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 				dlgAlert.create().show();
 				return;
 			}
-			
+
 			// Verificar que el Usuario sea un empleado
 			Long[] collaborator_ids = oerp.search("kemas.collaborator", new Object[] { new Object[] { "user_id", "=", oerp.getUserId() } }, 1);
 			if (collaborator_ids.length < 1) {
@@ -293,11 +292,5 @@ public class ConnectionActivity extends ActionBarActivity implements OnClickList
 		}
 
 		return true;
-	}
-
-	@Override
-	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
-
 	}
 }

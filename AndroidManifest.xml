@@ -40,6 +40,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <!-- Detalle de un registro de cambio de puntaje -->
+        <activity
+            android:name="com.kemas.activities.PointsDetailActivity"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/activity_connection_title" >
+            <intent-filter>
+                <action android:name="com.kemas.activities.PointsDetailActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

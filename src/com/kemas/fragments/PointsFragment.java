@@ -8,6 +8,7 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,9 +30,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kemas.R;
+import com.kemas.activities.PointsDetailActivity;
 import com.kemas.datasources.DataSourcePoint;
 import com.kemas.item.adapters.PointsItemAdapter;
 
@@ -99,9 +100,13 @@ public class PointsFragment extends Fragment {
 		});
 
 		lvPoints.setOnItemClickListener(new OnItemClickListener() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
-				Toast.makeText(getActivity(), lvPoints.getAdapter().getItem(position) + " " + getString(R.string.selected), Toast.LENGTH_SHORT).show();
+				HashMap<String, Object> Record = (HashMap<String, Object>) lvPoints.getAdapter().getItem(position);
+				Intent points_detail_act = new Intent(getActivity(), PointsDetailActivity.class);
+				points_detail_act.putExtra("ID", Integer.parseInt(Record.get("id").toString()));
+				startActivity(points_detail_act);
 			}
 		});
 
@@ -223,5 +228,4 @@ public class PointsFragment extends Fragment {
 			loading = false;
 		}
 	}
-
 }
