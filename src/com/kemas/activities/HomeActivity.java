@@ -182,6 +182,10 @@ public class HomeActivity extends ActionBarActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
+
+		if (NavigationMenuLoaded)
+			return;
+
 		// Listado de titulos de barra de navegacion
 		NavItms = new ArrayList<NavigationMenuItem>();
 
@@ -237,6 +241,7 @@ public class HomeActivity extends ActionBarActivity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				drawerLayout.closeDrawers();
+				NavigationMenuLoaded = true;
 
 				if (config.getUserID() == null) {
 					if (MenuOptionsWithoutConfig[arg2] == "config") {
@@ -252,7 +257,6 @@ public class HomeActivity extends ActionBarActivity {
 						Toast.makeText(HomeActivity.this, "Sin Conexión", Toast.LENGTH_SHORT).show();
 					} else if (MenuOptionsWithoutConnnection[arg2] == "config") {
 						// Configurar Conexión
-						NavigationMenuLoaded = false;
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
 					} else if (MenuOptionsWithoutConnnection[arg2] == "exit") {
