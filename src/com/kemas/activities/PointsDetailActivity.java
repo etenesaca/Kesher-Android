@@ -22,7 +22,7 @@ import com.kemas.hupernikao;
 @SuppressLint("NewApi")
 public class PointsDetailActivity extends ActionBarActivity {
 	private Configuration config;
-	private int RecordID;
+	private long RecordID;
 	Context Context = (Context) this;
 
 	@Override
@@ -42,7 +42,7 @@ public class PointsDetailActivity extends ActionBarActivity {
 		config = new Configuration(this);
 
 		Bundle bundle = getIntent().getExtras();
-		RecordID = bundle.getInt("ID");
+		RecordID = bundle.getLong("ID");
 
 		// Ejecutar la Carga de Datos
 		((ActionBarActivity) PointsDetailActivity.this).getSupportActionBar().setTitle("Historial de Puntos");
@@ -87,9 +87,9 @@ public class PointsDetailActivity extends ActionBarActivity {
 			boolean TestConnection = OpenERP.TestConnection(Server, Port);
 			if (TestConnection) {
 				OpenERP oerp = hupernikao.BuildOpenERPConnection(config);
-				PointsDetail = oerp.getCollaborator(Integer.parseInt(config.getCollaboratorID().toString()));
+				PointsDetail = oerp.read("kemas.history.points", RecordID, new String[] { "code", "date", "reg_uid", "attendance_id", "type", "description", "summary", "points" });
+				DetailName = PointsDetail.get("code").toString();
 			}
-			DetailName = RecordID + "";
 			return null;
 		}
 

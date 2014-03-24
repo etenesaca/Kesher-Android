@@ -105,7 +105,7 @@ public class PointsFragment extends Fragment {
 			public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
 				HashMap<String, Object> Record = (HashMap<String, Object>) lvPoints.getAdapter().getItem(position);
 				Intent points_detail_act = new Intent(getActivity(), PointsDetailActivity.class);
-				points_detail_act.putExtra("ID", Integer.parseInt(Record.get("id").toString()));
+				points_detail_act.putExtra("ID", Long.parseLong(Record.get("id").toString()));
 				startActivity(points_detail_act);
 			}
 		});
