@@ -31,7 +31,7 @@ import com.kemas.hupernikao;
 @SuppressLint("NewApi")
 public class ConnectionActivity extends ActionBarActivity implements OnTouchListener {
 	enum ResultSave {
-		Successful, ConnectionError, BadLogin, NotModuleKemas, UserNotCollaborator, SaveError
+		Successful, NotNetworkConnection, ConnectionError, BadLogin, NotModuleKemas, UserNotCollaborator, SaveError
 	}
 
 	// Declare Elements
@@ -60,7 +60,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 		// Crear una instancia de la Clase de Configuraciones
 		config = new Configuration(this);
 
-		// LIsta de Bases de Datos
+		// Lista de Bases de Datos
 		cmbDb = (Spinner) findViewById(R.id.cmbDb);
 		cmbDb.setOnTouchListener(this);
 
@@ -69,36 +69,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 		txtUsername = (EditText) findViewById(R.id.txtUsername);
 		txtPassword = (EditText) findViewById(R.id.txtPassword);
 
-		// Cargar los datos desde la configuración
-		String Key_SERVER = config.getServer();
-		String Key_PORT = config.getPort();
-		String Key_DATABASE = config.getDataBase();
-
-		txtServer.setText(Key_SERVER);
-		txtPort.setText(config.getPort());
-		txtUsername.setText(config.getLogin());
-		txtPassword.setText(config.getPassword());
-
-		// Verificar si ya hay guardada una configuracion para Cargar la lista
-		// de base de dartos
-		if (Key_SERVER != null && Key_PORT != null && Key_DATABASE != null) {
-			int saved_port = Integer.parseInt(config.getPort());
-			boolean TestConnection = OpenERP.TestConnection(Key_SERVER, saved_port);
-			ArrayAdapter<String> adaptador;
-			if (TestConnection) {
-				String[] list_db = OpenERP.getDatabaseList(Key_SERVER, saved_port);
-				adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list_db);
-				cmbDb.setAdapter(adaptador);
-				for (int i = 0; i < list_db.length; i++) {
-					if (list_db[i].equals(Key_DATABASE)) {
-						cmbDb.setSelection(i);
-					}
-				}
-			} else {
-				String[] list_db = {};
-				adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list_db);
-			}
-		}
+		new LoadCredentials().execute();
 	}
 
 	public void save() {
@@ -225,10 +196,8 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 	}
 
 	/**
-	 * Clase Asincrona para recuparar los datos la primera ves que se muestrar
-	 * la activity al usuario
+	 * Clase Asincrona para guardar las credenciales del usuario
 	 **/
-	@SuppressWarnings("static-access")
 	protected class SaveInfo extends AsyncTask<String, Void, String> {
 		String Server, DataBase, User, Pass;
 		int Port;
@@ -257,69 +226,81 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 
 		@Override
 		protected String doInBackground(String... params) {
-			if (!OpenERP.TestConnection(this.Server, this.Port)) {
-				result = result.ConnectionError;
+			if (!hupernikao.TestNetwork(Context)) {
+				result = ResultSave.NotNetworkConnection;
 				return null;
 			}
-			oerp = OpenERP.connect(Server, Port, this.DataBase, this.User, this.Pass);
+
+			if (!OpenERP.TestConnection(this.Server, this.Port)) {
+				result = ResultSave.ConnectionError;
+				return null;
+			}
+			oerp = OpenERP.connect(this.Server, this.Port, this.DataBase, this.User, this.Pass);
 			if (oerp == null) {
-				result = result.BadLogin;
+				result = ResultSave.BadLogin;
 				return null;
 			}
 
 			// Verificar que la base de datos tenga
 			// instalado el modulo Control de Horario
 			if (!oerp.Module_Installed()) {
-				result = result.NotModuleKemas;
+				result = ResultSave.NotModuleKemas;
 				return null;
 			}
 
 			// Verificar que el Usuario sea un Colaborador
 			Long[] collaborator_ids = oerp.search("kemas.collaborator", new Object[] { new Object[] { "user_id", "=", oerp.getUserId() } }, 1);
 			if (collaborator_ids.length < 1) {
-				result = result.UserNotCollaborator;
+				result = ResultSave.UserNotCollaborator;
 				return null;
 			}
 			// Guardar los datos del Colaborador
 			if (save_collaborator_info(collaborator_ids[0]))
-				result = result.Successful;
+				result = ResultSave.Successful;
 			else
-				result = result.SaveError;
+				result = ResultSave.SaveError;
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+
 			AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ConnectionActivity.this);
 			dlgAlert.setTitle("Error").setIcon(android.R.drawable.ic_delete);
 			dlgAlert.setPositiveButton("OK", null);
 			dlgAlert.setCancelable(true);
 
-			super.onPostExecute(result);
-
+			pDialog.dismiss();
 			switch (this.result) {
+			case NotNetworkConnection:
+				dlgAlert.setMessage("Parece que no te encuentras conectado a ninguna red. revisa tu conexión.");
+				dlgAlert.create().show();
+				break;
 			case ConnectionError:
 				dlgAlert.setMessage("No se pudo conectar al servidor, Verifique los parametros de Conexión.");
 				dlgAlert.create().show();
+				break;
 			case BadLogin:
 				dlgAlert.setMessage("Usuario o Contraseña No Válidos.");
 				dlgAlert.create().show();
+				break;
 			case NotModuleKemas:
 				dlgAlert.setMessage("La base de datos seleccionada no tiene instalado el Modulo de Gestión del Eventos y Control de Actividades (ke+).");
 				dlgAlert.create().show();
+				break;
 			case UserNotCollaborator:
 				dlgAlert.setMessage("La credenciales ingresadas no pertenecen a un Colaborador.");
 				dlgAlert.create().show();
+				break;
 			case Successful:
 				Toast.makeText(ConnectionActivity.this, "Lo Datos Se Guardaron Correctamente.", Toast.LENGTH_SHORT).show();
 				finish();
-			case SaveError:
-				Toast.makeText(ConnectionActivity.this, "No se pudieron guardar los datos, vuelve a intentarlo.", Toast.LENGTH_SHORT).show();
-				finish();
+				break;
 			default:
+				Toast.makeText(ConnectionActivity.this, "No se pudieron guardar los datos, vuelva a intentarlo.", Toast.LENGTH_SHORT).show();
 				break;
 			}
-			pDialog.dismiss();
 		}
 
 		public boolean save_collaborator_info(long collaborator_id) {
@@ -351,6 +332,72 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 				result = false;
 			}
 			return result;
+		}
+	}
+
+	/**
+	 * Clase Asincrona para Cargar las credenciales guardadas
+	 **/
+	protected class LoadCredentials extends AsyncTask<String, Void, String> {
+		String[] DataBases = {};
+		boolean HasCredentialsSaved = false;
+		ProgressDialog pDialog;
+
+		public LoadCredentials() {
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+			pDialog = new ProgressDialog(ConnectionActivity.this);
+			pDialog.setMessage("Abriendo");
+			pDialog.setCancelable(false);
+			pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDialog.show();
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			if (!hupernikao.TestNetwork(Context)) {
+				Toast.makeText(ConnectionActivity.this, "No se puede Establecer conexión. Revise su conexión a Internet.", Toast.LENGTH_SHORT).show();
+				return null;
+			}
+
+			if (config.getServer() != null && config.getPort() != null && config.getDataBase() != null) {
+				HasCredentialsSaved = true;
+				String Server = config.getServer();
+				int Port = Integer.parseInt(config.getPort().toString());
+				boolean TestConnection = OpenERP.TestConnection(Server, Port);
+				if (TestConnection) {
+					DataBases = OpenERP.getDatabaseList(Server, Port);
+				}
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+
+			if (HasCredentialsSaved) {
+				ArrayAdapter<String> adaptador = new ArrayAdapter<String>(ConnectionActivity.this, android.R.layout.simple_spinner_dropdown_item, DataBases);
+				txtServer.setText(config.getServer());
+				txtPort.setText(config.getPort());
+				txtUsername.setText(config.getLogin());
+				txtPassword.setText(config.getPassword());
+
+				if (DataBases.length > 0) {
+					cmbDb.setAdapter(adaptador);
+					for (int i = 0; i < DataBases.length; i++) {
+						if (DataBases[i].equals(config.getDataBase())) {
+							cmbDb.setSelection(i);
+						}
+					}
+				}
+			}
+
+			pDialog.dismiss();
 		}
 	}
 }
