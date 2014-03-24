@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -124,17 +125,7 @@ public class HomeActivity extends ActionBarActivity {
 		if (NavigationMenuLoaded) {
 			return;
 		}
-		if (TestConnection) {
-			OpenERP oerp = hupernikao.BuildOpenERPConnection(config);
-			HashMap<String, Object> NavigationMenuInfo = oerp.getNavigationmenuInfo(Integer.parseInt(config.getCollaboratorID().toString()));
-			if (NavigationMenuInfo != null) {
-				config.setBackground(NavigationMenuInfo.get("mobile_background").toString());
-				config.setTextColor(NavigationMenuInfo.get("mobile_background_text_color").toString());
-				config.setName(NavigationMenuInfo.get("name").toString());
-				config.setPhoto(NavigationMenuInfo.get("image").toString());
-				config.setTeam(NavigationMenuInfo.get("team").toString());
-			}
-		}
+
 		// Primero borro la cabecera actual
 		try {
 			drawer.removeHeaderView(header);
@@ -177,6 +168,8 @@ public class HomeActivity extends ActionBarActivity {
 
 		drawer.addHeaderView(header);
 		NavigationMenuLoaded = true;
+
+		new RefreshMenuNavigation().execute();
 	}
 
 	@Override
@@ -372,5 +365,65 @@ public class HomeActivity extends ActionBarActivity {
 		boolean drawerOpen = shouldGoInvisible;
 		hideMenuItems(menu, !drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
+	}
+
+	/**
+	 * Clase Asincrona para Cargar lel fondo del menu de navegación
+	 **/
+	protected class RefreshMenuNavigation extends AsyncTask<String, Void, String> {
+		@Override
+		protected String doInBackground(String... params) {
+			TestConnection = OpenERP.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()));
+			if (TestConnection) {
+				OpenERP oerp = hupernikao.BuildOpenERPConnection(config);
+				HashMap<String, Object> NavigationMenuInfo = oerp.getNavigationmenuInfo(Integer.parseInt(config.getCollaboratorID().toString()));
+				if (NavigationMenuInfo != null) {
+					config.setBackground(NavigationMenuInfo.get("mobile_background").toString());
+					config.setTextColor(NavigationMenuInfo.get("mobile_background_text_color").toString());
+					config.setName(NavigationMenuInfo.get("name").toString());
+					config.setPhoto(NavigationMenuInfo.get("image").toString());
+					config.setTeam(NavigationMenuInfo.get("team").toString());
+				}
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+
+			if (TestConnection) {
+				TextView txtLogin = (TextView) header.findViewById(R.id.txtLogin);
+				TextView txtTeam = (TextView) header.findViewById(R.id.txtTeam);
+				ImageView imgAvatar = (ImageView) header.findViewById(R.id.imgAvatar);
+				LinearLayout HeaderContainer = (LinearLayout) header.findViewById(R.id.HeaderContainer);
+
+				// Cargar el fondo
+				byte[] background = Base64.decode(config.getBackground().toString(), Base64.DEFAULT);
+				Bitmap bmp_background = BitmapFactory.decodeByteArray(background, 0, background.length);
+				Drawable dw = new BitmapDrawable(getResources(), bmp_background);
+
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+					HeaderContainer.setBackground(dw);
+				} else {
+					HeaderContainer.setBackgroundDrawable(dw);
+				}
+
+				// Cargar la Foto
+				byte[] photo = Base64.decode(config.getPhoto(), Base64.DEFAULT);
+				Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+				imgAvatar.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
+
+				Typeface Roboto_light_italic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-LightItalic.ttf");
+				// Cambiar el color de letra del nombre de Colaborador
+				txtLogin.setTextColor(Color.parseColor(config.getTextColor().toString()));
+				txtTeam.setTextColor(Color.parseColor(config.getTextColor().toString()));
+				txtTeam.setTypeface(Roboto_light_italic);
+
+				// Escribir el nombre y equipo del Colaborador
+				txtLogin.setText(config.getName().toString());
+				txtTeam.setText(config.getTeam().toString());
+			}
+		}
 	}
 }
