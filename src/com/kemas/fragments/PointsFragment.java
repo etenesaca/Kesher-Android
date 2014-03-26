@@ -9,6 +9,7 @@ import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,7 +34,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.kemas.Configuration;
+import com.kemas.OpenERP;
 import com.kemas.R;
+import com.kemas.hupernikao;
 import com.kemas.activities.PointsDetailActivity;
 import com.kemas.datasources.DataSourcePoint;
 import com.kemas.item.adapters.PointsItemAdapter;
@@ -42,6 +46,7 @@ import com.kemas.item.adapters.PointsItemAdapter;
 @SuppressLint("NewApi")
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class PointsFragment extends Fragment {
+	private Configuration config;
 	private DataSourcePoint DataSource;
 	private static final int PAGESIZE = 15;
 	private View footerView;
@@ -50,6 +55,7 @@ public class PointsFragment extends Fragment {
 	private ListAdapter CurrentAdapter;
 
 	private TextView tvDisplaying;
+	private TextView tvPoints;
 	private ListView lvPoints;
 
 	String[] OptionsListNavigation = new String[] { "Todo", "(+)", "(-)" };
@@ -62,6 +68,9 @@ public class PointsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.activity_points, container, false);
+
+		// Crear una instancia de la Clase de Configuraciones
+		config = new Configuration(getActivity());
 
 		// Lineas para habilitar el acceso a la red y poder conectarse al
 		// servidor de OpenERP en el Hilo Principal
@@ -83,6 +92,7 @@ public class PointsFragment extends Fragment {
 
 		lvPoints = (ListView) rootView.findViewById(R.id.lvPointsList);
 		tvDisplaying = (TextView) rootView.findViewById(R.id.displaying);
+		tvPoints = (TextView) rootView.findViewById(R.id.tvPoints);
 
 		footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_list, null, false);
 		lvPoints.setOnScrollListener(new OnScrollListener() {
@@ -113,6 +123,13 @@ public class PointsFragment extends Fragment {
 		});
 
 		tvDisplaying.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				lvPoints.smoothScrollToPosition(0);
+				return false;
+			}
+		});
+		tvPoints.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				lvPoints.smoothScrollToPosition(0);
@@ -200,7 +217,29 @@ public class PointsFragment extends Fragment {
 			lvPoints.setAdapter(CurrentAdapter);
 			lvPoints.removeFooterView(footerView);
 			updateDisplayingTextView();
+
 			pDialog.dismiss();
+			new GetCurrentPoints().execute();
+		}
+	}
+
+	/** Clase Asincrona para Obtener los Puntos Actuales del Colaborador **/
+	protected class GetCurrentPoints extends AsyncTask<String, Void, String> {
+		String Currentpoints;
+
+		@Override
+		protected String doInBackground(String... params) {
+			OpenERP oerp = hupernikao.BuildOpenERPConnection(config);
+			HashMap<String, Object> Collaborator = oerp.read("kemas.collaborator", Long.parseLong(config.getCollaboratorID()), new String[] { "points" });
+			Currentpoints = Collaborator.get("points").toString();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			Typeface Roboto_Bold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Bold.ttf");
+			tvPoints.setText("Actualmente: " + Currentpoints);
+			tvPoints.setTypeface(Roboto_Bold);
 		}
 	}
 
