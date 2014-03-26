@@ -20,7 +20,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -47,7 +49,7 @@ public class PointsFragment extends Fragment {
 	private boolean ScrollComplete = false;
 	private ListAdapter CurrentAdapter;
 
-	private TextView textViewDisplaying;
+	private TextView tvDisplaying;
 	private ListView lvPoints;
 
 	String[] OptionsListNavigation = new String[] { "Todo", "(+)", "(-)" };
@@ -80,7 +82,7 @@ public class PointsFragment extends Fragment {
 		});
 
 		lvPoints = (ListView) rootView.findViewById(R.id.lvPointsList);
-		textViewDisplaying = (TextView) rootView.findViewById(R.id.displaying);
+		tvDisplaying = (TextView) rootView.findViewById(R.id.displaying);
 
 		footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_list, null, false);
 		lvPoints.setOnScrollListener(new OnScrollListener() {
@@ -110,6 +112,14 @@ public class PointsFragment extends Fragment {
 			}
 		});
 
+		tvDisplaying.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				lvPoints.smoothScrollToPosition(0);
+				return false;
+			}
+		});
+
 		setHasOptionsMenu(true);
 		((ActionBarActivity) getActivity()).getSupportActionBar().setSubtitle("Puntos");
 		return rootView;
@@ -118,7 +128,7 @@ public class PointsFragment extends Fragment {
 	protected void updateDisplayingTextView() {
 		String text = getString(R.string.display);
 		text = String.format(text, lvPoints.getCount(), DataSource.getSize());
-		textViewDisplaying.setText(text);
+		tvDisplaying.setText(text);
 	}
 
 	protected boolean load(int firstVisibleItem, int visibleItemCount, int totalItemCount) {

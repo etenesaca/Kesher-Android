@@ -19,7 +19,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -46,7 +48,7 @@ public class AttendancesFragment extends Fragment {
 	private boolean ScrollComplete = false;
 	private ListAdapter CurrentAdapter;
 
-	private TextView textViewDisplaying;
+	private TextView tvDisplaying;
 	private ListView lvAttendance;
 
 	String[] OptionsListNavigation = new String[] { "Todos", "A Tiempo", "Atrazos", "Inasistencias" };
@@ -79,7 +81,7 @@ public class AttendancesFragment extends Fragment {
 		});
 
 		lvAttendance = (ListView) rootView.findViewById(R.id.lvAttendanceList);
-		textViewDisplaying = (TextView) rootView.findViewById(R.id.displaying);
+		tvDisplaying = (TextView) rootView.findViewById(R.id.displaying);
 
 		footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_list, null, false);
 		lvAttendance.setOnScrollListener(new OnScrollListener() {
@@ -105,6 +107,14 @@ public class AttendancesFragment extends Fragment {
 			}
 		});
 
+		tvDisplaying.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				lvAttendance.smoothScrollToPosition(0);
+				return false;
+			}
+		});
+
 		setHasOptionsMenu(true);
 		((ActionBarActivity) getActivity()).getSupportActionBar().setSubtitle("Asistencias");
 		return rootView;
@@ -113,7 +123,7 @@ public class AttendancesFragment extends Fragment {
 	protected void updateDisplayingTextView() {
 		String text = getString(R.string.display);
 		text = String.format(text, lvAttendance.getCount(), DataSource.getSize());
-		textViewDisplaying.setText(text);
+		tvDisplaying.setText(text);
 	}
 
 	protected boolean load(int firstVisibleItem, int visibleItemCount, int totalItemCount) {
