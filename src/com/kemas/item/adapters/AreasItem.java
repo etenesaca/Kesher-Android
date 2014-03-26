@@ -1,35 +1,28 @@
 package com.kemas.item.adapters;
 
+import java.util.HashMap;
+
+@SuppressWarnings("unchecked")
 public class AreasItem {
-	private String logo;
-	private String title;
+	HashMap<String, Object> Area;
 
-	public AreasItem() {
-		super();
-	}
-	
-	
-
-	public AreasItem(String image, String title) {
-		super();
-		this.logo = image;
-		this.title = title;
+	public AreasItem(Object Area) {
+		HashMap<String, Object> AreaHashMap = (HashMap<String, Object>) Area;
+		this.Area = AreaHashMap;
 	}
 
-	public String getImage() {
-		return logo;
+	public AreasItem(HashMap<String, Object> Area) {
+		this.Area = Area;
 	}
 
-	public void setImage(String image) {
-		this.logo = image;
+	public Long getID() {
+		Long ID = Long.parseLong(Area.get("id").toString());
+		return ID;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
+	public String getName() {
+		String Name = Area.get("name").toString();
+		return Name;
 	}
 
 }

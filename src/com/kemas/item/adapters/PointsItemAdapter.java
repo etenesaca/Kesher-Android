@@ -22,7 +22,6 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,13 +78,16 @@ public class PointsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 		tvPoints.setTypeface(Roboto_Bold);
 		tvDay.setText(Record.get("day").toString());
 		tvDay.setTypeface(Roboto_Light);
-		if ((Record.get("type").toString()).equals("increase")) {
+
+		String PointsType = Record.get("type").toString();
+		if (PointsType.equals("increase")) {
+			tvPoints.setTextColor(CTX.getResources().getColor(R.color.Black));
 			imgType.setImageDrawable(CTX.getResources().getDrawable(R.drawable.add));
-		} else if ((Record.get("type").toString()).equals("decrease")) {
-			tvPoints.setTextColor(Color.parseColor("#DF0101"));
+		} else if (PointsType.equals("decrease")) {
+			tvPoints.setTextColor(CTX.getResources().getColor(R.color.Red));
 			imgType.setImageDrawable(CTX.getResources().getDrawable(R.drawable.remove));
-		} else {
-			tvPoints.setTextColor(Color.parseColor("#0B610B"));
+		} else if (PointsType.equals("init")) {
+			tvPoints.setTextColor(CTX.getResources().getColor(R.color.Green));
 			imgType.setImageDrawable(CTX.getResources().getDrawable(R.drawable.ok));
 		}
 		return convertView;

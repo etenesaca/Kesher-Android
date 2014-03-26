@@ -518,7 +518,7 @@
                     android:layout_height="48dp"
                     android:layout_gravity="center_horizontal"
                     android:contentDescription="@string/team"
-                    android:src="@drawable/user_male" />
+                    android:src="@drawable/ic_action_picture_dark" />
 
                 <TextView
                     android:id="@+id/txtTeam2"

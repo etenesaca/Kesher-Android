@@ -2,6 +2,9 @@ package com.kemas;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
 public class Configuration {
 	// Definimos el nombre del archivo de configuracion
@@ -14,6 +17,7 @@ public class Configuration {
 	private final String KEY_LOGIN = "login";
 	private final String KEY_PASSWORD = "pass";
 	private final String KEY_PHOTO = "photo";
+	private final String KEY_COLLABORATOR_PHOTO = "key_collaborator_photo";
 	private final String KEY_USERID = "userid";
 	private final String KEY_COLLABORATORID = "collaboratorid";
 	private final String KEY_CI = "ci";
@@ -22,7 +26,7 @@ public class Configuration {
 	private final String KEY_LANG = "lang";
 	private final String KEY_COMPANY = "company";
 	private final String KEY_EMAIL = "email";
-	
+
 	private final String KEY_BACKGROUND = "background";
 	private final String KEY_TEXT_COLOR = "text_color";
 
@@ -41,7 +45,7 @@ public class Configuration {
 	private SharedPreferences getSettings() {
 		return mContext.getSharedPreferences(SHARED_PREFS_FILE, 0);
 	}
-	
+
 	/*
 	 * SERVER
 	 */
@@ -119,7 +123,7 @@ public class Configuration {
 		editor.putString(KEY_NAME, name);
 		editor.commit();
 	}
-	
+
 	/*
 	 * NOMBRE DEL TEAM
 	 */
@@ -134,15 +138,40 @@ public class Configuration {
 	}
 
 	/*
-	 * PHOTO DEL EMPLEADO
+	 * PHOTO DEL COLLABORADOR
 	 */
-	public String getPhoto() {
-		return getSettings().getString(KEY_PHOTO, null);
+	public Bitmap getPhoto() {
+		Bitmap bmp = null;
+		String PhotoStr = getSettings().getString(KEY_PHOTO, null);
+		if (PhotoStr != null) {
+			byte[] photo = Base64.decode(PhotoStr, Base64.DEFAULT);
+			bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+		}
+		return bmp;
 	}
 
 	public void setPhoto(String Photo) {
 		SharedPreferences.Editor editor = getSettings().edit();
 		editor.putString(KEY_PHOTO, Photo);
+		editor.commit();
+	}
+
+	/*
+	 * PHOTO DEL COLLABORADOR
+	 */
+	public Bitmap getCollaboratorPhoto() {
+		Bitmap bmp = null;
+		String PhotoStr = getSettings().getString(KEY_COLLABORATOR_PHOTO, null);
+		if (PhotoStr != null) {
+			byte[] photo = Base64.decode(PhotoStr, Base64.DEFAULT);
+			bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+		}
+		return bmp;
+	}
+
+	public void setCollaboratorPhoto(String Photo) {
+		SharedPreferences.Editor editor = getSettings().edit();
+		editor.putString(KEY_COLLABORATOR_PHOTO, Photo);
 		editor.commit();
 	}
 
@@ -197,7 +226,7 @@ public class Configuration {
 		editor.putString(KEY_TZ, Tz);
 		editor.commit();
 	}
-	
+
 	/*
 	 * LANG
 	 */
@@ -210,7 +239,7 @@ public class Configuration {
 		editor.putString(KEY_LANG, Lang);
 		editor.commit();
 	}
-	
+
 	/*
 	 * COMPANY
 	 */
@@ -223,7 +252,7 @@ public class Configuration {
 		editor.putString(KEY_COMPANY, Company);
 		editor.commit();
 	}
-	
+
 	/*
 	 * EMAIL
 	 */
@@ -236,7 +265,7 @@ public class Configuration {
 		editor.putString(KEY_EMAIL, Email);
 		editor.commit();
 	}
-	
+
 	/*
 	 * TEXT COLOR
 	 */
@@ -249,7 +278,7 @@ public class Configuration {
 		editor.putString(KEY_TEXT_COLOR, TextColor);
 		editor.commit();
 	}
-	
+
 	/*
 	 * BACKGROUND
 	 */

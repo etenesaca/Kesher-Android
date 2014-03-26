@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/bg6" >
 
     <LinearLayout
         android:id="@+id/Contenedor"
@@ -23,8 +25,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="-5dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="-5dp"
                 android:background="@drawable/shape_header"
                 android:orientation="vertical" >
 
@@ -62,14 +64,52 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/txtName1"
+                android:id="@+id/lblTitleUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:text="@string/complete_name"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:layout_marginTop="5dp"
+                android:text="Realizado por"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:typeface="normal"
+                tools:ignore="HardcodedText" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp" >
+
+                <ImageView
+                    android:id="@+id/ivUser"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginBottom="10dp"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_action_person_dark" />
+
+                <TextView
+                    android:id="@+id/tvSpace"
+                    android:layout_width="4dp"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textIsSelectable="false" />
+
+                <TextView
+                    android:id="@+id/tvUser"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:singleLine="true"
+                    android:text="Nombre del usuario"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textIsSelectable="false"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

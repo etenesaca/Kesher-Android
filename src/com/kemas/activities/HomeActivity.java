@@ -149,9 +149,7 @@ public class HomeActivity extends ActionBarActivity {
 		}
 
 		// Cargar la Foto
-		byte[] photo = Base64.decode(config.getPhoto(), Base64.DEFAULT);
-		Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-		imgAvatar.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
+		imgAvatar.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(config.getPhoto()));
 
 		Typeface Roboto_light_italic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-LightItalic.ttf");
 		// Cambiar el color de letra del nombre de Colaborador
@@ -410,9 +408,7 @@ public class HomeActivity extends ActionBarActivity {
 				}
 
 				// Cargar la Foto
-				byte[] photo = Base64.decode(config.getPhoto(), Base64.DEFAULT);
-				Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-				imgAvatar.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
+				imgAvatar.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(config.getPhoto()));
 
 				Typeface Roboto_light_italic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-LightItalic.ttf");
 				// Cambiar el color de letra del nombre de Colaborador

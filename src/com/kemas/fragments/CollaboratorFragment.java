@@ -205,6 +205,9 @@ public class CollaboratorFragment extends Fragment {
 			super.onPostExecute(result);
 
 			if (Collaborator != null) {
+				// Cargar la Foto
+				imgPhoto.setImageBitmap(hupernikao.getRoundedCornerBitmap(config.getCollaboratorPhoto(), true));
+
 				/*
 				 * CAMPOS A MOSTAR - code - name - nick_name - birth -
 				 * marital_status - address - image_medium - mobile - telef1 -
@@ -231,12 +234,6 @@ public class CollaboratorFragment extends Fragment {
 				txtAgeInMinistry.setText(Collaborator.get("age_in_ministry").toString());
 				txtPoints.setText(Collaborator.get("points").toString());
 				txtLevel.setText(Collaborator.get("level").toString());
-				if (Collaborator.get("image_medium") != "") {
-					// Cargar la Foto
-					byte[] photo = Base64.decode(Collaborator.get("image_medium").toString(), Base64.DEFAULT);
-					Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-					imgPhoto.setImageBitmap(hupernikao.getRoundedCornerBitmap(bmp, true));
-				}
 
 				txtTeam.setVisibility(View.INVISIBLE);
 				imgTeam.setVisibility(View.INVISIBLE);
@@ -244,38 +241,92 @@ public class CollaboratorFragment extends Fragment {
 					HashMap<String, Object> Team = (HashMap<String, Object>) Collaborator.get("team");
 					txtTeam.setText(Team.get("name").toString());
 					txtTeam2.setText(Team.get("name").toString());
-					// Cargar la Logo del Equipo
-					byte[] logo = Base64.decode(Team.get("logo").toString(), Base64.DEFAULT);
-					Bitmap bmp = BitmapFactory.decodeByteArray(logo, 0, logo.length);
-					imgTeam.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
-
-					imgTeam.setVisibility(View.VISIBLE);
 					txtTeam.setVisibility(View.VISIBLE);
+					imgTeam.setVisibility(View.VISIBLE);
+
+					new LoadTeamLogo(Long.parseLong(Team.get("id").toString())).execute();
 				} else {
 					txtTeam2.setText("-- ");
 				}
 
+				pDialog.dismiss();
 				// Procesar las areas
 				if (Collaborator.get("areas").toString() != "") {
 					List<AreasItem> ItemsAreas = new ArrayList<AreasItem>();
 					Object[] Areas = (Object[]) Collaborator.get("areas");
-					for (Object AreaObj : Areas) {
-						HashMap<String, Object> Area = (HashMap<String, Object>) AreaObj;
-						ItemsAreas.add(new AreasItem(Area.get("logo").toString(), Area.get("name").toString()));
+					for (Object Area : Areas) {
+						ItemsAreas.add(new AreasItem(Area));
 					}
 					lstAreas.setAdapter(new AreasItemAdapter(getActivity(), ItemsAreas));
 					ListViewDinamicSize.getListViewSize(lstAreas);
 					makeScroll(0);
 				}
 
-				// ((ActionBarActivity)
-				// getActivity()).getSupportActionBar().setTitle("Mis Datos");
-				// getSupportActionBar().setTitle(Collaborator.get("nick_name").toString());
 				Contenedor.setVisibility(View.VISIBLE);
+
+				// Cargar la foto Actualiza del Colaborador
+				new LoadCollaboratorPhoto(Long.parseLong(config.getCollaboratorID())).execute();
 			} else {
+				pDialog.dismiss();
 				Toast.makeText(getActivity(), "No se pudieron recuperar los datos.", Toast.LENGTH_SHORT).show();
 			}
-			pDialog.dismiss();
+		}
+	}
+
+	/**
+	 * Clase Asincrona para recuparar el logo del Equipo
+	 **/
+	protected class LoadTeamLogo extends AsyncTask<String, Void, String> {
+		HashMap<String, Object> Team = null;
+		long TeamID;
+
+		public LoadTeamLogo(long TeamID) {
+			this.TeamID = TeamID;
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			OpenERP oerp = hupernikao.BuildOpenERPConnection(config);
+			Team = oerp.read("kemas.team", this.TeamID, new String[] { "logo_medium" });
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+
+			// Cargar la imagen del usuario
+			byte[] logo = Base64.decode(Team.get("logo_medium").toString(), Base64.DEFAULT);
+			Bitmap bmp = BitmapFactory.decodeByteArray(logo, 0, logo.length);
+			imgTeam.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
+		}
+	}
+
+	/**
+	 * Clase Asincrona para recuparar la foto del Colaborador
+	 **/
+	protected class LoadCollaboratorPhoto extends AsyncTask<String, Void, String> {
+		HashMap<String, Object> Collaborator = null;
+		long CollaboratorID;
+
+		public LoadCollaboratorPhoto(long CollaboratorID) {
+			this.CollaboratorID = CollaboratorID;
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			OpenERP oerp = hupernikao.BuildOpenERPConnection(config);
+			Collaborator = oerp.read("kemas.collaborator", this.CollaboratorID, new String[] { "photo_large" });
+			config.setCollaboratorPhoto(Collaborator.get("photo_large").toString());
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+
+			// Cargar la imagen del usuario
+			imgPhoto.setImageBitmap(hupernikao.getRoundedCornerBitmap(config.getCollaboratorPhoto(), true));
 		}
 	}
 }

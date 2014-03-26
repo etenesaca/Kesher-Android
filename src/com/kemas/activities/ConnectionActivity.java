@@ -328,8 +328,14 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 					config.setName(NavigationMenuInfo.get("name").toString());
 					config.setPhoto(NavigationMenuInfo.get("image").toString());
 					config.setTeam(NavigationMenuInfo.get("team").toString());
+
+					// Guardar la Foto del Colaborador
+					HashMap<String, Object> Collaborator = oerp.read("kemas.collaborator", collaborator_id, new String[] { "photo_large" });
+					config.setCollaboratorPhoto(Collaborator.get("photo_large").toString());
+
 					result = true;
 				}
+
 			} catch (Exception e) {
 				result = false;
 			}

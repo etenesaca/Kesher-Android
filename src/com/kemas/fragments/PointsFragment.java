@@ -58,8 +58,8 @@ public class PointsFragment extends Fragment {
 	private TextView tvPoints;
 	private ListView lvPoints;
 
-	String[] OptionsListNavigation = new String[] { "Todo", "(+)", "(-)" };
-	String[] PointsTypes = new String[] { "all", "increase", "decrease" };
+	String[] OptionsListNavigation = new String[] { "Todo", "(+)", "(-)", "Ingreso" };
+	String[] PointsTypes = new String[] { "all", "increase", "decrease", "init" };
 	int CurrentPointType;
 
 	public PointsFragment() {
