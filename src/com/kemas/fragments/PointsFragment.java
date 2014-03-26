@@ -238,7 +238,7 @@ public class PointsFragment extends Fragment {
 		@Override
 		protected void onPostExecute(String result) {
 			Typeface Roboto_Bold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Bold.ttf");
-			tvPoints.setText("Actualmente: " + Currentpoints);
+			tvPoints.setText("Tus puntos: " + Currentpoints);
 			tvPoints.setTypeface(Roboto_Bold);
 		}
 	}
