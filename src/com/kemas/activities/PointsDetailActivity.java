@@ -32,9 +32,17 @@ public class PointsDetailActivity extends ActionBarActivity {
 	Context Context = (Context) this;
 
 	private TextView lblTitleUser;
+	private TextView lblDetails;
+	private TextView lblDateTime;
 
-	private TextView tvUser;
 	private ImageView ivUser;
+	private TextView tvUser;
+	private TextView tvDescription;
+	private TextView tvPoints;
+	private TextView tvSummary;
+	private TextView tvDate;
+	private TextView tvHour;
+	private TextView tvDay;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +65,23 @@ public class PointsDetailActivity extends ActionBarActivity {
 		Bundle bundle = getIntent().getExtras();
 		RecordID = bundle.getLong("ID");
 
+		Typeface Roboto_light = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
 		Typeface Roboto_bold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
 		lblTitleUser = (TextView) findViewById(R.id.lblTitleUser);
 		lblTitleUser.setTypeface(Roboto_bold);
+		lblDetails = (TextView) findViewById(R.id.lblDetails);
+		lblDetails.setTypeface(Roboto_light);
+		lblDateTime = (TextView) findViewById(R.id.lblDateTime);
+		lblDateTime.setTypeface(Roboto_light);
 
 		ivUser = (ImageView) findViewById(R.id.ivUser);
 		tvUser = (TextView) findViewById(R.id.tvUser);
+		tvDescription = (TextView) findViewById(R.id.tvDescription);
+		tvPoints = (TextView) findViewById(R.id.tvPoints);
+		tvSummary = (TextView) findViewById(R.id.tvSummary);
+		tvDate = (TextView) findViewById(R.id.tvDate);
+		tvHour = (TextView) findViewById(R.id.tvHour);
+		tvDay = (TextView) findViewById(R.id.tvDay);
 
 		// Ejecutar la Carga de Datos
 		((ActionBarActivity) PointsDetailActivity.this).getSupportActionBar().setTitle("Historial de Puntos");
@@ -97,6 +116,14 @@ public class PointsDetailActivity extends ActionBarActivity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 
+			tvUser.setText("");
+			tvDescription.setText("");
+			tvPoints.setText("");
+			tvSummary.setText("");
+			tvDate.setText("");
+			tvHour.setText("");
+			tvDay.setText("");
+
 			pDialog = new ProgressDialog(PointsDetailActivity.this);
 			pDialog.setMessage("Cargando Datos");
 			pDialog.setCancelable(false);
@@ -128,6 +155,14 @@ public class PointsDetailActivity extends ActionBarActivity {
 
 			((ActionBarActivity) PointsDetailActivity.this).getSupportActionBar().setSubtitle(PointsDetail.get("code").toString());
 			tvUser.setText(PointsDetail.get("NameUser").toString());
+			tvDescription.setText(PointsDetail.get("description").toString());
+			tvPoints.setText(PointsDetail.get("points").toString());
+			tvSummary.setText(PointsDetail.get("summary").toString());
+
+			HashMap<String, Object> DetailDate = hupernikao.Convert_UTCtoGMT_Str(PointsDetail.get("date").toString());
+			tvDate.setText(DetailDate.get("date").toString());
+			tvHour.setText(DetailDate.get("hour").toString());
+			tvDay.setText(DetailDate.get("day").toString());
 
 			pDialog.dismiss();
 			LoadUserImage Task = new LoadUserImage(Long.parseLong(PointsDetail.get("UserID").toString()));
