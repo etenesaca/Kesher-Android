@@ -132,7 +132,15 @@ public class CollaboratorFragment extends Fragment {
 		txtTeam.setTypeface(Roboto_light_italic);
 
 		scroll = (ScrollView) rootView.findViewById(R.id.scroll);
-		new LoadInfo().execute();
+
+		// Ejecutar la Tareas Asincrona de acuerdo a la version de Android
+		LoadInfo Task = new LoadInfo();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			Task.execute();
+		}
+
 		((ActionBarActivity) getActivity()).getSupportActionBar().setSubtitle("Mis Datos");
 		return rootView;
 	}
@@ -244,7 +252,13 @@ public class CollaboratorFragment extends Fragment {
 					txtTeam.setVisibility(View.VISIBLE);
 					imgTeam.setVisibility(View.VISIBLE);
 
-					new LoadTeamLogo(Long.parseLong(Team.get("id").toString())).execute();
+					// Ejecutar la Tarea de acuerdo a la version de Android
+					LoadTeamLogo Task = new LoadTeamLogo(Long.parseLong(Team.get("id").toString()));
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+						Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					} else {
+						Task.execute();
+					}
 				} else {
 					txtTeam2.setText("-- ");
 				}
@@ -265,7 +279,12 @@ public class CollaboratorFragment extends Fragment {
 				Contenedor.setVisibility(View.VISIBLE);
 
 				// Cargar la foto Actualiza del Colaborador
-				new LoadCollaboratorPhoto(Long.parseLong(config.getCollaboratorID())).execute();
+				LoadCollaboratorPhoto Task = new LoadCollaboratorPhoto(Long.parseLong(config.getCollaboratorID()));
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+					Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				} else {
+					Task.execute();
+				}
 			} else {
 				pDialog.dismiss();
 				Toast.makeText(getActivity(), "No se pudieron recuperar los datos.", Toast.LENGTH_SHORT).show();

@@ -64,7 +64,13 @@ public class PointsDetailActivity extends ActionBarActivity {
 
 		// Ejecutar la Carga de Datos
 		((ActionBarActivity) PointsDetailActivity.this).getSupportActionBar().setTitle("Historial de Puntos");
-		new LoadInfo().execute();
+
+		LoadInfo Task = new LoadInfo();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			Task.execute();
+		}
 	}
 
 	@Override
@@ -122,7 +128,12 @@ public class PointsDetailActivity extends ActionBarActivity {
 			tvUser.setText(PointsDetail.get("NameUser").toString());
 
 			pDialog.dismiss();
-			new LoadUserImage(Long.parseLong(PointsDetail.get("UserID").toString())).execute();
+			LoadUserImage Task = new LoadUserImage(Long.parseLong(PointsDetail.get("UserID").toString()));
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} else {
+				Task.execute();
+			}
 		}
 	}
 

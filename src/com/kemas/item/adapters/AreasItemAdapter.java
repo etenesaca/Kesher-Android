@@ -3,10 +3,12 @@ package com.kemas.item.adapters;
 import java.util.HashMap;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import com.kemas.OpenERP;
 import com.kemas.R;
 import com.kemas.hupernikao;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class AreasItemAdapter extends BaseAdapter {
 	private Configuration config;
 	private Context CTX;
@@ -60,7 +63,12 @@ public class AreasItemAdapter extends BaseAdapter {
 
 		tvTitle.setText(this.items.get(position).getName());
 
-		new LoadImageArea(this.items.get(position).getID(), ivItem).execute();
+		LoadImageArea Task = new LoadImageArea(this.items.get(position).getID(), ivItem);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			Task.execute();
+		}
 
 		return rowView;
 	}

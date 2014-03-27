@@ -71,7 +71,13 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 
 		if (config.getServer() == null)
 			txtServer.requestFocus();
-		new LoadCredentials().execute();
+
+		LoadCredentials Task = new LoadCredentials();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			Task.execute();
+		}
 	}
 
 	public void save() {
@@ -118,7 +124,12 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 			dlgAlert.setMessage("Ingrese el Password.");
 			dlgAlert.create().show();
 		} else {
-			new SaveInfo(Server, txtPort.getText().toString(), cmbDb.getSelectedItem().toString(), user, pass).execute();
+			SaveInfo Task = new SaveInfo(Server, txtPort.getText().toString(), cmbDb.getSelectedItem().toString(), user, pass);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} else {
+				Task.execute();
+			}
 		}
 	}
 

@@ -75,7 +75,13 @@ public class AttendancesFragment extends Fragment {
 				// Toast.makeText(getActivity(), "Seleccionada opcion: " +
 				// OptionsListNavigation[arg0], Toast.LENGTH_SHORT).show();
 				CurrentAttendanceType = arg0;
-				new SearchRegisters(AttendanceTypes[CurrentAttendanceType]).execute();
+
+				SearchRegisters Task = new SearchRegisters(AttendanceTypes[CurrentAttendanceType]);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+					Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				} else {
+					Task.execute();
+				}
 				return false;
 			}
 		});
@@ -95,7 +101,12 @@ public class AttendancesFragment extends Fragment {
 				if (ScrollComplete)
 					return;
 				if (load(firstVisibleItem, visibleItemCount, totalItemCount)) {
-					new LoadNextPage().execute();
+					LoadNextPage Task = new LoadNextPage();
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+						Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					} else {
+						Task.execute();
+					}
 				}
 			}
 		});
@@ -151,7 +162,12 @@ public class AttendancesFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean result = super.onOptionsItemSelected(item);
 		if (item.getItemId() == R.id.mnAttendancesRefresh || item.getItemId() == R.id.mnAttendancesRefresh) {
-			new SearchRegisters(AttendanceTypes[CurrentAttendanceType]).execute();
+			SearchRegisters Task = new SearchRegisters(AttendanceTypes[CurrentAttendanceType]);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} else {
+				Task.execute();
+			}
 		}
 		return result;
 	}

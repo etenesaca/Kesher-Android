@@ -85,7 +85,14 @@ public class PointsFragment extends Fragment {
 				// Toast.makeText(getActivity(), "Seleccionada opcion: " +
 				// OptionsListNavigation[arg0], Toast.LENGTH_SHORT).show();
 				CurrentPointType = arg0;
-				new SearchRegisters(PointsTypes[CurrentPointType]).execute();
+
+				// Ejecutar la Tarea de acuerdo a la version de Android
+				SearchRegisters Task = new SearchRegisters(PointsTypes[CurrentPointType]);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+					Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				} else {
+					Task.execute();
+				}
 				return false;
 			}
 		});
@@ -106,7 +113,14 @@ public class PointsFragment extends Fragment {
 				if (ScrollComplete)
 					return;
 				if (load(firstVisibleItem, visibleItemCount, totalItemCount)) {
-					new LoadNextPage().execute();
+
+					// Ejecutar la Tarea de acuerdo a la version de Android
+					LoadNextPage Task = new LoadNextPage();
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+						Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					} else {
+						Task.execute();
+					}
 				}
 			}
 		});
@@ -173,7 +187,13 @@ public class PointsFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean result = super.onOptionsItemSelected(item);
 		if (item.getItemId() == R.id.mnPointsRefresh || item.getItemId() == R.id.mnPointsRefresh) {
-			new SearchRegisters(PointsTypes[CurrentPointType]).execute();
+			// Ejecutar la Tarea de acuerdo a la version de Android
+			SearchRegisters Task = new SearchRegisters(PointsTypes[CurrentPointType]);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} else {
+				Task.execute();
+			}
 		}
 		return result;
 	}
@@ -219,7 +239,14 @@ public class PointsFragment extends Fragment {
 			updateDisplayingTextView();
 
 			pDialog.dismiss();
-			new GetCurrentPoints().execute();
+
+			// Ejecutar la Tarea de acuerdo a la version de Android
+			GetCurrentPoints Task = new GetCurrentPoints();
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} else {
+				Task.execute();
+			}
 		}
 	}
 

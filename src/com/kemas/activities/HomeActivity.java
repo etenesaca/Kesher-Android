@@ -167,7 +167,12 @@ public class HomeActivity extends ActionBarActivity {
 		drawer.addHeaderView(header);
 		NavigationMenuLoaded = true;
 
-		new RefreshMenuNavigation().execute();
+		RefreshMenuNavigation Task = new RefreshMenuNavigation();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			Task.execute();
+		}
 	}
 
 	@Override
