@@ -10,8 +10,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
+        android:text="Tus puntos:"
         android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/displaying"

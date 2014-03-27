@@ -21,19 +21,32 @@
             android:background="@drawable/shape"
             android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/lblDetails"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="5dp"
-                android:text="Detalles"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:typeface="normal"
-                tools:ignore="HardcodedText" />
+                tools:ignore="UseCompoundDrawables" >
+
+                <TextView
+                    android:id="@+id/lblDetails"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="2"
+                    android:text="Detalles"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:typeface="normal"
+                    tools:ignore="HardcodedText" />
+
+                <ImageView
+                    android:id="@+id/ivType"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:contentDescription="@string/points"
+                    android:src="@drawable/add" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/lblDescription"
@@ -81,6 +94,7 @@
                 android:layout_marginRight="15dp"
                 android:text="Puntos"
                 android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
             <TextView
@@ -140,7 +154,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="5dp"
-                android:text="Descripción"
+                android:text="Fecha"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
@@ -152,7 +166,7 @@
                 android:layout_gravity="left"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:text="Descripción"
+                android:text="Fecha"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 tools:ignore="HardcodedText" />
 
@@ -164,7 +178,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="5dp"
-                android:text="Puntos"
+                android:text="Hora"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
@@ -176,7 +190,7 @@
                 android:layout_gravity="left"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:text="Puntos"
+                android:text="Hora"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 tools:ignore="HardcodedText" />
 
@@ -188,7 +202,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="5dp"
-                android:text="Resumen"
+                android:text="Día"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
@@ -200,7 +214,7 @@
                 android:layout_gravity="left"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:text="Resumen"
+                android:text="Día"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -226,7 +240,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="5dp"
-                android:text="Realizado por"
+                android:text="Responsable"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:typeface="normal"
                 tools:ignore="HardcodedText" />

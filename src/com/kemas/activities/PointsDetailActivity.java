@@ -16,7 +16,9 @@ import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Base64;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kemas.Configuration;
@@ -31,11 +33,13 @@ public class PointsDetailActivity extends ActionBarActivity {
 	private long RecordID;
 	Context Context = (Context) this;
 
+	private LinearLayout Contenedor;
 	private TextView lblTitleUser;
 	private TextView lblDetails;
 	private TextView lblDateTime;
 
 	private ImageView ivUser;
+	private ImageView ivType;
 	private TextView tvUser;
 	private TextView tvDescription;
 	private TextView tvPoints;
@@ -67,6 +71,7 @@ public class PointsDetailActivity extends ActionBarActivity {
 
 		Typeface Roboto_light = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
 		Typeface Roboto_bold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
+		Contenedor = (LinearLayout) findViewById(R.id.Contenedor);
 		lblTitleUser = (TextView) findViewById(R.id.lblTitleUser);
 		lblTitleUser.setTypeface(Roboto_bold);
 		lblDetails = (TextView) findViewById(R.id.lblDetails);
@@ -75,6 +80,7 @@ public class PointsDetailActivity extends ActionBarActivity {
 		lblDateTime.setTypeface(Roboto_light);
 
 		ivUser = (ImageView) findViewById(R.id.ivUser);
+		ivType = (ImageView) findViewById(R.id.ivType);
 		tvUser = (TextView) findViewById(R.id.tvUser);
 		tvDescription = (TextView) findViewById(R.id.tvDescription);
 		tvPoints = (TextView) findViewById(R.id.tvPoints);
@@ -116,14 +122,7 @@ public class PointsDetailActivity extends ActionBarActivity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 
-			tvUser.setText("");
-			tvDescription.setText("");
-			tvPoints.setText("");
-			tvSummary.setText("");
-			tvDate.setText("");
-			tvHour.setText("");
-			tvDay.setText("");
-
+			Contenedor.setVisibility(View.INVISIBLE);
 			pDialog = new ProgressDialog(PointsDetailActivity.this);
 			pDialog.setMessage("Cargando Datos");
 			pDialog.setCancelable(false);
@@ -164,6 +163,19 @@ public class PointsDetailActivity extends ActionBarActivity {
 			tvHour.setText(DetailDate.get("hour").toString());
 			tvDay.setText(DetailDate.get("day").toString());
 
+			String PointsType = PointsDetail.get("type").toString();
+			if (PointsType.equals("increase")) {
+				tvPoints.setTextColor(getResources().getColor(R.color.Green));
+				ivType.setImageDrawable(getResources().getDrawable(R.drawable.add));
+			} else if (PointsType.equals("decrease")) {
+				tvPoints.setTextColor(getResources().getColor(R.color.Red));
+				ivType.setImageDrawable(getResources().getDrawable(R.drawable.remove));
+			} else if (PointsType.equals("init")) {
+				tvPoints.setTextColor(getResources().getColor(R.color.Green));
+				ivType.setImageDrawable(getResources().getDrawable(R.drawable.ok));
+			}
+
+			Contenedor.setVisibility(View.VISIBLE);
 			pDialog.dismiss();
 			LoadUserImage Task = new LoadUserImage(Long.parseLong(PointsDetail.get("UserID").toString()));
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
