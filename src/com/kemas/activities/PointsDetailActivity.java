@@ -41,10 +41,12 @@ public class PointsDetailActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_points_detail);
 
-		// Lineas para habilitar el acceso a la red y poder conectarse al
-		// servidor de OpenERP en el Hilo Principal
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		StrictMode.setThreadPolicy(policy);
+		if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
+			// Habilitar el acceso a la red y poder conectarse al
+			// servidor de OpenERP en el Hilo Principal
+			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+			StrictMode.setThreadPolicy(policy);
+		}
 
 		// Activar el Boton Home
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);

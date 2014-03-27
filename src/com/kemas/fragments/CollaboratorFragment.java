@@ -14,7 +14,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Base64;
@@ -83,11 +82,6 @@ public class CollaboratorFragment extends Fragment {
 		setHasOptionsMenu(true);
 
 		((ActionBarActivity) getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-
-		// Lineas para habilitar el acceso a la red y poder conectarse al
-		// servidor de OpenERP en el Hilo Principal
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		StrictMode.setThreadPolicy(policy);
 
 		// Crear una instancia de la Clase de Configuraciones
 		config = new Configuration(getActivity());
