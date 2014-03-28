@@ -34,6 +34,7 @@ public class PointsDetailActivity extends ActionBarActivity {
 	Context Context = (Context) this;
 
 	private LinearLayout Contenedor;
+	private LinearLayout ContentAttendance;
 	private TextView lblTitleUser;
 	private TextView lblDetails;
 	private TextView lblDateTime;
@@ -72,6 +73,7 @@ public class PointsDetailActivity extends ActionBarActivity {
 		Typeface Roboto_light = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
 		Typeface Roboto_bold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
 		Contenedor = (LinearLayout) findViewById(R.id.Contenedor);
+		ContentAttendance = (LinearLayout) findViewById(R.id.ContentAttendance);
 		lblTitleUser = (TextView) findViewById(R.id.lblTitleUser);
 		lblTitleUser.setTypeface(Roboto_bold);
 		lblDetails = (TextView) findViewById(R.id.lblDetails);
@@ -174,6 +176,9 @@ public class PointsDetailActivity extends ActionBarActivity {
 				tvPoints.setTextColor(getResources().getColor(R.color.Green));
 				ivType.setImageDrawable(getResources().getDrawable(R.drawable.ok));
 			}
+
+			if (PointsDetail.get("attendance_id").toString().equals("false"))
+				ContentAttendance.setVisibility(View.GONE);
 
 			Contenedor.setVisibility(View.VISIBLE);
 			pDialog.dismiss();
