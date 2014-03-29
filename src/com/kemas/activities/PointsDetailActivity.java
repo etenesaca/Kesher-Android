@@ -26,7 +26,7 @@ import com.kemas.OpenERP;
 import com.kemas.R;
 import com.kemas.hupernikao;
 
-@TargetApi(Build.VERSION_CODES.GINGERBREAD)
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 @SuppressLint("NewApi")
 public class PointsDetailActivity extends ActionBarActivity {
 	private Configuration config;

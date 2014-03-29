@@ -239,37 +239,31 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/shape"
-            android:orientation="vertical" >
+            android:background="@drawable/button_drawable"
+            android:orientation="horizontal" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/lblAttendance"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                tools:ignore="UseCompoundDrawables,UselessParent" >
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:text="Ver Registro de Asistencia"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:typeface="normal"
+                tools:ignore="HardcodedText" />
 
-                <TextView
-                    android:id="@+id/lblAttendance"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="2"
-                    android:text="Ver Registro de Asistencia"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textStyle="bold"
-                    android:typeface="normal"
-                    tools:ignore="HardcodedText" />
-
-                <ImageView
-                    android:id="@+id/ivGO"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:contentDescription="@string/points"
-                    android:src="@drawable/ic_action_next_item" />
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/ivGO"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginBottom="-1dp"
+                android:layout_marginTop="-1dp"
+                android:contentDescription="@string/points"
+                android:src="@drawable/ic_action_next_item_lignt" />
         </LinearLayout>
 
         <LinearLayout
