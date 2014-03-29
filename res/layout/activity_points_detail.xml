@@ -257,7 +257,7 @@
                 tools:ignore="HardcodedText" />
 
             <ImageView
-                android:id="@+id/ivGO"
+                android:id="@+id/ivGo"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginBottom="-1dp"

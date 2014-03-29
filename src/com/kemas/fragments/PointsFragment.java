@@ -76,8 +76,6 @@ public class PointsFragment extends Fragment {
 		((ActionBarActivity) getActivity()).getSupportActionBar().setListNavigationCallbacks(ActionBarListAdapter, new OnNavigationListener() {
 			@Override
 			public boolean onNavigationItemSelected(int arg0, long arg1) {
-				// Toast.makeText(getActivity(), "Seleccionada opcion: " +
-				// OptionsListNavigation[arg0], Toast.LENGTH_SHORT).show();
 				CurrentPointType = arg0;
 
 				// Ejecutar la Tarea de acuerdo a la version de Android

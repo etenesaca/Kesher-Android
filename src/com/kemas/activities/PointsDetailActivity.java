@@ -16,10 +16,15 @@ import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Base64;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kemas.Configuration;
 import com.kemas.OpenERP;
@@ -27,18 +32,22 @@ import com.kemas.R;
 import com.kemas.hupernikao;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+@SuppressWarnings("deprecation")
 @SuppressLint("NewApi")
 public class PointsDetailActivity extends ActionBarActivity {
 	private Configuration config;
 	private long RecordID;
+	private long AttendanceID;
 	Context Context = (Context) this;
 
 	private LinearLayout Contenedor;
 	private LinearLayout ContentAttendance;
+	private TextView lblAttendance;
 	private TextView lblTitleUser;
 	private TextView lblDetails;
 	private TextView lblDateTime;
 
+	private ImageView ivGo;
 	private ImageView ivUser;
 	private ImageView ivType;
 	private TextView tvUser;
@@ -74,6 +83,7 @@ public class PointsDetailActivity extends ActionBarActivity {
 		Typeface Roboto_bold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
 		Contenedor = (LinearLayout) findViewById(R.id.Contenedor);
 		ContentAttendance = (LinearLayout) findViewById(R.id.ContentAttendance);
+		lblAttendance = (TextView) findViewById(R.id.lblAttendance);
 		lblTitleUser = (TextView) findViewById(R.id.lblTitleUser);
 		lblTitleUser.setTypeface(Roboto_bold);
 		lblDetails = (TextView) findViewById(R.id.lblDetails);
@@ -82,6 +92,7 @@ public class PointsDetailActivity extends ActionBarActivity {
 		lblDateTime.setTypeface(Roboto_light);
 
 		ivUser = (ImageView) findViewById(R.id.ivUser);
+		ivGo = (ImageView) findViewById(R.id.ivGo);
 		ivType = (ImageView) findViewById(R.id.ivType);
 		tvUser = (TextView) findViewById(R.id.tvUser);
 		tvDescription = (TextView) findViewById(R.id.tvDescription);
@@ -100,6 +111,36 @@ public class PointsDetailActivity extends ActionBarActivity {
 		} else {
 			Task.execute();
 		}
+
+		ContentAttendance.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				GotoAttendance();
+				return false;
+			}
+		});
+		ContentAttendance.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				GotoAttendance();
+			}
+		});
+		ContentAttendance.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				lblAttendance.setTextColor(getResources().getColor(R.color.Black));
+				ContentAttendance.setBackgroundDrawable((getResources().getDrawable(R.drawable.shape)));
+				ivGo.setImageDrawable((getResources().getDrawable(R.drawable.ic_action_next_item)));
+				return false;
+			}
+		});
+	}
+
+	void GotoAttendance() {
+		Toast.makeText(PointsDetailActivity.this, "ID." + AttendanceID, Toast.LENGTH_SHORT).show();
+		lblAttendance.setTextColor(getResources().getColor(R.color.White));
+		ContentAttendance.setBackgroundDrawable((getResources().getDrawable(R.drawable.button_drawable)));
+		ivGo.setImageDrawable((getResources().getDrawable(R.drawable.ic_action_next_item_lignt)));
 	}
 
 	@Override
@@ -179,6 +220,10 @@ public class PointsDetailActivity extends ActionBarActivity {
 
 			if (PointsDetail.get("attendance_id").toString().equals("false"))
 				ContentAttendance.setVisibility(View.GONE);
+			else {
+				Object[] Attendance = (Object[]) PointsDetail.get("attendance_id");
+				AttendanceID = Long.parseLong(Attendance[0].toString());
+			}
 
 			Contenedor.setVisibility(View.VISIBLE);
 			pDialog.dismiss();
