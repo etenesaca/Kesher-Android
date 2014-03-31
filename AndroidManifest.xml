@@ -33,7 +33,8 @@
         <activity
             android:name="com.kemas.activities.ConnectionActivity"
             android:icon="@drawable/ic_launcher"
-            android:label="@string/activity_connection_title" >
+            android:label="@string/activity_connection_title"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.kemas.activities.ConnectionActivity" />
 

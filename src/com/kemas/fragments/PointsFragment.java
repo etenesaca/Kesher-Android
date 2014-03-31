@@ -128,14 +128,15 @@ public class PointsFragment extends Fragment {
 			}
 		});
 
-		tvDisplaying.setOnTouchListener(new OnTouchListener() {
+		tvPoints.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				lvPoints.smoothScrollToPosition(0);
 				return false;
 			}
 		});
-		tvPoints.setOnTouchListener(new OnTouchListener() {
+
+		tvDisplaying.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				lvPoints.smoothScrollToPosition(0);
