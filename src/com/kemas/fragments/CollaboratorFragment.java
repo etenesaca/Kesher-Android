@@ -199,7 +199,7 @@ public class CollaboratorFragment extends Fragment {
 
 			outState.putStringArray("team", null);
 			if (Collaborator.get("team").toString() != "") {
-				String[] TeamArray = null;
+			
 				HashMap<String, Object> Team = (HashMap<String, Object>) Collaborator.get("team");
 				TeamArray = new String[] { Team.get("id").toString(), Team.get("name").toString() };
 				outState.putStringArray("team", TeamArray);
