@@ -42,6 +42,8 @@ import com.kemas.item.adapters.AreasItemAdapter;
 @SuppressLint("NewApi")
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class CollaboratorFragment extends Fragment {
+	HashMap<String, Object> Collaborator = null;
+
 	private Configuration config;
 	private ScrollView scroll;
 	private LinearLayout Contenedor;
@@ -127,16 +129,70 @@ public class CollaboratorFragment extends Fragment {
 
 		scroll = (ScrollView) rootView.findViewById(R.id.scroll);
 
-		// Ejecutar la Tareas Asincrona de acuerdo a la version de Android
-		LoadInfo Task = new LoadInfo();
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		} else {
-			Task.execute();
-		}
+		if (savedInstanceState == null) {
+			// Ejecutar la Tareas Asincrona de acuerdo a la version de Android
+			LoadInfo Task = new LoadInfo();
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} else {
+				Task.execute();
+			}
+		} else
+			restoreMe(savedInstanceState);
 
 		((ActionBarActivity) getActivity()).getSupportActionBar().setSubtitle("Mis Datos");
 		return rootView;
+	}
+
+	private void restoreMe(Bundle state) {
+		if (state == null)
+			return;
+
+		Collaborator.put("name", state.getString("name"));
+		Collaborator.put("code", state.getString("code"));
+		Collaborator.put("personal_id", state.getString("personal_id"));
+		Collaborator.put("nick_name", state.getString("nick_name"));
+		Collaborator.put("birth", state.getString("birth"));
+		Collaborator.put("age", state.getString("age"));
+		Collaborator.put("marital_status", state.getString("marital_status"));
+		Collaborator.put("address", state.getString("address"));
+		Collaborator.put("mobile", state.getString("mobile"));
+		Collaborator.put("telef1", state.getString("telef1"));
+		Collaborator.put("telef2", state.getString("telef2"));
+		Collaborator.put("email", state.getString("email"));
+		Collaborator.put("im_account", state.getString("im_account"));
+		Collaborator.put("join_date", state.getString("join_date"));
+		Collaborator.put("age_in_ministry", state.getString("age_in_ministry"));
+		Collaborator.put("points", state.getString("points"));
+		Collaborator.put("level", state.getString("level"));
+
+		Collaborator.put("team", "");
+		Collaborator.put("areas", "");
+		ShowInfo();
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if (Collaborator != null) {
+			outState.putString("name", Collaborator.get("name").toString());
+			outState.putString("code", Collaborator.get("code").toString());
+			outState.putString("personal_id", Collaborator.get("personal_id").toString());
+			outState.putString("nick_name", Collaborator.get("nick_name").toString());
+			outState.putString("birth", Collaborator.get("birth").toString());
+			outState.putString("age", Collaborator.get("age").toString());
+			outState.putString("marital_status", Collaborator.get("marital_status").toString());
+			outState.putString("address", Collaborator.get("address").toString());
+			outState.putString("mobile", Collaborator.get("mobile").toString());
+			outState.putString("telef1", Collaborator.get("telef1").toString());
+			outState.putString("telef2", Collaborator.get("telef2").toString());
+			outState.putString("email", Collaborator.get("email").toString());
+			outState.putString("im_account", Collaborator.get("im_account").toString());
+			outState.putString("join_date", Collaborator.get("join_date").toString());
+			outState.putString("age_in_ministry", Collaborator.get("age_in_ministry").toString());
+			outState.putString("points", Collaborator.get("points").toString());
+			outState.putString("level", Collaborator.get("level").toString());
+		}
 	}
 
 	private void makeScroll(final int go) {
@@ -169,17 +225,88 @@ public class CollaboratorFragment extends Fragment {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
+	void ShowInfo() {
+		// Cargar la Foto
+		imgPhoto.setImageBitmap(hupernikao.getRoundedCornerBitmap(config.getCollaboratorPhoto(), true));
+
+		/*
+		 * CAMPOS A MOSTAR - code - name - nick_name - birth - marital_status -
+		 * address - image_medium - mobile - telef1 - telef2 - email -
+		 * im_account - team - join_date - points - level
+		 */
+		txtCode.setText(Collaborator.get("code").toString());
+		txtCI.setText(Collaborator.get("personal_id").toString());
+		if ((Collaborator.get("personal_id").toString()).equals("")) {
+			txtCI.setText("--");
+		}
+		txtName.setText(Collaborator.get("name").toString());
+		txtNickname.setText(Collaborator.get("nick_name").toString());
+		txtBirth.setText(Collaborator.get("birth").toString());
+		txtAge.setText(Collaborator.get("age").toString());
+		txtMaritalStatus.setText(Collaborator.get("marital_status").toString());
+		txtAddress.setText(Collaborator.get("address").toString());
+		txtMobile.setText(Collaborator.get("mobile").toString());
+		txtTelef1.setText(Collaborator.get("telef1").toString());
+		txtTelef2.setText(Collaborator.get("telef2").toString());
+		txtEmail.setText(Collaborator.get("email").toString());
+		txtIM.setText(Collaborator.get("im_account").toString());
+		txtJoinDate.setText(Collaborator.get("join_date").toString());
+		txtAgeInMinistry.setText(Collaborator.get("age_in_ministry").toString());
+		txtPoints.setText(Collaborator.get("points").toString());
+		txtLevel.setText(Collaborator.get("level").toString());
+
+		txtTeam.setVisibility(View.INVISIBLE);
+		imgTeam.setVisibility(View.INVISIBLE);
+		if (Collaborator.get("team").toString() != "") {
+			HashMap<String, Object> Team = (HashMap<String, Object>) Collaborator.get("team");
+			txtTeam.setText(Team.get("name").toString());
+			txtTeam2.setText(Team.get("name").toString());
+			txtTeam.setVisibility(View.VISIBLE);
+			imgTeam.setVisibility(View.VISIBLE);
+
+			// Ejecutar la Tarea de acuerdo a la version de Android
+			LoadTeamLogo Task = new LoadTeamLogo(Long.parseLong(Team.get("id").toString()));
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} else {
+				Task.execute();
+			}
+		} else {
+			txtTeam2.setText("-- ");
+		}
+
+		// Procesar las areas
+		if (Collaborator.get("areas").toString() != "") {
+			List<AreasItem> ItemsAreas = new ArrayList<AreasItem>();
+			Object[] Areas = (Object[]) Collaborator.get("areas");
+			for (Object Area : Areas) {
+				ItemsAreas.add(new AreasItem(Area));
+			}
+			lstAreas.setAdapter(new AreasItemAdapter(getActivity(), ItemsAreas));
+			ListViewDinamicSize.getListViewSize(lstAreas);
+			makeScroll(0);
+		}
+
+		Contenedor.setVisibility(View.VISIBLE);
+
+		// Cargar la foto Actualiza del Colaborador
+		LoadCollaboratorPhoto Task = new LoadCollaboratorPhoto(Long.parseLong(config.getCollaboratorID()));
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			Task.execute();
+		}
+	}
+
 	class LoadInfo extends AsyncTask<Integer, Void, Integer> {
 		ProgressDialog pDialog;
-		HashMap<String, Object> Collaborator = null;
-
-		public LoadInfo() {
-		}
 
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 
+			Collaborator = null;
 			Contenedor.setVisibility(View.INVISIBLE);
 			pDialog = new ProgressDialog(getActivity());
 			pDialog.setMessage("Cargando Datos");
@@ -201,84 +328,13 @@ public class CollaboratorFragment extends Fragment {
 			return null;
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
 
 			if (Collaborator != null) {
-				// Cargar la Foto
-				imgPhoto.setImageBitmap(hupernikao.getRoundedCornerBitmap(config.getCollaboratorPhoto(), true));
-
-				/*
-				 * CAMPOS A MOSTAR - code - name - nick_name - birth -
-				 * marital_status - address - image_medium - mobile - telef1 -
-				 * telef2 - email - im_account - team - join_date - points -
-				 * level
-				 */
-				txtCode.setText(Collaborator.get("code").toString());
-				txtCI.setText(Collaborator.get("personal_id").toString());
-				if ((Collaborator.get("personal_id").toString()).equals("")) {
-					txtCI.setText("--");
-				}
-				txtName.setText(Collaborator.get("name").toString());
-				txtNickname.setText(Collaborator.get("nick_name").toString());
-				txtBirth.setText(Collaborator.get("birth").toString());
-				txtAge.setText(Collaborator.get("age").toString());
-				txtMaritalStatus.setText(Collaborator.get("marital_status").toString());
-				txtAddress.setText(Collaborator.get("address").toString());
-				txtMobile.setText(Collaborator.get("mobile").toString());
-				txtTelef1.setText(Collaborator.get("telef1").toString());
-				txtTelef2.setText(Collaborator.get("telef2").toString());
-				txtEmail.setText(Collaborator.get("email").toString());
-				txtIM.setText(Collaborator.get("im_account").toString());
-				txtJoinDate.setText(Collaborator.get("join_date").toString());
-				txtAgeInMinistry.setText(Collaborator.get("age_in_ministry").toString());
-				txtPoints.setText(Collaborator.get("points").toString());
-				txtLevel.setText(Collaborator.get("level").toString());
-
-				txtTeam.setVisibility(View.INVISIBLE);
-				imgTeam.setVisibility(View.INVISIBLE);
-				if (Collaborator.get("team").toString() != "") {
-					HashMap<String, Object> Team = (HashMap<String, Object>) Collaborator.get("team");
-					txtTeam.setText(Team.get("name").toString());
-					txtTeam2.setText(Team.get("name").toString());
-					txtTeam.setVisibility(View.VISIBLE);
-					imgTeam.setVisibility(View.VISIBLE);
-
-					// Ejecutar la Tarea de acuerdo a la version de Android
-					LoadTeamLogo Task = new LoadTeamLogo(Long.parseLong(Team.get("id").toString()));
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-						Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-					} else {
-						Task.execute();
-					}
-				} else {
-					txtTeam2.setText("-- ");
-				}
-
 				pDialog.dismiss();
-				// Procesar las areas
-				if (Collaborator.get("areas").toString() != "") {
-					List<AreasItem> ItemsAreas = new ArrayList<AreasItem>();
-					Object[] Areas = (Object[]) Collaborator.get("areas");
-					for (Object Area : Areas) {
-						ItemsAreas.add(new AreasItem(Area));
-					}
-					lstAreas.setAdapter(new AreasItemAdapter(getActivity(), ItemsAreas));
-					ListViewDinamicSize.getListViewSize(lstAreas);
-					makeScroll(0);
-				}
-
-				Contenedor.setVisibility(View.VISIBLE);
-
-				// Cargar la foto Actualiza del Colaborador
-				LoadCollaboratorPhoto Task = new LoadCollaboratorPhoto(Long.parseLong(config.getCollaboratorID()));
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-					Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-				} else {
-					Task.execute();
-				}
+				ShowInfo();
 			} else {
 				pDialog.dismiss();
 				Toast.makeText(getActivity(), "No se pudieron recuperar los datos.", Toast.LENGTH_SHORT).show();
@@ -287,7 +343,7 @@ public class CollaboratorFragment extends Fragment {
 	}
 
 	/**
-	 * Clase Asincrona para recuparar el logo del Equipo
+	 * Clase Asincrona para recuperar el logo del Equipo
 	 **/
 	protected class LoadTeamLogo extends AsyncTask<String, Void, String> {
 		HashMap<String, Object> Team = null;

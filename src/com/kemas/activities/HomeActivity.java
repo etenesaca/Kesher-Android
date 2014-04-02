@@ -291,7 +291,7 @@ public class HomeActivity extends ActionBarActivity {
 				}
 			}
 		});
-
+		
 		// Sombra del panel Navigation Drawer
 		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
