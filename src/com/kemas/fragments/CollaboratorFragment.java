@@ -42,8 +42,7 @@ import com.kemas.item.adapters.AreasItemAdapter;
 @SuppressLint("NewApi")
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class CollaboratorFragment extends Fragment {
-	HashMap<String, Object> Collaborator = null;
-
+	HashMap<String, Object> Collaborator = new HashMap<String, Object>();
 	private Configuration config;
 	private ScrollView scroll;
 	private LinearLayout Contenedor;
@@ -167,6 +166,11 @@ public class CollaboratorFragment extends Fragment {
 		Collaborator.put("level", state.getString("level"));
 
 		Collaborator.put("team", "");
+		String[] TeamArray = state.getStringArray("team");
+		if (Collaborator.get("team").toString() != "") {
+			HashMap<String, Object> Team = (HashMap<String, Object>) Collaborator.get("team");
+			Collaborator.put("team", Team);
+		}
 		Collaborator.put("areas", "");
 		ShowInfo();
 	}
@@ -192,6 +196,14 @@ public class CollaboratorFragment extends Fragment {
 			outState.putString("age_in_ministry", Collaborator.get("age_in_ministry").toString());
 			outState.putString("points", Collaborator.get("points").toString());
 			outState.putString("level", Collaborator.get("level").toString());
+
+			outState.putStringArray("team", null);
+			if (Collaborator.get("team").toString() != "") {
+				String[] TeamArray = null;
+				HashMap<String, Object> Team = (HashMap<String, Object>) Collaborator.get("team");
+				TeamArray = new String[] { Team.get("id").toString(), Team.get("name").toString() };
+				outState.putStringArray("team", TeamArray);
+			}
 		}
 	}
 
@@ -346,11 +358,12 @@ public class CollaboratorFragment extends Fragment {
 	 * Clase Asincrona para recuperar el logo del Equipo
 	 **/
 	protected class LoadTeamLogo extends AsyncTask<String, Void, String> {
-		HashMap<String, Object> Team = null;
+		HashMap<String, Object> Team = new HashMap<String, Object>();
 		long TeamID;
 
 		public LoadTeamLogo(long TeamID) {
 			this.TeamID = TeamID;
+			Team = null;
 		}
 
 		@Override
@@ -364,10 +377,12 @@ public class CollaboratorFragment extends Fragment {
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 
-			// Cargar la imagen del usuario
-			byte[] logo = Base64.decode(Team.get("logo_medium").toString(), Base64.DEFAULT);
-			Bitmap bmp = BitmapFactory.decodeByteArray(logo, 0, logo.length);
-			imgTeam.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
+			if (Team != null) {
+				// Cargar la imagen del Equipo
+				byte[] logo = Base64.decode(Team.get("logo_medium").toString(), Base64.DEFAULT);
+				Bitmap bmp = BitmapFactory.decodeByteArray(logo, 0, logo.length);
+				imgTeam.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
+			}
 		}
 	}
 
