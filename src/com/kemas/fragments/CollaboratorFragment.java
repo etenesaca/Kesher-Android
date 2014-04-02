@@ -167,8 +167,10 @@ public class CollaboratorFragment extends Fragment {
 
 		Collaborator.put("team", "");
 		String[] TeamArray = state.getStringArray("team");
-		if (Collaborator.get("team").toString() != "") {
-			HashMap<String, Object> Team = (HashMap<String, Object>) Collaborator.get("team");
+		if (TeamArray != null) {
+			HashMap<String, Object> Team = new HashMap<String, Object>();
+			Team.put("id", Long.parseLong(TeamArray[0].toString()));
+			Team.put("name", TeamArray[1].toString());
 			Collaborator.put("team", Team);
 		}
 		Collaborator.put("areas", "");
@@ -199,9 +201,8 @@ public class CollaboratorFragment extends Fragment {
 
 			outState.putStringArray("team", null);
 			if (Collaborator.get("team").toString() != "") {
-			
 				HashMap<String, Object> Team = (HashMap<String, Object>) Collaborator.get("team");
-				TeamArray = new String[] { Team.get("id").toString(), Team.get("name").toString() };
+				String[] TeamArray = new String[] { Team.get("id").toString(), Team.get("name").toString() };
 				outState.putStringArray("team", TeamArray);
 			}
 		}
