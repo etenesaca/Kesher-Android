@@ -107,25 +107,15 @@ public class AttendancesFragment extends Fragment {
 		});
 
 		lvAttendance.setRecyclerListener(new RecyclerListener() {
-			@SuppressWarnings("deprecation")
 			@Override
 			public void onMovedToScrapHeap(View view) {
-				final TextView tvService = (TextView) view.findViewById(R.id.tvService);
-				final TextView tvNumber = (TextView) view.findViewById(R.id.tvNumber);
-				final TextView tvType = (TextView) view.findViewById(R.id.tvType);
-				final TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
-				final TextView tvHour = (TextView) view.findViewById(R.id.tvHour);
-				final TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
-
-				tvService.setText(null);
-				tvService.setTypeface(null);
-				tvNumber.setText(null);
-				tvType.setText(null);
-				tvType.setBackgroundDrawable(null);
-				tvDate.setText(null);
-				tvHour.setText(null);
-				tvDay.setText(null);
-				tvService.setTypeface(null);
+				// Ejecutar la Tarea de acuerdo a la version de Android
+				RecycleListViewItem Task = new RecycleListViewItem(view);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+					Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				} else {
+					Task.execute();
+				}
 			}
 		});
 
@@ -265,6 +255,41 @@ public class AttendancesFragment extends Fragment {
 			lvAttendance.removeFooterView(footerView);
 			updateDisplayingTextView();
 			loading = false;
+		}
+	}
+
+	/** Clase Asincrona para reciclar los los items del listview **/
+	protected class RecycleListViewItem extends AsyncTask<String, Void, String> {
+		View view;
+
+		public RecycleListViewItem(View view) {
+			this.view = view;
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			return null;
+		}
+
+		@SuppressWarnings("deprecation")
+		@Override
+		protected void onPostExecute(String result) {
+			final TextView tvService = (TextView) view.findViewById(R.id.tvService);
+			final TextView tvNumber = (TextView) view.findViewById(R.id.tvNumber);
+			final TextView tvType = (TextView) view.findViewById(R.id.tvType);
+			final TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
+			final TextView tvHour = (TextView) view.findViewById(R.id.tvHour);
+			final TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
+
+			tvService.setText(null);
+			tvService.setTypeface(null);
+			tvNumber.setText(null);
+			tvType.setText(null);
+			tvType.setBackgroundDrawable(null);
+			tvDate.setText(null);
+			tvHour.setText(null);
+			tvDay.setText(null);
+			tvService.setTypeface(null);
 		}
 	}
 }

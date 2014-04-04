@@ -120,23 +120,15 @@ public class PointsFragment extends Fragment {
 		});
 
 		lvPoints.setRecyclerListener(new RecyclerListener() {
-			@SuppressWarnings("deprecation")
 			@Override
 			public void onMovedToScrapHeap(View view) {
-				final ImageView imgType = (ImageView) view.findViewById(R.id.imgType);
-				final TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
-				final TextView tvHour = (TextView) view.findViewById(R.id.tvHour);
-				final TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
-				final TextView tvPoints = (TextView) view.findViewById(R.id.tvPoints);
-
-				imgType.setBackgroundDrawable(null);
-				tvDate.setText(null);
-				tvHour.setText(null);
-				tvDay.setText(null);
-				tvDay.setTypeface(null);
-				tvPoints.setText(null);
-				tvPoints.setTypeface(null);
-
+				// Ejecutar la Tarea de acuerdo a la version de Android
+				RecycleListViewItem Task = new RecycleListViewItem(view);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+					Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				} else {
+					Task.execute();
+				}
 			}
 		});
 
@@ -317,6 +309,38 @@ public class PointsFragment extends Fragment {
 			lvPoints.removeFooterView(footerView);
 			updateDisplayingTextView();
 			loading = false;
+		}
+	}
+
+	/** Clase Asincrona para reciclar los los items del listview **/
+	protected class RecycleListViewItem extends AsyncTask<String, Void, String> {
+		View view;
+
+		public RecycleListViewItem(View view) {
+			this.view = view;
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			return null;
+		}
+
+		@SuppressWarnings("deprecation")
+		@Override
+		protected void onPostExecute(String result) {
+			final ImageView imgType = (ImageView) view.findViewById(R.id.imgType);
+			final TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
+			final TextView tvHour = (TextView) view.findViewById(R.id.tvHour);
+			final TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
+			final TextView tvPoints = (TextView) view.findViewById(R.id.tvPoints);
+
+			imgType.setBackgroundDrawable(null);
+			tvDate.setText(null);
+			tvHour.setText(null);
+			tvDay.setText(null);
+			tvDay.setTypeface(null);
+			tvPoints.setText(null);
+			tvPoints.setTypeface(null);
 		}
 	}
 }
