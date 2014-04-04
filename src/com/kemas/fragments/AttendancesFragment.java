@@ -243,5 +243,4 @@ public class AttendancesFragment extends Fragment {
 			loading = false;
 		}
 	}
-
 }

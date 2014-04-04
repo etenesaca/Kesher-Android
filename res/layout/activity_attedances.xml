@@ -15,7 +15,10 @@
         android:id="@+id/lvAttendanceList"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:drawSelectorOnTop="false" >
+        android:drawSelectorOnTop="false"
+        android:fastScrollEnabled="true"
+        android:persistentDrawingCache="scrolling"
+        android:scrollingCache="false" >
     </ListView>
 
 </LinearLayout>
