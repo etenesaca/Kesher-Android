@@ -24,6 +24,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AbsListView.RecyclerListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -102,6 +103,29 @@ public class AttendancesFragment extends Fragment {
 						Task.execute();
 					}
 				}
+			}
+		});
+
+		lvAttendance.setRecyclerListener(new RecyclerListener() {
+			@SuppressWarnings("deprecation")
+			@Override
+			public void onMovedToScrapHeap(View view) {
+				final TextView tvService = (TextView) view.findViewById(R.id.tvService);
+				final TextView tvNumber = (TextView) view.findViewById(R.id.tvNumber);
+				final TextView tvType = (TextView) view.findViewById(R.id.tvType);
+				final TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
+				final TextView tvHour = (TextView) view.findViewById(R.id.tvHour);
+				final TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
+
+				tvService.setText(null);
+				tvService.setTypeface(null);
+				tvNumber.setText(null);
+				tvType.setText(null);
+				tvType.setBackgroundDrawable(null);
+				tvDate.setText(null);
+				tvHour.setText(null);
+				tvDay.setText(null);
+				tvService.setTypeface(null);
 			}
 		});
 

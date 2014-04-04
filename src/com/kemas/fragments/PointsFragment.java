@@ -26,9 +26,11 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AbsListView.RecyclerListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -114,6 +116,27 @@ public class PointsFragment extends Fragment {
 						Task.execute();
 					}
 				}
+			}
+		});
+
+		lvPoints.setRecyclerListener(new RecyclerListener() {
+			@SuppressWarnings("deprecation")
+			@Override
+			public void onMovedToScrapHeap(View view) {
+				final ImageView imgType = (ImageView) view.findViewById(R.id.imgType);
+				final TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
+				final TextView tvHour = (TextView) view.findViewById(R.id.tvHour);
+				final TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
+				final TextView tvPoints = (TextView) view.findViewById(R.id.tvPoints);
+
+				imgType.setBackgroundDrawable(null);
+				tvDate.setText(null);
+				tvHour.setText(null);
+				tvDay.setText(null);
+				tvDay.setTypeface(null);
+				tvPoints.setText(null);
+				tvPoints.setTypeface(null);
+
 			}
 		});
 
