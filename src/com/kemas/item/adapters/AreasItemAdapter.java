@@ -74,7 +74,7 @@ public class AreasItemAdapter extends BaseAdapter {
 	}
 
 	/**
-	 * Clase Asincrona para recuparar el logo de las Areas
+	 * Clase Asincrona para recuperar el logo de las Areas
 	 **/
 	protected class LoadImageArea extends AsyncTask<String, Void, String> {
 		HashMap<String, Object> Area = null;
