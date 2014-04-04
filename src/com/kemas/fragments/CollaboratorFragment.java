@@ -233,9 +233,21 @@ public class CollaboratorFragment extends Fragment {
 			outState.putStringArrayList("areas", null);
 			if (Collaborator.get("areas").toString() != "") {
 				ArrayList<String> lstAreas = new ArrayList<String>();
-				Object[] Areas = (Object[]) Collaborator.get("areas");
-				for (Object Area : Areas) {
-					lstAreas.add(((HashMap<String, Object>) Area).toString());
+
+				Object AreasObject = Collaborator.get("areas");
+				if (AreasObject.getClass().getName().equals("[Ljava.lang.Object;")) {
+					Object[] Areas = (Object[]) Collaborator.get("areas");
+					for (Object Area : Areas) {
+						lstAreas.add(((HashMap<String, Object>) Area).toString());
+					}
+				} else {
+					List<AreasItem> Areas = (List<AreasItem>) Collaborator.get("areas");
+					for (AreasItem Item : Areas) {
+						HashMap<String, Object> AreaDict = new HashMap<String, Object>();
+						AreaDict.put("id", Item.getID().toString());
+						AreaDict.put("name", Item.getName());
+						lstAreas.add(AreaDict.toString());
+					}
 				}
 				outState.putStringArrayList("areas", lstAreas);
 			}
@@ -326,12 +338,14 @@ public class CollaboratorFragment extends Fragment {
 		// Procesar las areas
 		if (Collaborator.get("areas").toString() != "") {
 			List<AreasItem> ItemsAreas = new ArrayList<AreasItem>();
-			try {
-				Object[] Areas = (Object[]) Collaborator.get("areas");
+
+			Object AreasObject = Collaborator.get("areas");
+			if (AreasObject.getClass().getName().equals("[Ljava.lang.Object;")) {
+				Object[] Areas = (Object[]) AreasObject;
 				for (Object Area : Areas) {
 					ItemsAreas.add(new AreasItem(Area));
 				}
-			} catch (Exception e) {
+			} else {
 				ItemsAreas = (ArrayList<AreasItem>) Collaborator.get("areas");
 			}
 			lstAreas.setAdapter(new AreasItemAdapter(getActivity(), ItemsAreas));
