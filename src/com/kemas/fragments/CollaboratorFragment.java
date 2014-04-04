@@ -1,8 +1,12 @@
 package com.kemas.fragments;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -173,10 +177,30 @@ public class CollaboratorFragment extends Fragment {
 			Team.put("name", TeamArray[1].toString());
 			Collaborator.put("team", Team);
 		}
+
 		Collaborator.put("areas", "");
+		ArrayList<String> AreasArray = state.getStringArrayList("areas");
+		if (AreasArray != null) {
+			List<AreasItem> ItemsAreas = new ArrayList<AreasItem>();
+			try {
+				for (String AreaStr : AreasArray) {
+					Properties props = new Properties();
+					props.load(new StringReader(AreaStr.substring(1, AreaStr.length() - 1).replace(", ", "\n")));
+					HashMap<String, String> AreaMap = new HashMap<String, String>();
+					for (Map.Entry<Object, Object> e : props.entrySet()) {
+						AreaMap.put((String) e.getKey(), (String) e.getValue());
+					}
+					AreasItem Item = new AreasItem(AreaMap);
+					ItemsAreas.add(Item);
+				}
+				Collaborator.put("areas", ItemsAreas);
+			} catch (IOException e1) {
+			}
+		}
 		ShowInfo();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -204,6 +228,16 @@ public class CollaboratorFragment extends Fragment {
 				HashMap<String, Object> Team = (HashMap<String, Object>) Collaborator.get("team");
 				String[] TeamArray = new String[] { Team.get("id").toString(), Team.get("name").toString() };
 				outState.putStringArray("team", TeamArray);
+			}
+
+			outState.putStringArrayList("areas", null);
+			if (Collaborator.get("areas").toString() != "") {
+				ArrayList<String> lstAreas = new ArrayList<String>();
+				Object[] Areas = (Object[]) Collaborator.get("areas");
+				for (Object Area : Areas) {
+					lstAreas.add(((HashMap<String, Object>) Area).toString());
+				}
+				outState.putStringArrayList("areas", lstAreas);
 			}
 		}
 	}
@@ -292,9 +326,13 @@ public class CollaboratorFragment extends Fragment {
 		// Procesar las areas
 		if (Collaborator.get("areas").toString() != "") {
 			List<AreasItem> ItemsAreas = new ArrayList<AreasItem>();
-			Object[] Areas = (Object[]) Collaborator.get("areas");
-			for (Object Area : Areas) {
-				ItemsAreas.add(new AreasItem(Area));
+			try {
+				Object[] Areas = (Object[]) Collaborator.get("areas");
+				for (Object Area : Areas) {
+					ItemsAreas.add(new AreasItem(Area));
+				}
+			} catch (Exception e) {
+				ItemsAreas = (ArrayList<AreasItem>) Collaborator.get("areas");
 			}
 			lstAreas.setAdapter(new AreasItemAdapter(getActivity(), ItemsAreas));
 			ListViewDinamicSize.getListViewSize(lstAreas);
