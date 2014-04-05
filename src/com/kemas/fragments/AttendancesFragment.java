@@ -42,7 +42,6 @@ import com.kemas.item.adapters.AttendancesItemAdapter;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class AttendancesFragment extends Fragment {
 	private DataSourceAttendance DataSource;
-	private static final int PAGESIZE = 15;
 	private View footerView;
 	private boolean loading = false;
 	private boolean ScrollComplete = false;
@@ -206,7 +205,7 @@ public class AttendancesFragment extends Fragment {
 
 		@Override
 		protected String doInBackground(String... params) {
-			DataSource = new DataSourceAttendance(getActivity(), this.AttendancesType);
+			DataSource = new DataSourceAttendance(getActivity(), this.AttendancesType, 15);
 			ScrollComplete = false;
 			return null;
 		}
@@ -215,7 +214,7 @@ public class AttendancesFragment extends Fragment {
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 
-			CurrentAdapter = new AttendancesItemAdapter(getActivity(), DataSource.getData(0, PAGESIZE));
+			CurrentAdapter = new AttendancesItemAdapter(getActivity(), DataSource.getData());
 			lvAttendance.setAdapter(CurrentAdapter);
 			lvAttendance.removeFooterView(footerView);
 			updateDisplayingTextView();
@@ -240,7 +239,7 @@ public class AttendancesFragment extends Fragment {
 
 		@Override
 		protected String doInBackground(String... arg0) {
-			newData = DataSource.getData(lvAttendance.getAdapter().getCount() - 1, PAGESIZE);
+			newData = DataSource.getData();
 			return null;
 		}
 

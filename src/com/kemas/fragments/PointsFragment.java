@@ -49,7 +49,6 @@ import com.kemas.item.adapters.PointsItemAdapter;
 public class PointsFragment extends Fragment {
 	private Configuration config;
 	private DataSourcePoint DataSource;
-	private static final int PAGESIZE = 15;
 	private View footerView;
 	private boolean loading = false;
 	private boolean ScrollComplete = false;
@@ -232,7 +231,7 @@ public class PointsFragment extends Fragment {
 
 		@Override
 		protected String doInBackground(String... params) {
-			DataSource = new DataSourcePoint(getActivity(), this.PointsType);
+			DataSource = new DataSourcePoint(getActivity(), this.PointsType, 15);
 			ScrollComplete = false;
 			return null;
 		}
@@ -241,7 +240,7 @@ public class PointsFragment extends Fragment {
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 
-			CurrentAdapter = new PointsItemAdapter(getActivity(), DataSource.getData(0, PAGESIZE));
+			CurrentAdapter = new PointsItemAdapter(getActivity(), DataSource.getData());
 			lvPoints.setAdapter(CurrentAdapter);
 			lvPoints.removeFooterView(footerView);
 			updateDisplayingTextView();
@@ -294,7 +293,7 @@ public class PointsFragment extends Fragment {
 
 		@Override
 		protected String doInBackground(String... arg0) {
-			newData = DataSource.getData(lvPoints.getAdapter().getCount() - 1, PAGESIZE);
+			newData = DataSource.getData();
 			return null;
 		}
 

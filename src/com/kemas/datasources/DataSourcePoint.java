@@ -1,6 +1,5 @@
 package com.kemas.datasources;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,47 +12,40 @@ import com.kemas.hupernikao;
 public class DataSourcePoint {
 	private Configuration config;
 	private OpenERP oerp_connection;
-	private List<Long> data = null;
-	private int SIZE = 0;
+	private long number_items = 100;
+	private long offset = 0;
+	private long limit;
 
-	public DataSourcePoint(Context CTX, String PointsType) {
+	private long CollaboratorID;
+	private String PointsType;
+
+	public DataSourcePoint(Context CTX, String PointsType, long limit) {
 		config = new Configuration(CTX);
+		this.limit = limit;
+		this.CollaboratorID = Long.parseLong(config.getCollaboratorID());
+		this.PointsType = PointsType;
+
 		oerp_connection = hupernikao.BuildOpenERPConnection(config);
-		List<Object> args = new ArrayList<Object>();
-		args.add(new Object[] { "collaborator_id", "=", Integer.parseInt(config.getCollaboratorID()) });
-		if (PointsType != "all") {
-			args.add(new Object[] { "type", "=", PointsType });
-		}
-		Long[] Point_ids = oerp_connection.search("kemas.history.points", args);
-		SIZE = Point_ids.length;
-		data = new ArrayList<Long>(SIZE);
-		for (Long id : Point_ids) {
-			data.add(id);
-		}
+		this.number_items = oerp_connection.getCountPoints(CollaboratorID, PointsType);
 	}
 
-	public int getSize() {
-		return SIZE;
+	public long getSize() {
+		return number_items;
 	}
 
-	public List<HashMap<String, Object>> getData(int offset, int limit) {
-		List<HashMap<String, Object>> result = null;
-		List<Long> newList = new ArrayList<Long>(limit);
+	public List<HashMap<String, Object>> getData() {
+		List<HashMap<String, Object>> result;
+		result = oerp_connection.getPoints(CollaboratorID, PointsType, offset, limit);
 
-		int end = offset + limit;
-		if (end > data.size()) {
-			end = data.size();
-		}
-		newList.addAll(data.subList(offset, end));
-		
-		result = oerp_connection.getPoints(newList);
 		for (HashMap<String, Object> Record : result) {
-			HashMap<String, Object> DatePoint = hupernikao.Convert_UTCtoGMT_Str(Record.get("date").toString());
+			HashMap<String, Object> DatePoints = hupernikao.Convert_UTCtoGMT_Str(Record.get("date").toString());
 			Record.remove("date");
-			Record.put("date", DatePoint.get("date"));
-			Record.put("hour", DatePoint.get("hour"));
-			Record.put("day", DatePoint.get("day"));
+			Record.put("date", DatePoints.get("date"));
+			Record.put("hour", DatePoints.get("hour"));
+			Record.put("day", DatePoints.get("day"));
 		}
+
+		offset += limit;
 		return result;
 	}
 }

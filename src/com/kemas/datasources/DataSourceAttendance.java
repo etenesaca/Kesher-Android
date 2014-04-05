@@ -1,6 +1,5 @@
 package com.kemas.datasources;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,40 +12,31 @@ import com.kemas.hupernikao;
 public class DataSourceAttendance {
 	private Configuration config;
 	private OpenERP oerp_connection;
-	private List<Long> data = null;
-	private int SIZE = 0;
+	private long number_items = 100;
+	private long offset = 0;
+	private long limit;
 
-	public DataSourceAttendance(Context CTX, String AttendancesType) {
+	private long CollaboratorID;
+	private String AttendancesType;
+
+	public DataSourceAttendance(Context CTX, String AttendancesType, long limit) {
 		config = new Configuration(CTX);
+		this.limit = limit;
+		this.CollaboratorID = Long.parseLong(config.getCollaboratorID());
+		this.AttendancesType = AttendancesType;
+
 		oerp_connection = hupernikao.BuildOpenERPConnection(config);
-		List<Object> args = new ArrayList<Object>();
-		args.add(new Object[] { "collaborator_id", "=", Integer.parseInt(config.getCollaboratorID()) });
-		if (AttendancesType != "all") {
-			args.add(new Object[] { "type", "=", AttendancesType });
-		}
-		Long[] attendance_ids = oerp_connection.search("kemas.attendance", args);
-		SIZE = attendance_ids.length;
-		data = new ArrayList<Long>(SIZE);
-		for (Long id : attendance_ids) {
-			data.add(id);
-		}
+		this.number_items = oerp_connection.getCountAttendances(CollaboratorID, AttendancesType);
 	}
 
-	public int getSize() {
-		return SIZE;
+	public long getSize() {
+		return number_items;
 	}
 
-	public List<HashMap<String, Object>> getData(int offset, int limit) {
-		List<HashMap<String, Object>> result = null;
-		List<Long> newList = new ArrayList<Long>(limit);
+	public List<HashMap<String, Object>> getData() {
+		List<HashMap<String, Object>> result;
+		result = oerp_connection.getAttendances(CollaboratorID, AttendancesType, offset, limit);
 
-		int end = offset + limit;
-		if (end > data.size()) {
-			end = data.size();
-		}
-		newList.addAll(data.subList(offset, end));
-		
-		result = oerp_connection.getAttendances(newList);
 		for (HashMap<String, Object> Record : result) {
 			HashMap<String, Object> DateAttendance = hupernikao.Convert_UTCtoGMT_Str(Record.get("date").toString());
 			Record.remove("date");
@@ -54,6 +44,8 @@ public class DataSourceAttendance {
 			Record.put("hour", DateAttendance.get("hour"));
 			Record.put("day", DateAttendance.get("day"));
 		}
+
+		offset += limit;
 		return result;
 	}
 }

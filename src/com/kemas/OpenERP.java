@@ -66,24 +66,39 @@ public class OpenERP extends OpenERPConnection {
 	}
 
 	/**
-	 * Obtene una lista del historial de Puntos
+	 * Obtene el número de los cambios de puntaje
 	 **/
-	public List<HashMap<String, Object>> getPoints(List<Long> ids) {
-		Object[] object_ids = (Object[]) ids.toArray();
-		Long[] res_ids = new Long[object_ids.length];
-		for (int i = 0; i < object_ids.length; i++) {
-			if (object_ids[i] instanceof Long) {
-				res_ids[i] = (Long) object_ids[i];
-			}
+	public long getCountPoints(long CollaboratorID, String PointsType) {
+		long Count = 0;
+		try {
+			XMLRPCClient client = new XMLRPCClient(mUrl);
+
+			HashMap<String, Object> args = new HashMap<String, Object>();
+			args.put("collaborator_id", CollaboratorID);
+			if (PointsType != "all")
+				args.put("type", PointsType);
+			Object CountObject = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.history.points", "get_count_points_to_mobilapp", args);
+			Count = Long.parseLong(CountObject.toString());
+		} catch (XMLRPCException e) {
+			e.printStackTrace();
 		}
-		return getPoints(res_ids);
+		return Count;
 	}
 
-	public List<HashMap<String, Object>> getPoints(Long[] ids) {
+	/**
+	 * Obtene una lista de registros de cambio de puntaje
+	 **/
+	public List<HashMap<String, Object>> getPoints(long CollaboratorID, String PointsType, long offset, long limit) {
 		List<HashMap<String, Object>> Records = null;
 		try {
 			XMLRPCClient client = new XMLRPCClient(mUrl);
-			Object[] Points = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.history.points", "get_points_to_mobilapp", ids);
+
+			HashMap<String, Object> args = new HashMap<String, Object>();
+			args.put("collaborator_id", CollaboratorID);
+			if (PointsType != "all")
+				args.put("type", PointsType);
+
+			Object[] Points = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.history.points", "get_points_to_mobilapp", args, offset, limit);
 			Records = new ArrayList<HashMap<String, Object>>(Points.length);
 			for (Object Record : Points) {
 				Object[] PointArray = (Object[]) Record;
@@ -101,24 +116,39 @@ public class OpenERP extends OpenERPConnection {
 	}
 
 	/**
-	 * Obtene una lista de registros de asisterncia
+	 * Obtene el número de los registros de asistencias
 	 **/
-	public List<HashMap<String, Object>> getAttendances(List<Long> ids) {
-		Object[] object_ids = (Object[]) ids.toArray();
-		Long[] res_ids = new Long[object_ids.length];
-		for (int i = 0; i < object_ids.length; i++) {
-			if (object_ids[i] instanceof Long) {
-				res_ids[i] = (Long) object_ids[i];
-			}
+	public long getCountAttendances(long CollaboratorID, String AttendancesType) {
+		long Count = 0;
+		try {
+			XMLRPCClient client = new XMLRPCClient(mUrl);
+
+			HashMap<String, Object> args = new HashMap<String, Object>();
+			args.put("collaborator_id", CollaboratorID);
+			if (AttendancesType != "all")
+				args.put("type", AttendancesType);
+			Object CountObject = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.attendance", "get_count_attendances_to_mobilapp", args);
+			Count = Long.parseLong(CountObject.toString());
+		} catch (XMLRPCException e) {
+			e.printStackTrace();
 		}
-		return getAttendances(res_ids);
+		return Count;
 	}
 
-	public List<HashMap<String, Object>> getAttendances(Long[] ids) {
+	/**
+	 * Obtene una lista de registros de asistencias
+	 **/
+	public List<HashMap<String, Object>> getAttendances(long CollaboratorID, String AttendancesType, long offset, long limit) {
 		List<HashMap<String, Object>> Records = null;
 		try {
 			XMLRPCClient client = new XMLRPCClient(mUrl);
-			Object[] Attendances = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.attendance", "get_attendances_to_mobilapp", ids);
+
+			HashMap<String, Object> args = new HashMap<String, Object>();
+			args.put("collaborator_id", CollaboratorID);
+			if (AttendancesType != "all")
+				args.put("type", AttendancesType);
+
+			Object[] Attendances = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.attendance", "get_attendances_to_mobilapp", args, offset, limit);
 			Records = new ArrayList<HashMap<String, Object>>(Attendances.length);
 			for (Object Record : Attendances) {
 				Object[] AttendanceArray = (Object[]) Record;
