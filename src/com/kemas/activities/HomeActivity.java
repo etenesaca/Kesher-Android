@@ -70,7 +70,7 @@ public class HomeActivity extends ActionBarActivity {
 
 	private static final String[] MenuOptionsWithoutConfig = { "config", "exit" };
 	private static final String[] MenuOptionsWithoutConnnection = { "refresh", "profile", "config", "exit" };
-	private static final String[] MenuOptionsComplete = { "profile", "home", "attendances", "points", "config", "exit" };
+	private static final String[] MenuOptionsComplete = { "profile", "home", "events", "attendances", "points", "config", "exit" };
 
 	private boolean shouldGoInvisible;
 
@@ -80,6 +80,8 @@ public class HomeActivity extends ActionBarActivity {
 
 		// > Inicio
 		NavItms.add(new NavigationMenuItem("Inicio", R.drawable.ic_action_person));
+		// > Eventos
+		NavItms.add(new NavigationMenuItem("Eventos", R.drawable.ic_action_person));
 		// > Registro de Asistencias
 		NavItms.add(new NavigationMenuItem("Asistencias", R.drawable.ic_action_person));
 		// > Historial de puntos
@@ -237,61 +239,59 @@ public class HomeActivity extends ActionBarActivity {
 
 		drawer.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int SelectedIndex, long arg3) {
 				drawerLayout.closeDrawers();
 				NavigationMenuLoaded = true;
 
 				if (config.getUserID() == null) {
-					if (MenuOptionsWithoutConfig[arg2] == "config") {
+					if (MenuOptionsWithoutConfig[SelectedIndex] == "config") {
 						// Configurar Conexión
 						NavigationMenuLoaded = false;
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
-					} else if (MenuOptionsWithoutConfig[arg2] == "exit") {
+					} else if (MenuOptionsWithoutConfig[SelectedIndex] == "exit") {
 						finish();
 					}
 				} else if (!TestConnection) {
-					if (MenuOptionsWithoutConnnection[arg2] == "profile") {
+					if (MenuOptionsWithoutConnnection[SelectedIndex] == "profile") {
 						Toast.makeText(HomeActivity.this, "Sin Conexión", Toast.LENGTH_SHORT).show();
-					} else if (MenuOptionsWithoutConnnection[arg2] == "config") {
+					} else if (MenuOptionsWithoutConnnection[SelectedIndex] == "config") {
 						// Configurar Conexión
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
-					} else if (MenuOptionsWithoutConnnection[arg2] == "exit") {
+					} else if (MenuOptionsWithoutConnnection[SelectedIndex] == "exit") {
 						finish();
 					}
 				} else {
 					Fragment fragment = null;
-					if (MenuOptionsComplete[arg2] == "profile") {
+					if (MenuOptionsComplete[SelectedIndex] == "profile") {
 						// Datos del Colaborador
 						fragment = new CollaboratorFragment();
 						FragmentManager fragmentManager = getSupportFragmentManager();
 						fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-					} else if (MenuOptionsComplete[arg2] == "config") {
+					} else if (MenuOptionsComplete[SelectedIndex] == "config") {
 						// Configurar Conexión
 						NavigationMenuLoaded = false;
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
-					} else if (MenuOptionsComplete[arg2] == "attendances") {
+					} else if (MenuOptionsComplete[SelectedIndex] == "events") {
+						fragment = new AttendancesFragment();
+					} else if (MenuOptionsComplete[SelectedIndex] == "attendances") {
 						fragment = new AttendancesFragment();
 						FragmentManager fragmentManager = getSupportFragmentManager();
 						fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-						// Intent config_act = new Intent(HomeActivity.this,
-						// EndlessListViewActivity.class);
-						// startActivity(config_act);
-					} else if (MenuOptionsComplete[arg2] == "points") {
+					} else if (MenuOptionsComplete[SelectedIndex] == "points") {
 						fragment = new PointsFragment();
 						FragmentManager fragmentManager = getSupportFragmentManager();
 						fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-					} else if (MenuOptionsComplete[arg2] == "exit") {
+					} else if (MenuOptionsComplete[SelectedIndex] == "exit") {
 						finish();
 					}
 				}
 			}
 		});
-		
+
 		// Sombra del panel Navigation Drawer
 		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
