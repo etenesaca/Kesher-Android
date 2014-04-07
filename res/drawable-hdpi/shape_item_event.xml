@@ -11,7 +11,7 @@
     </stroke>
 
     <padding
-        android:bottom="5dp"
+        android:bottom="0dp"
         android:left="0dp"
         android:right="0dp"
         android:top="5dp" >
