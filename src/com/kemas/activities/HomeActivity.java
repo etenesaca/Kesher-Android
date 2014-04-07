@@ -276,6 +276,8 @@ public class HomeActivity extends ActionBarActivity {
 						startActivity(config_act);
 					} else if (MenuOptionsComplete[SelectedIndex] == "events") {
 						fragment = new AttendancesFragment();
+						FragmentManager fragmentManager = getSupportFragmentManager();
+						fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 					} else if (MenuOptionsComplete[SelectedIndex] == "attendances") {
 						fragment = new AttendancesFragment();
 						FragmentManager fragmentManager = getSupportFragmentManager();
