@@ -165,6 +165,36 @@ public class OpenERP extends OpenERPConnection {
 		return Records;
 	}
 
+	/**
+	 * Obtene una lista de eventos
+	 **/
+	public List<HashMap<String, Object>> getEvents(long CollaboratorID, String EventState, long offset, long limit) {
+		List<HashMap<String, Object>> Records = null;
+		try {
+			XMLRPCClient client = new XMLRPCClient(mUrl);
+
+			HashMap<String, Object> args = new HashMap<String, Object>();
+			args.put("collaborator_id", CollaboratorID);
+			if (EventState != "all")
+				args.put("type", EventState);
+
+			Object[] Events = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.event", "get_attendances_to_mobilapp", args, offset, limit);
+			Records = new ArrayList<HashMap<String, Object>>(Events.length);
+			for (Object Record : Events) {
+				Object[] EventArray = (Object[]) Record;
+				HashMap<String, Object> Event = new HashMap<String, Object>();
+				Event.put("id", EventArray[0]);
+				Event.put("service", EventArray[1]);
+				Event.put("type", EventArray[2]);
+				Event.put("date", EventArray[3]);
+				Records.add((HashMap<String, Object>) Event);
+			}
+		} catch (XMLRPCException e) {
+			e.printStackTrace();
+		}
+		return Records;
+	}
+
 	/** Constructor con el uid en Integer **/
 	public OpenERP(String server, Integer port, String db, String user, String pass, Integer uid) throws MalformedURLException {
 		super(server, port, db, user, pass, uid);
