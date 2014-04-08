@@ -5,16 +5,23 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kemas.Configuration;
+import com.kemas.OpenERP;
 import com.kemas.R;
+import com.kemas.hupernikao;
 
 /**
  * Custom adapter with "View Holder Pattern".
@@ -27,12 +34,17 @@ import com.kemas.R;
 public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 	private LayoutInflater layoutInflater;
 	private Context CTX;
+	private Configuration config;
+
 	Typeface Roboto_Bold;
 	Typeface Roboto_Light;
 
 	public EventsItemAdapter(Context context, List<HashMap<String, Object>> objects) {
 		super(context, 0, objects);
 		this.CTX = context;
+		// Crear una instancia de la Clase de Configuraciones
+		config = new Configuration(CTX);
+
 		layoutInflater = LayoutInflater.from(context);
 		Roboto_Bold = Typeface.createFromAsset(CTX.getAssets(), "fonts/Roboto-Bold.ttf");
 		Roboto_Light = Typeface.createFromAsset(CTX.getAssets(), "fonts/Roboto-Light.ttf");
@@ -44,7 +56,7 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 		AttendancesItem holder = null;
 		if (convertView == null) {
 			holder = new AttendancesItem();
-			convertView = layoutInflater.inflate(R.layout.list_item_attendance, null);
+			convertView = layoutInflater.inflate(R.layout.list_item_event, null);
 			convertView.setTag(holder);
 		} else {
 			holder = (AttendancesItem) convertView.getTag();
@@ -67,12 +79,20 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 		HashMap<String, Object> Record;
 		View convertView;
 
-		TextView tvService;
-		TextView tvNumber;
-		TextView tvType;
-		TextView tvDate;
-		TextView tvHour;
+		TextView tvName;
+		TextView txtHours;
+		TextView tvNumberDay;
 		TextView tvDay;
+		TextView tvMonthYear;
+		TextView tvState;
+
+		ImageView ivCl1;
+		ImageView ivCl2;
+		ImageView ivCl3;
+		ImageView ivCl4;
+		ImageView ivCl5;
+		ImageView ivCl6;
+		TextView tvMoreCollaborators;
 
 		public LoadView(View convertView, HashMap<String, Object> Record) {
 			this.Record = Record;
@@ -83,18 +103,22 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 		protected void onPreExecute() {
 			super.onPreExecute();
 
-			tvService = (TextView) convertView.findViewById(R.id.tvService);
-			tvNumber = (TextView) convertView.findViewById(R.id.tvNumber);
-			tvType = (TextView) convertView.findViewById(R.id.tvType);
-			tvDate = (TextView) convertView.findViewById(R.id.tvDate);
-			tvHour = (TextView) convertView.findViewById(R.id.tvHour);
+			tvName = (TextView) convertView.findViewById(R.id.tvName);
+			txtHours = (TextView) convertView.findViewById(R.id.txtHours);
 			tvDay = (TextView) convertView.findViewById(R.id.tvDay);
+			tvNumberDay = (TextView) convertView.findViewById(R.id.tvNumberDay);
+			tvMonthYear = (TextView) convertView.findViewById(R.id.tvMonthYear);
+			tvState = (TextView) convertView.findViewById(R.id.tvState);
 
-			tvService.setVisibility(View.INVISIBLE);
-			tvNumber.setVisibility(View.INVISIBLE);
-			tvType.setVisibility(View.INVISIBLE);
-			tvDate.setVisibility(View.INVISIBLE);
-			tvHour.setVisibility(View.INVISIBLE);
+			ivCl1 = (ImageView) convertView.findViewById(R.id.ivCl1);
+			ivCl2 = (ImageView) convertView.findViewById(R.id.ivCl2);
+			ivCl3 = (ImageView) convertView.findViewById(R.id.ivCl3);
+			ivCl4 = (ImageView) convertView.findViewById(R.id.ivCl4);
+			ivCl5 = (ImageView) convertView.findViewById(R.id.ivCl5);
+			ivCl6 = (ImageView) convertView.findViewById(R.id.ivCl6);
+			tvMoreCollaborators = (TextView) convertView.findViewById(R.id.tvMoreCollaborators);
+
+			tvName.setVisibility(View.INVISIBLE);
 			tvDay.setVisibility(View.INVISIBLE);
 		}
 
@@ -103,33 +127,119 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 			return null;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void onPostExecute(String result) {
-			tvService.setTypeface(Roboto_Bold);
-			tvService.setText(Record.get("service").toString());
+			tvName.setTypeface(Roboto_Bold);
+			tvName.setText(Record.get("service").toString());
+			tvState.setTypeface(Roboto_Light);
+			tvState.setText(Record.get("state").toString());
 
-			tvNumber.setText("#" + Record.get("id").toString());
-			tvDate.setText(Record.get("date").toString());
-			tvHour.setText(Record.get("hour").toString());
-			tvDay.setText(Record.get("day").toString());
-			tvDay.setTypeface(Roboto_Light);
-			if ((Record.get("type").toString()).equals("just_time")) {
-				tvType.setText("A Tiempo");
-				tvType.setBackgroundDrawable(CTX.getResources().getDrawable(R.drawable.shape_atiempo));
-			} else if ((Record.get("type").toString()).equals("late")) {
-				tvType.setText("Atrazo");
-				tvType.setBackgroundDrawable(CTX.getResources().getDrawable(R.drawable.shape_tarde));
-			} else {
-				tvType.setText("Insistencia");
-				tvType.setBackgroundDrawable(CTX.getResources().getDrawable(R.drawable.shape_falta));
+			HashMap<String, Object> Date = (HashMap<String, Object>) Record.get("date");
+			tvDay.setText(Date.get("day_name").toString());
+			tvNumberDay.setText(Date.get("day").toString());
+			tvMonthYear.setText(Date.get("month_name").toString() + " " + Date.get("year").toString());
+			txtHours.setText(Record.get("hours").toString());
+
+			tvName.setVisibility(View.VISIBLE);
+			tvDay.setVisibility(View.VISIBLE);
+
+			Object[] collaborators = (Object[]) Record.get("collaborator_ids");
+			int numCollaborators = collaborators.length;
+			int maxCollaborators = 6;
+			if (numCollaborators > maxCollaborators)
+				tvMoreCollaborators.setText("+" + (numCollaborators - maxCollaborators));
+			else {
+				tvMoreCollaborators.setVisibility(View.GONE);
+				if (numCollaborators == 5) {
+					ivCl6.setVisibility(View.GONE);
+				} else if (numCollaborators == 4) {
+					ivCl5.setVisibility(View.GONE);
+					ivCl6.setVisibility(View.GONE);
+				} else if (numCollaborators == 3) {
+					ivCl4.setVisibility(View.GONE);
+					ivCl5.setVisibility(View.GONE);
+					ivCl6.setVisibility(View.GONE);
+				} else if (numCollaborators == 2) {
+					ivCl3.setVisibility(View.GONE);
+					ivCl4.setVisibility(View.GONE);
+					ivCl5.setVisibility(View.GONE);
+					ivCl6.setVisibility(View.GONE);
+				} else if (numCollaborators == 1) {
+					ivCl2.setVisibility(View.GONE);
+					ivCl3.setVisibility(View.GONE);
+					ivCl4.setVisibility(View.GONE);
+					ivCl5.setVisibility(View.GONE);
+					ivCl6.setVisibility(View.GONE);
+				}
 			}
 
-			tvService.setVisibility(View.VISIBLE);
-			tvNumber.setVisibility(View.VISIBLE);
-			tvType.setVisibility(View.VISIBLE);
-			tvDate.setVisibility(View.VISIBLE);
-			tvHour.setVisibility(View.VISIBLE);
-			tvDay.setVisibility(View.VISIBLE);
+			if (!Record.containsKey("CollaboratorsProceceds")) {
+				int count = 0;
+				Object[] CollaboratorsIDS = (Object[]) Record.get("collaborator_ids");
+				for (Object CollaboratorID : CollaboratorsIDS) {
+					count++;
+					// Ejecutar la Tarea de acuerdo a la version de Android
+					ImageView ivCollaborator = null;
+					if (count == 1)
+						ivCollaborator = ivCl1;
+					else if (count == 2)
+						ivCollaborator = ivCl2;
+					else if (count == 3)
+						ivCollaborator = ivCl3;
+					else if (count == 4)
+						ivCollaborator = ivCl4;
+					else if (count == 5)
+						ivCollaborator = ivCl5;
+					else if (count == 6)
+						ivCollaborator = ivCl6;
+					else
+						break;
+
+					getCollaboratorEvent Task = new getCollaboratorEvent(Record, Long.parseLong(CollaboratorID.toString()), ivCollaborator);
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+						Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					} else {
+						Task.execute();
+					}
+				}
+			}
+		}
+	}
+
+	/** Clase Asincrona para reciclar los los items del listview **/
+	protected class getCollaboratorEvent extends AsyncTask<String, Void, String> {
+		HashMap<String, Object> Record;
+		HashMap<String, Object> Collaborator;
+		long CollaboratorID;
+		ImageView ivCollaborator;
+
+		public getCollaboratorEvent(HashMap<String, Object> Record, long CollaboratorID, ImageView ivCollaborator) {
+			this.Record = Record;
+			this.CollaboratorID = CollaboratorID;
+			this.ivCollaborator = ivCollaborator;
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			if (!hupernikao.TestNetwork(CTX))
+				return null;
+
+			if (OpenERP.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()))) {
+				OpenERP oerp = hupernikao.BuildOpenERPConnection(config);
+
+				Collaborator = oerp.getCollaboratorforEvent(CollaboratorID);
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			if (Collaborator != null) {
+				byte[] photo = Base64.decode(Collaborator.get("photo_small").toString(), Base64.DEFAULT);
+				Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+				ivCollaborator.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
+			}
 		}
 	}
 }

@@ -42,7 +42,7 @@ public class DataSourceAttendance {
 			Record.remove("date");
 			Record.put("date", DateAttendance.get("date"));
 			Record.put("hour", DateAttendance.get("hour"));
-			Record.put("day", DateAttendance.get("day"));
+			Record.put("day", DateAttendance.get("day_name"));
 		}
 
 		offset += limit;

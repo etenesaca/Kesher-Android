@@ -27,13 +27,19 @@ import android.util.Log;
 @SuppressLint("SimpleDateFormat")
 public class hupernikao {
 	public static String[] DaysOfWeek = { "Sábado", "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado" };
+	public static String[] MonthsofYear = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
 
 	public static HashMap<String, Object> Convert_UTCtoGMT_Str(String DateToConvert) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return Convert_UTCtoGMT_Str(DateToConvert, simpleDateFormat);
+		return Convert_UTCtoGMT_Str(DateToConvert, simpleDateFormat, true);
 	}
 
-	public static HashMap<String, Object> Convert_UTCtoGMT_Str(String DateToConvert, SimpleDateFormat simpleDateFormat) {
+	public static HashMap<String, Object> Convert_UTCtoGMT_Str(String DateToConvert, Boolean WithSeconds) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return Convert_UTCtoGMT_Str(DateToConvert, simpleDateFormat, WithSeconds);
+	}
+
+	public static HashMap<String, Object> Convert_UTCtoGMT_Str(String DateToConvert, SimpleDateFormat simpleDateFormat, Boolean WithSeconds) {
 		HashMap<String, Object> result = new HashMap<String, Object>();
 
 		Date resDate = Convert_UTCtoGMT(DateToConvert, simpleDateFormat);
@@ -44,18 +50,28 @@ public class hupernikao {
 		int day = cal.get(Calendar.DAY_OF_MONTH);
 		int year = cal.get(Calendar.YEAR);
 
+		result.put("month", month);
+		result.put("day", day);
+		result.put("year", year);
+
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
 		int minute = cal.get(Calendar.MINUTE);
 		int seconds = cal.get(Calendar.SECOND);
 
 		String date = CompletarCadena(day) + "/" + CompletarCadena(month) + "/" + CompletarCadena(year);
-		String hours = CompletarCadena(hour) + ":" + CompletarCadena(minute) + ":" + CompletarCadena(seconds);
+		String hours = CompletarCadena(hour) + ":" + CompletarCadena(minute);
+		if (WithSeconds)
+			hours = hours + ":" + CompletarCadena(seconds);
 		result.put("date", date);
 		result.put("hour", hours);
 
+		// Obtener el día de la semana
 		int NumDay = cal.get(Calendar.DAY_OF_WEEK);
-		String NameDay = DaysOfWeek[NumDay];
-		result.put("day", NameDay);
+		result.put("day_name", DaysOfWeek[NumDay]);
+
+		// Obtener el mes del año
+		int NumMonth = cal.get(Calendar.MONTH);
+		result.put("month_name", MonthsofYear[NumMonth]);
 		return result;
 	}
 

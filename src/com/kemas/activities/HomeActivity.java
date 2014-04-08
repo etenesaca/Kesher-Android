@@ -44,6 +44,7 @@ import com.kemas.R;
 import com.kemas.hupernikao;
 import com.kemas.fragments.AttendancesFragment;
 import com.kemas.fragments.CollaboratorFragment;
+import com.kemas.fragments.EventsFragment;
 import com.kemas.fragments.PointsFragment;
 import com.kemas.item.adapters.NavigationMenuItem;
 import com.kemas.item.adapters.NavigationMenuItemAdapter;
@@ -275,7 +276,7 @@ public class HomeActivity extends ActionBarActivity {
 						Intent config_act = new Intent(HomeActivity.this, ConnectionActivity.class);
 						startActivity(config_act);
 					} else if (MenuOptionsComplete[SelectedIndex] == "events") {
-						fragment = new AttendancesFragment();
+						fragment = new EventsFragment();
 						FragmentManager fragmentManager = getSupportFragmentManager();
 						fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 					} else if (MenuOptionsComplete[SelectedIndex] == "attendances") {

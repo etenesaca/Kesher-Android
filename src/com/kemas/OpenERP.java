@@ -30,7 +30,24 @@ public class OpenERP extends OpenERPConnection {
 
 	/** Obtiene los datos de un Colaborador **/
 	@SuppressWarnings("unchecked")
-	public HashMap<String, Object> getCollaborator(int CollaboratorID) {
+	public HashMap<String, Object> getCollaboratorforEvent(long CollaboratorID) {
+		HashMap<String, Object> result = null;
+		try {
+			XMLRPCClient client = new XMLRPCClient(mUrl);
+			Object collaborator = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.collaborator", "get_collaborator_event", CollaboratorID);
+			try {
+				result = (HashMap<String, Object>) collaborator;
+			} catch (Exception e) {
+			}
+		} catch (XMLRPCException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/** Obtiene los datos de un Colaborador **/
+	@SuppressWarnings("unchecked")
+	public HashMap<String, Object> getCollaborator(long CollaboratorID) {
 		HashMap<String, Object> result = null;
 		try {
 			XMLRPCClient client = new XMLRPCClient(mUrl);
@@ -166,27 +183,49 @@ public class OpenERP extends OpenERPConnection {
 	}
 
 	/**
+	 * Obtene el número de los Eventos
+	 **/
+	public long getCountEvents(long CollaboratorID, String EventsState) {
+		long Count = 0;
+		try {
+			XMLRPCClient client = new XMLRPCClient(mUrl);
+
+			HashMap<String, Object> args = new HashMap<String, Object>();
+			args.put("collaborator_id", CollaboratorID);
+			if (EventsState != "all")
+				args.put("type", EventsState);
+			Object CountObject = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.event", "get_count_events_to_mobilapp", args);
+			Count = Long.parseLong(CountObject.toString());
+		} catch (XMLRPCException e) {
+			e.printStackTrace();
+		}
+		return Count;
+	}
+
+	/**
 	 * Obtene una lista de eventos
 	 **/
-	public List<HashMap<String, Object>> getEvents(long CollaboratorID, String EventState, long offset, long limit) {
+	public List<HashMap<String, Object>> getEvents(long CollaboratorID, String EventsState, long offset, long limit) {
 		List<HashMap<String, Object>> Records = null;
 		try {
 			XMLRPCClient client = new XMLRPCClient(mUrl);
 
 			HashMap<String, Object> args = new HashMap<String, Object>();
 			args.put("collaborator_id", CollaboratorID);
-			if (EventState != "all")
-				args.put("type", EventState);
+			if (EventsState != "all")
+				args.put("type", EventsState);
 
-			Object[] Events = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.event", "get_attendances_to_mobilapp", args, offset, limit);
+			Object[] Events = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.event", "get_events_to_mobilapp", args, offset, limit);
 			Records = new ArrayList<HashMap<String, Object>>(Events.length);
 			for (Object Record : Events) {
 				Object[] EventArray = (Object[]) Record;
 				HashMap<String, Object> Event = new HashMap<String, Object>();
 				Event.put("id", EventArray[0]);
 				Event.put("service", EventArray[1]);
-				Event.put("type", EventArray[2]);
-				Event.put("date", EventArray[3]);
+				Event.put("state", EventArray[2]);
+				Event.put("date_start", EventArray[3]);
+				Event.put("date_stop", EventArray[4]);
+				Event.put("collaborator_ids", EventArray[5]);
 				Records.add((HashMap<String, Object>) Event);
 			}
 		} catch (XMLRPCException e) {

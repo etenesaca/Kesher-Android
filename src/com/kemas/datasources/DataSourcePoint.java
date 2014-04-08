@@ -42,7 +42,7 @@ public class DataSourcePoint {
 			Record.remove("date");
 			Record.put("date", DatePoints.get("date"));
 			Record.put("hour", DatePoints.get("hour"));
-			Record.put("day", DatePoints.get("day"));
+			Record.put("day", DatePoints.get("day_name"));
 		}
 
 		offset += limit;
