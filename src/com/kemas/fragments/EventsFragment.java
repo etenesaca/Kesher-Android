@@ -28,6 +28,7 @@ import android.widget.AbsListView.RecyclerListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -50,8 +51,8 @@ public class EventsFragment extends Fragment {
 	private TextView tvDisplaying;
 	private ListView lvEvent;
 
-	String[] OptionsListNavigation = new String[] { "Todos", "En Curso", "Finalizado" };
-	String[] EventStates = new String[] { "all", "on_going", "closed" };
+	String[] OptionsListNavigation = new String[] { "Próximos", "Finalizados", "Todos" };
+	String[] EventStates = new String[] { "on_going", "closed", "all" };
 	int CurrentEventState;
 
 	public EventsFragment() {
@@ -134,7 +135,7 @@ public class EventsFragment extends Fragment {
 		});
 
 		setHasOptionsMenu(true);
-		((ActionBarActivity) getActivity()).getSupportActionBar().setSubtitle("Asistencias");
+		((ActionBarActivity) getActivity()).getSupportActionBar().setSubtitle("Eventos");
 		return rootView;
 	}
 
@@ -205,7 +206,7 @@ public class EventsFragment extends Fragment {
 
 		@Override
 		protected String doInBackground(String... params) {
-			DataSource = new DataSourceEvent(getActivity(), this.EventsState, 15);
+			DataSource = new DataSourceEvent(getActivity(), this.EventsState, 10);
 			ScrollComplete = false;
 			return null;
 		}
@@ -270,10 +271,23 @@ public class EventsFragment extends Fragment {
 			return null;
 		}
 
-		@SuppressWarnings("deprecation")
 		@Override
 		protected void onPostExecute(String result) {
+			final ImageView ivCl1 = (ImageView) view.findViewById(R.id.ivCl1);
+			final ImageView ivCl2 = (ImageView) view.findViewById(R.id.ivCl2);
+			final ImageView ivCl3 = (ImageView) view.findViewById(R.id.ivCl3);
+			final TextView tvMoreCollaborators = (TextView) view.findViewById(R.id.tvMoreCollaborators);
 
+			ivCl1.setImageBitmap(null);
+			ivCl1.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_person));
+
+			ivCl2.setImageBitmap(null);
+			ivCl2.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_person));
+
+			ivCl3.setImageBitmap(null);
+			ivCl3.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_person));
+
+			tvMoreCollaborators.setText(null);
 		}
 	}
 }

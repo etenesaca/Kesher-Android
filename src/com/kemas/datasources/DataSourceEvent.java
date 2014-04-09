@@ -35,7 +35,7 @@ public class DataSourceEvent {
 
 	public List<HashMap<String, Object>> getData() {
 		List<HashMap<String, Object>> result;
-		result = oerp_connection.getEvents(CollaboratorID, EventsState, offset, limit);
+		result = oerp_connection.getEvents(CollaboratorID, EventsState, offset, limit, 3);
 
 		for (HashMap<String, Object> Record : result) {
 

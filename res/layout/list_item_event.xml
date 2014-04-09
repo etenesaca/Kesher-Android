@@ -167,8 +167,8 @@
 
             <ImageView
                 android:id="@+id/ivCl1"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
                 android:layout_marginTop="2dp"
@@ -177,8 +177,8 @@
 
             <ImageView
                 android:id="@+id/ivCl2"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
                 android:layout_marginTop="2dp"
@@ -187,38 +187,8 @@
 
             <ImageView
                 android:id="@+id/ivCl3"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_marginTop="2dp"
-                android:contentDescription="@string/username"
-                android:src="@drawable/ic_action_person" />
-
-            <ImageView
-                android:id="@+id/ivCl4"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_marginTop="2dp"
-                android:contentDescription="@string/username"
-                android:src="@drawable/ic_action_person" />
-
-            <ImageView
-                android:id="@+id/ivCl5"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_marginTop="2dp"
-                android:contentDescription="@string/username"
-                android:src="@drawable/ic_action_person" />
-
-            <ImageView
-                android:id="@+id/ivCl6"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
                 android:layout_marginTop="2dp"
@@ -230,10 +200,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="1dp"
+                android:layout_marginLeft="5dp"
                 android:layout_marginRight="1dp"
                 android:text="3+"
                 android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
     </LinearLayout>

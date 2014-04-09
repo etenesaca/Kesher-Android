@@ -8,6 +8,10 @@ import java.util.List;
 import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 /**
  * Esta Clase implementa Metodos Propios para el Funcionamiento de Kemas con
  * OpenERP y esta basada en la Libreria OpenERPConnection
@@ -193,7 +197,7 @@ public class OpenERP extends OpenERPConnection {
 			HashMap<String, Object> args = new HashMap<String, Object>();
 			args.put("collaborator_id", CollaboratorID);
 			if (EventsState != "all")
-				args.put("type", EventsState);
+				args.put("state", EventsState);
 			Object CountObject = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.event", "get_count_events_to_mobilapp", args);
 			Count = Long.parseLong(CountObject.toString());
 		} catch (XMLRPCException e) {
@@ -205,17 +209,21 @@ public class OpenERP extends OpenERPConnection {
 	/**
 	 * Obtene una lista de eventos
 	 **/
-	public List<HashMap<String, Object>> getEvents(long CollaboratorID, String EventsState, long offset, long limit) {
+	public List<HashMap<String, Object>> getEvents(long CollaboratorID, String EventsState, long offset, long limit, long limit_avatars) {
 		List<HashMap<String, Object>> Records = null;
 		try {
 			XMLRPCClient client = new XMLRPCClient(mUrl);
 
 			HashMap<String, Object> args = new HashMap<String, Object>();
+			args.put("offset", offset);
+			args.put("limit", limit);
+			args.put("limit_avatars", limit_avatars);
+
 			args.put("collaborator_id", CollaboratorID);
 			if (EventsState != "all")
-				args.put("type", EventsState);
+				args.put("state", EventsState);
 
-			Object[] Events = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.event", "get_events_to_mobilapp", args, offset, limit);
+			Object[] Events = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.event", "get_events_to_mobilapp", args);
 			Records = new ArrayList<HashMap<String, Object>>(Events.length);
 			for (Object Record : Events) {
 				Object[] EventArray = (Object[]) Record;
@@ -225,8 +233,22 @@ public class OpenERP extends OpenERPConnection {
 				Event.put("state", EventArray[2]);
 				Event.put("date_start", EventArray[3]);
 				Event.put("date_stop", EventArray[4]);
-				Event.put("collaborator_ids", EventArray[5]);
+				Event.put("num_collaborators", EventArray[5]);
+
+				// Procesar las lista de imagenes de los colaboradores
+				List<Bitmap> Avatars = new ArrayList<Bitmap>();
+				Object[] AvatarsObj = (Object[]) EventArray[6];
+				for (Object AvatarObj : AvatarsObj) {
+					Bitmap bmp = null;
+					String PhotoStr = AvatarObj.toString();
+					if (PhotoStr != null) {
+						byte[] photo = Base64.decode(PhotoStr, Base64.DEFAULT);
+						bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+					}
+					Avatars.add(bmp);
+				}
 				Records.add((HashMap<String, Object>) Event);
+				Event.put("avatars", Avatars);
 			}
 		} catch (XMLRPCException e) {
 			e.printStackTrace();

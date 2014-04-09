@@ -6,12 +6,9 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kemas.Configuration;
-import com.kemas.OpenERP;
 import com.kemas.R;
 import com.kemas.hupernikao;
 
@@ -31,10 +27,10 @@ import com.kemas.hupernikao;
  * 
  */
 @SuppressLint("NewApi")
-@SuppressWarnings("deprecation")
 public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 	private LayoutInflater layoutInflater;
 	private Context CTX;
+	@SuppressWarnings("unused")
 	private Configuration config;
 
 	Typeface Roboto_Bold;
@@ -90,9 +86,6 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 		protected ImageView ivCl1;
 		protected ImageView ivCl2;
 		protected ImageView ivCl3;
-		protected ImageView ivCl4;
-		protected ImageView ivCl5;
-		protected ImageView ivCl6;
 		protected TextView tvMoreCollaborators;
 
 		public LoadView(View convertView, HashMap<String, Object> Record) {
@@ -114,9 +107,6 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 			ivCl1 = (ImageView) convertView.findViewById(R.id.ivCl1);
 			ivCl2 = (ImageView) convertView.findViewById(R.id.ivCl2);
 			ivCl3 = (ImageView) convertView.findViewById(R.id.ivCl3);
-			ivCl4 = (ImageView) convertView.findViewById(R.id.ivCl4);
-			ivCl5 = (ImageView) convertView.findViewById(R.id.ivCl5);
-			ivCl6 = (ImageView) convertView.findViewById(R.id.ivCl6);
 			tvMoreCollaborators = (TextView) convertView.findViewById(R.id.tvMoreCollaborators);
 
 			tvName.setVisibility(View.INVISIBLE);
@@ -124,11 +114,7 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 
 			ivCl1.setVisibility(View.VISIBLE);
 			ivCl2.setVisibility(View.VISIBLE);
-			ivCl2.setVisibility(View.VISIBLE);
 			ivCl3.setVisibility(View.VISIBLE);
-			ivCl4.setVisibility(View.VISIBLE);
-			ivCl5.setVisibility(View.VISIBLE);
-			ivCl6.setVisibility(View.VISIBLE);
 			tvMoreCollaborators.setVisibility(View.VISIBLE);
 		}
 
@@ -154,106 +140,39 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 			tvName.setVisibility(View.VISIBLE);
 			tvDay.setVisibility(View.VISIBLE);
 
-			Object[] collaborator_ids = (Object[]) Record.get("collaborator_ids");
+			int numCollaborators = Integer.parseInt(Record.get("num_collaborators").toString());
+			int maxCollaborators = 3;
 
-			int numCollaborators = collaborator_ids.length;
-			int maxCollaborators = 6;
-
-			Log.v("ID=" + Record.get("id").toString() + "  -- size=" + numCollaborators, collaborator_ids[0].toString() + ", " + collaborator_ids[1].toString());
 			tvMoreCollaborators.setText(numCollaborators + "");
 			if (numCollaborators > maxCollaborators) {
-				tvMoreCollaborators.setText("+" + (numCollaborators - maxCollaborators));
+				tvMoreCollaborators.setText((numCollaborators - maxCollaborators) + "+");
 			} else {
 				tvMoreCollaborators.setVisibility(View.GONE);
-				if (numCollaborators == 5) {
-					ivCl6.setVisibility(View.GONE);
-				} else if (numCollaborators == 4) {
-					ivCl5.setVisibility(View.GONE);
-					ivCl6.setVisibility(View.GONE);
-				} else if (numCollaborators == 3) {
-					ivCl4.setVisibility(View.GONE);
-					ivCl5.setVisibility(View.GONE);
-					ivCl6.setVisibility(View.GONE);
-				} else if (numCollaborators == 2) {
+				if (numCollaborators == 2) {
 					ivCl3.setVisibility(View.GONE);
-					ivCl4.setVisibility(View.GONE);
-					ivCl5.setVisibility(View.GONE);
-					ivCl6.setVisibility(View.GONE);
 				} else if (numCollaborators == 1) {
 					ivCl2.setVisibility(View.GONE);
 					ivCl3.setVisibility(View.GONE);
-					ivCl4.setVisibility(View.GONE);
-					ivCl5.setVisibility(View.GONE);
-					ivCl6.setVisibility(View.GONE);
 				}
 			}
-			if (!Record.containsKey("CollaboratorsProceceds")) {
-				int count = 0;
-				for (Object CollaboratorID : collaborator_ids) {
-					count++;
-					// Ejecutar la Tarea de acuerdo a la version de Android
-					ImageView ivCollaborator = null;
-					if (count == 1)
-						ivCollaborator = ivCl1;
-					else if (count == 2)
-						ivCollaborator = ivCl2;
-					else if (count == 3)
-						ivCollaborator = ivCl3;
-					else if (count == 4)
-						ivCollaborator = ivCl4;
-					else if (count == 5)
-						ivCollaborator = ivCl5;
-					else if (count == 6)
-						ivCollaborator = ivCl6;
-					else
-						break;
 
-					getCollaboratorEvent Task = new getCollaboratorEvent(Record, Long.parseLong(CollaboratorID.toString()), ivCollaborator);
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-						Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-					} else {
-						Task.execute();
-					}
-				}
-			}
-		}
-	}
-
-	/** Clase Asincrona para reciclar los los items del listview **/
-	protected class getCollaboratorEvent extends AsyncTask<String, Void, String> {
-		HashMap<String, Object> Record;
-		HashMap<String, Object> Collaborator;
-		long CollaboratorID;
-		ImageView ivCollaborator;
-
-		public getCollaboratorEvent(HashMap<String, Object> Record, long CollaboratorID, ImageView ivCollaborator) {
-			this.Record = Record;
-			this.CollaboratorID = CollaboratorID;
-			this.ivCollaborator = ivCollaborator;
-		}
-
-		@Override
-		protected String doInBackground(String... params) {
-			if (!hupernikao.TestNetwork(CTX))
-				return null;
-
-			if (OpenERP.TestConnection(config.getServer(), Integer.parseInt(config.getPort().toString()))) {
-				OpenERP oerp = hupernikao.BuildOpenERPConnection(config);
-
-				Collaborator = oerp.getCollaboratorforEvent(CollaboratorID);
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			if (Collaborator != null) {
-				try {
-					byte[] photo = Base64.decode(Collaborator.get("photo_small").toString(), Base64.DEFAULT);
-					Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-					ivCollaborator.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
-				} catch (Exception e) {
-				}
+			// Mostrar las fotos de los colaboradores
+			List<Bitmap> Avatars = (List<Bitmap>) Record.get("avatars");
+			int count = 0;
+			for (Bitmap Avatar : Avatars) {
+				count++;
+				// Ejecutar la Tarea de acuerdo a la version de Android
+				ImageView ivCollaborator = new ImageView(CTX);
+				if (count == 1)
+					ivCollaborator = ivCl1;
+				else if (count == 2)
+					ivCollaborator = ivCl2;
+				else if (count == 3)
+					ivCollaborator = ivCl3;
+				else
+					break;
+				if (Avatar != null)
+					ivCollaborator.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(Avatar));
 			}
 		}
 	}
