@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,23 +77,23 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 
 	/** Clase Asincrona para recuperar los datos de la fila **/
 	protected class LoadView extends AsyncTask<String, Void, String> {
-		HashMap<String, Object> Record;
-		View convertView;
+		protected HashMap<String, Object> Record;
+		protected View convertView;
 
-		TextView tvName;
-		TextView txtHours;
-		TextView tvNumberDay;
-		TextView tvDay;
-		TextView tvMonthYear;
-		TextView tvState;
+		protected TextView tvName;
+		protected TextView txtHours;
+		protected TextView tvNumberDay;
+		protected TextView tvDay;
+		protected TextView tvMonthYear;
+		protected TextView tvState;
 
-		ImageView ivCl1;
-		ImageView ivCl2;
-		ImageView ivCl3;
-		ImageView ivCl4;
-		ImageView ivCl5;
-		ImageView ivCl6;
-		TextView tvMoreCollaborators;
+		protected ImageView ivCl1;
+		protected ImageView ivCl2;
+		protected ImageView ivCl3;
+		protected ImageView ivCl4;
+		protected ImageView ivCl5;
+		protected ImageView ivCl6;
+		protected TextView tvMoreCollaborators;
 
 		public LoadView(View convertView, HashMap<String, Object> Record) {
 			this.Record = Record;
@@ -120,6 +121,15 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 
 			tvName.setVisibility(View.INVISIBLE);
 			tvDay.setVisibility(View.INVISIBLE);
+
+			ivCl1.setVisibility(View.VISIBLE);
+			ivCl2.setVisibility(View.VISIBLE);
+			ivCl2.setVisibility(View.VISIBLE);
+			ivCl3.setVisibility(View.VISIBLE);
+			ivCl4.setVisibility(View.VISIBLE);
+			ivCl5.setVisibility(View.VISIBLE);
+			ivCl6.setVisibility(View.VISIBLE);
+			tvMoreCollaborators.setVisibility(View.VISIBLE);
 		}
 
 		@Override
@@ -144,12 +154,16 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 			tvName.setVisibility(View.VISIBLE);
 			tvDay.setVisibility(View.VISIBLE);
 
-			Object[] collaborators = (Object[]) Record.get("collaborator_ids");
-			int numCollaborators = collaborators.length;
+			Object[] collaborator_ids = (Object[]) Record.get("collaborator_ids");
+
+			int numCollaborators = collaborator_ids.length;
 			int maxCollaborators = 6;
-			if (numCollaborators > maxCollaborators)
+
+			Log.v("ID=" + Record.get("id").toString() + "  -- size=" + numCollaborators, collaborator_ids[0].toString() + ", " + collaborator_ids[1].toString());
+			tvMoreCollaborators.setText(numCollaborators + "");
+			if (numCollaborators > maxCollaborators) {
 				tvMoreCollaborators.setText("+" + (numCollaborators - maxCollaborators));
-			else {
+			} else {
 				tvMoreCollaborators.setVisibility(View.GONE);
 				if (numCollaborators == 5) {
 					ivCl6.setVisibility(View.GONE);
@@ -173,11 +187,9 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 					ivCl6.setVisibility(View.GONE);
 				}
 			}
-
 			if (!Record.containsKey("CollaboratorsProceceds")) {
 				int count = 0;
-				Object[] CollaboratorsIDS = (Object[]) Record.get("collaborator_ids");
-				for (Object CollaboratorID : CollaboratorsIDS) {
+				for (Object CollaboratorID : collaborator_ids) {
 					count++;
 					// Ejecutar la Tarea de acuerdo a la version de Android
 					ImageView ivCollaborator = null;
@@ -236,9 +248,12 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 		@Override
 		protected void onPostExecute(String result) {
 			if (Collaborator != null) {
-				byte[] photo = Base64.decode(Collaborator.get("photo_small").toString(), Base64.DEFAULT);
-				Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-				ivCollaborator.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
+				try {
+					byte[] photo = Base64.decode(Collaborator.get("photo_small").toString(), Base64.DEFAULT);
+					Bitmap bmp = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+					ivCollaborator.setImageBitmap(hupernikao.getRoundedCornerBitmapSimple(bmp));
+				} catch (Exception e) {
+				}
 			}
 		}
 	}
