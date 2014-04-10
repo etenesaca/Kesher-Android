@@ -279,14 +279,8 @@ public class EventsFragment extends Fragment {
 			final TextView tvMoreCollaborators = (TextView) view.findViewById(R.id.tvMoreCollaborators);
 
 			ivCl1.setImageBitmap(null);
-			ivCl1.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_person));
-
 			ivCl2.setImageBitmap(null);
-			ivCl2.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_person));
-
 			ivCl3.setImageBitmap(null);
-			ivCl3.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_person));
-
 			tvMoreCollaborators.setText(null);
 		}
 	}
