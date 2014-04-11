@@ -5,15 +5,34 @@
     android:layout_height="fill_parent"
     android:gravity="center_horizontal"
     android:orientation="horizontal"
-    android:padding="3dp" >
+    android:padding="3dp"
+    tools:ignore="UseCompoundDrawables,UselessParent" >
 
-    <TextView
-        android:id="@+id/tvNorecords"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No hay registros para mostrar"
-        android:textSize="15sp"
-        android:textStyle="bold|italic"
-        tools:ignore="HardcodedText" />
+        android:layout_marginTop="30dp"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:contentDescription="No hay registros para mostrar"
+            android:src="@drawable/ic_action_about"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/tvNorecords"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:text="No hay registros TIPO DE RESIGTRO para mostrar"
+            android:textSize="15sp"
+            android:textStyle="bold|italic"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
 
 </LinearLayout>
