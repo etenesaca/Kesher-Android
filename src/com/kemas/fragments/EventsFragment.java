@@ -44,6 +44,7 @@ import com.kemas.item.adapters.EventsItemAdapter;
 public class EventsFragment extends Fragment {
 	private DataSourceEvent DataSource;
 	private View footerView;
+	View NoRecordsItem;
 	private boolean loading = false;
 	private boolean ScrollComplete = false;
 	private ListAdapter CurrentAdapter;
@@ -70,7 +71,6 @@ public class EventsFragment extends Fragment {
 				// Toast.makeText(getActivity(), "Seleccionada opcion: " +
 				// OptionsListNavigation[arg0], Toast.LENGTH_SHORT).show();
 				CurrentEventState = arg0;
-
 				SearchRegisters Task = new SearchRegisters(EventStates[CurrentEventState]);
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 					Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -85,6 +85,8 @@ public class EventsFragment extends Fragment {
 		tvDisplaying = (TextView) rootView.findViewById(R.id.displaying);
 
 		footerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_list, null, false);
+		NoRecordsItem = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.no_records, null, false);
+
 		lvEvent.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScrollStateChanged(AbsListView arg0, int arg1) {
@@ -201,7 +203,14 @@ public class EventsFragment extends Fragment {
 			pDialog.setCancelable(false);
 			pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			pDialog.show();
-			lvEvent.addFooterView(footerView, null, false);
+			try {
+				lvEvent.removeHeaderView(NoRecordsItem);
+			} catch (Exception e) {
+			}
+			try {
+				lvEvent.addFooterView(footerView, null, false);
+			} catch (Exception e) {
+			}
 		}
 
 		@Override
@@ -214,14 +223,21 @@ public class EventsFragment extends Fragment {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-
 			CurrentAdapter = new EventsItemAdapter(getActivity(), DataSource.getData());
+			
+			
 			lvEvent.setAdapter(CurrentAdapter);
 			lvEvent.removeFooterView(footerView);
 			updateDisplayingTextView();
+			if (DataSource.getSize() == 0) {
+				TextView tvNorecords = (TextView) NoRecordsItem.findViewById(R.id.tvNorecords);
+				tvNorecords.setText("No hay eventos " + OptionsListNavigation[0] + " para mostrar");
+				if (lvEvent.getAdapter() != null)
+					lvEvent.setAdapter(null);
+				lvEvent.addHeaderView(NoRecordsItem, null, false);
+			}
 			pDialog.dismiss();
 		}
-
 	}
 
 	/** Clase Asincrona para recuparar los datos de la paginación **/
