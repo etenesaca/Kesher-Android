@@ -209,6 +209,7 @@ public class OpenERP extends OpenERPConnection {
 	/**
 	 * Obtene una lista de eventos
 	 **/
+
 	public List<HashMap<String, Object>> getEvents(long CollaboratorID, String EventsState, long offset, long limit, long limit_avatars) {
 		List<HashMap<String, Object>> Records = null;
 		try {
@@ -220,6 +221,10 @@ public class OpenERP extends OpenERPConnection {
 			args.put("limit_avatars", limit_avatars);
 
 			args.put("collaborator_id", CollaboratorID);
+			String order = "E.date_start DESC, E.id DESC";
+			if (EventsState.equals("on_going"))
+				order = "E.date_start ASC, E.id ASC";
+			args.put("order", order);
 			if (EventsState != "all")
 				args.put("state", EventsState);
 
