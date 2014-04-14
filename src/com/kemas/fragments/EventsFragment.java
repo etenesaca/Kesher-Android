@@ -142,8 +142,15 @@ public class EventsFragment extends Fragment {
 	}
 
 	protected void updateDisplayingTextView() {
+		updateDisplayingTextView(false);
+	}
+
+	protected void updateDisplayingTextView(boolean isWithoutItems) {
+		long NumItems = 0;
 		String text = getString(R.string.display);
-		text = String.format(text, lvEvent.getCount(), DataSource.getSize());
+		if (!isWithoutItems)
+			NumItems = lvEvent.getCount();
+		text = String.format(text, NumItems, DataSource.getSize());
 		tvDisplaying.setText(text);
 	}
 
@@ -223,11 +230,12 @@ public class EventsFragment extends Fragment {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-
-			CurrentAdapter = new EventsItemAdapter(getActivity(), DataSource.getData());
+			EventsItemAdapter AdapterList = new EventsItemAdapter(getActivity(), DataSource.getData(), EventsState);
+			CurrentAdapter = AdapterList;
 			lvEvent.setAdapter(CurrentAdapter);
 			lvEvent.removeFooterView(footerView);
-			updateDisplayingTextView();
+
+			updateDisplayingTextView(AdapterList.isWithoutItems());
 			pDialog.dismiss();
 		}
 	}
@@ -282,6 +290,8 @@ public class EventsFragment extends Fragment {
 		@Override
 		protected void onPostExecute(String result) {
 			final ImageView ivCl1 = (ImageView) view.findViewById(R.id.ivCl1);
+			if (ivCl1 == null)
+				return;
 			final ImageView ivCl2 = (ImageView) view.findViewById(R.id.ivCl2);
 			final ImageView ivCl3 = (ImageView) view.findViewById(R.id.ivCl3);
 			final TextView tvMoreCollaborators = (TextView) view.findViewById(R.id.tvMoreCollaborators);

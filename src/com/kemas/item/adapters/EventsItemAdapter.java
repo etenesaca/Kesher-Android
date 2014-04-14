@@ -28,6 +28,13 @@ import com.kemas.hupernikao;
  */
 @SuppressLint("NewApi")
 public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
+	protected boolean WithoutItems = false;
+
+	public boolean isWithoutItems() {
+		return WithoutItems;
+	}
+
+	private String EventsState;
 	private LayoutInflater layoutInflater;
 	private Context CTX;
 	@SuppressWarnings("unused")
@@ -36,21 +43,48 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 	Typeface Roboto_Bold;
 	Typeface Roboto_Light;
 
-	public EventsItemAdapter(Context context, List<HashMap<String, Object>> objects) {
+	public EventsItemAdapter(Context context, List<HashMap<String, Object>> objects, String EventsState) {
 		super(context, 0, objects);
 		this.CTX = context;
+		this.EventsState = EventsState;
 		// Crear una instancia de la Clase de Configuraciones
 		config = new Configuration(CTX);
 
 		layoutInflater = LayoutInflater.from(context);
 		Roboto_Bold = Typeface.createFromAsset(CTX.getAssets(), "fonts/Roboto-Bold.ttf");
 		Roboto_Light = Typeface.createFromAsset(CTX.getAssets(), "fonts/Roboto-Light.ttf");
+
+		if (objects.size() == 0) {
+			this.WithoutItems = true;
+			objects.add(new HashMap<String, Object>());
+		}
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// holder pattern
 		AttendancesItem holder = null;
+		if (this.WithoutItems) {
+			if (convertView == null) {
+				holder = new AttendancesItem();
+				convertView = layoutInflater.inflate(R.layout.no_records, null);
+				convertView.setTag(holder);
+			} else {
+				holder = (AttendancesItem) convertView.getTag();
+			}
+
+			TextView tvNoRecords = (TextView) convertView.findViewById(R.id.tvNoRecords);
+			String text = "No hay eventos para mostrar";
+			if (EventsState.equals("on_going"))
+				text = "No hay eventos Próximos para mostrar";
+			else if (EventsState.equals("closed"))
+				text = "No hay eventos Cerrados para mostrar";
+
+			tvNoRecords.setText(text);
+
+			return convertView;
+		}
+
 		if (convertView == null) {
 			holder = new AttendancesItem();
 			convertView = layoutInflater.inflate(R.layout.list_item_event, null);

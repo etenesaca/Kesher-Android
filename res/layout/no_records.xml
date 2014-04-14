@@ -23,7 +23,7 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            android:id="@+id/tvNorecords"
+            android:id="@+id/tvNoRecords"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
