@@ -81,7 +81,8 @@ public class EventsItemAdapter extends ArrayAdapter<HashMap<String, Object>> {
 				text = "No hay eventos Cerrados para mostrar";
 
 			tvNoRecords.setText(text);
-
+			convertView.setEnabled(false);
+			convertView.setOnClickListener(null);
 			return convertView;
 		}
 
