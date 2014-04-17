@@ -111,13 +111,18 @@ public class EventsFragment extends Fragment {
 		lvEvent.setRecyclerListener(new RecyclerListener() {
 			@Override
 			public void onMovedToScrapHeap(View view) {
-				// Ejecutar la Tarea de acuerdo a la version de Android
-				RecycleListViewItem Task = new RecycleListViewItem(view);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-					Task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-				} else {
-					Task.execute();
-				}
+				final ImageView ivCl1 = (ImageView) view.findViewById(R.id.ivCl1);
+				final ImageView ivCl2 = (ImageView) view.findViewById(R.id.ivCl2);
+				final ImageView ivCl3 = (ImageView) view.findViewById(R.id.ivCl3);
+				final TextView tvMoreCollaborators = (TextView) view.findViewById(R.id.tvMoreCollaborators);
+
+				ivCl1.setImageBitmap(null);
+				ivCl1.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_person_dark));
+				ivCl2.setImageBitmap(null);
+				ivCl2.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_person_dark));
+				ivCl3.setImageBitmap(null);
+				ivCl3.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_person_dark));
+				tvMoreCollaborators.setText(null);
 			}
 		});
 
@@ -271,35 +276,6 @@ public class EventsFragment extends Fragment {
 			lvEvent.removeFooterView(footerView);
 			updateDisplayingTextView();
 			loading = false;
-		}
-	}
-
-	/** Clase Asincrona para reciclar los los items del listview **/
-	protected class RecycleListViewItem extends AsyncTask<String, Void, String> {
-		View view;
-
-		public RecycleListViewItem(View view) {
-			this.view = view;
-		}
-
-		@Override
-		protected String doInBackground(String... params) {
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			final ImageView ivCl1 = (ImageView) view.findViewById(R.id.ivCl1);
-			if (ivCl1 == null)
-				return;
-			final ImageView ivCl2 = (ImageView) view.findViewById(R.id.ivCl2);
-			final ImageView ivCl3 = (ImageView) view.findViewById(R.id.ivCl3);
-			final TextView tvMoreCollaborators = (TextView) view.findViewById(R.id.tvMoreCollaborators);
-
-			ivCl1.setImageBitmap(null);
-			ivCl2.setImageBitmap(null);
-			ivCl3.setImageBitmap(null);
-			tvMoreCollaborators.setText(null);
 		}
 	}
 }

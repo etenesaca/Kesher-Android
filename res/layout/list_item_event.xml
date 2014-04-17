@@ -163,7 +163,10 @@
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
             android:background="@color/WhiteSmoke"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:paddingBottom="5dp"
+            android:paddingLeft="3dp"
+            android:paddingTop="5dp" >
 
             <ImageView
                 android:id="@+id/ivCl1"
@@ -171,7 +174,6 @@
                 android:layout_height="24dp"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
-                android:layout_marginTop="2dp"
                 android:contentDescription="@string/username"
                 android:src="@drawable/ic_action_person" />
 
@@ -181,7 +183,6 @@
                 android:layout_height="24dp"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
-                android:layout_marginTop="2dp"
                 android:contentDescription="@string/username"
                 android:src="@drawable/ic_action_person" />
 
@@ -191,7 +192,6 @@
                 android:layout_height="24dp"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
-                android:layout_marginTop="2dp"
                 android:contentDescription="@string/username"
                 android:src="@drawable/ic_action_person" />
 
