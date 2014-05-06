@@ -17,7 +17,7 @@ import android.util.Base64;
  * OpenERP y esta basada en la Libreria OpenERPConnection
  * */
 public class OpenERP extends OpenERPConnection {
-	public final String ModuleName = "kemas";
+	public final String ModuleName = "kemas_mobile";
 
 	/** Verifica que le Modulo kemas este Instalado **/
 	public boolean Module_Installed() {

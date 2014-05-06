@@ -301,7 +301,7 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 				dlgAlert.create().show();
 				break;
 			case NotModuleKemas:
-				dlgAlert.setMessage("La base de datos seleccionada no tiene instalado el Modulo de Gestión del Eventos y Control de Actividades (ke+).");
+				dlgAlert.setMessage("La base de datos seleccionada no tiene instalado el Modulo de Gestión del Eventos y Control de Actividades para Terminales moviles (ke+ Móvil).");
 				dlgAlert.create().show();
 				break;
 			case UserNotCollaborator:
