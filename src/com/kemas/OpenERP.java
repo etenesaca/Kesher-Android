@@ -98,7 +98,7 @@ public class OpenERP extends OpenERPConnection {
 			args.put("collaborator_id", CollaboratorID);
 			if (PointsType != "all")
 				args.put("type", PointsType);
-			Object CountObject = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.history.points", "get_count_points_to_mobilapp", args);
+			Object CountObject = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.history.points", "get_count_points_to_mobile_app", args);
 			Count = Long.parseLong(CountObject.toString());
 		} catch (XMLRPCException e) {
 			e.printStackTrace();
@@ -119,7 +119,7 @@ public class OpenERP extends OpenERPConnection {
 			if (PointsType != "all")
 				args.put("type", PointsType);
 
-			Object[] Points = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.history.points", "get_points_to_mobilapp", args, offset, limit);
+			Object[] Points = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.history.points", "get_points_to_mobile_app", args, offset, limit);
 			Records = new ArrayList<HashMap<String, Object>>(Points.length);
 			for (Object Record : Points) {
 				Object[] PointArray = (Object[]) Record;
@@ -148,7 +148,7 @@ public class OpenERP extends OpenERPConnection {
 			args.put("collaborator_id", CollaboratorID);
 			if (AttendancesType != "all")
 				args.put("type", AttendancesType);
-			Object CountObject = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.attendance", "get_count_attendances_to_mobilapp", args);
+			Object CountObject = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.attendance", "get_count_attendances_to_mobile_app", args);
 			Count = Long.parseLong(CountObject.toString());
 		} catch (XMLRPCException e) {
 			e.printStackTrace();
@@ -169,7 +169,7 @@ public class OpenERP extends OpenERPConnection {
 			if (AttendancesType != "all")
 				args.put("type", AttendancesType);
 
-			Object[] Attendances = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.attendance", "get_attendances_to_mobilapp", args, offset, limit);
+			Object[] Attendances = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.attendance", "get_attendances_to_mobile_app", args, offset, limit);
 			Records = new ArrayList<HashMap<String, Object>>(Attendances.length);
 			for (Object Record : Attendances) {
 				Object[] AttendanceArray = (Object[]) Record;
@@ -198,7 +198,7 @@ public class OpenERP extends OpenERPConnection {
 			args.put("collaborator_id", CollaboratorID);
 			if (EventsState != "all")
 				args.put("state", EventsState);
-			Object CountObject = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.event", "get_count_events_to_mobilapp", args);
+			Object CountObject = (Object) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.event", "get_count_events_to_mobile_app", args);
 			Count = Long.parseLong(CountObject.toString());
 		} catch (XMLRPCException e) {
 			e.printStackTrace();
@@ -228,7 +228,7 @@ public class OpenERP extends OpenERPConnection {
 			if (EventsState != "all")
 				args.put("state", EventsState);
 
-			Object[] Events = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.event", "get_events_to_mobilapp", args);
+			Object[] Events = (Object[]) client.call("execute", mDatabase, getUserId(), mPassword, "kemas.event", "get_events_to_mobile_app", args);
 			Records = new ArrayList<HashMap<String, Object>>(Events.length);
 			for (Object Record : Events) {
 				Object[] EventArray = (Object[]) Record;
