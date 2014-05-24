@@ -14,8 +14,8 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
         android:text="@string/birth"
-        android:textSize="15sp"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="15sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -41,7 +41,7 @@
             android:text="Fecha"
             android:textAppearance="?android:attr/textAppearanceSmall"
             tools:ignore="HardcodedText" />
-        
+
         <TextView
             android:id="@+id/tvDay"
             android:layout_width="0dp"
@@ -62,9 +62,9 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp" >
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1" >
 
             <TextView
                 android:id="@+id/tvType"
@@ -76,6 +76,13 @@
                 android:textColor="@color/White"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgType"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="@string/points"
+            android:src="@drawable/add" />
 
         <TextView
             android:id="@+id/tvHour"
