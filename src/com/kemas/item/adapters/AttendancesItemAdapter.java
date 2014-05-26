@@ -73,6 +73,7 @@ public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>
 		TextView tvDate;
 		TextView tvHour;
 		TextView tvDay;
+		TextView tvCheckout;
 
 		public LoadView(View convertView, HashMap<String, Object> Record) {
 			this.Record = Record;
@@ -89,6 +90,7 @@ public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>
 			tvDate = (TextView) convertView.findViewById(R.id.tvDate);
 			tvHour = (TextView) convertView.findViewById(R.id.tvHour);
 			tvDay = (TextView) convertView.findViewById(R.id.tvDay);
+			tvCheckout = (TextView) convertView.findViewById(R.id.tvCheckout);
 
 			tvService.setVisibility(View.INVISIBLE);
 			tvNumber.setVisibility(View.INVISIBLE);
@@ -103,15 +105,19 @@ public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>
 			return null;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void onPostExecute(String result) {
 			tvService.setTypeface(Roboto_Bold);
 			tvService.setText(Record.get("service").toString());
 
 			tvNumber.setText("#" + Record.get("id").toString());
-			tvDate.setText(Record.get("date").toString());
-			tvHour.setText(Record.get("hour").toString());
-			tvDay.setText(Record.get("day").toString());
+
+			HashMap<String, Object> Checkin = (HashMap<String, Object>) Record.get("checkin");
+
+			tvDate.setText(Checkin.get("date").toString());
+			tvHour.setText(Checkin.get("hour").toString());
+			tvDay.setText(Checkin.get("day_name").toString());
 			tvDay.setTypeface(Roboto_Light);
 			if ((Record.get("type").toString()).equals("just_time")) {
 				tvType.setText("A Tiempo");
@@ -122,6 +128,13 @@ public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>
 			} else {
 				tvType.setText("Insistencia");
 				tvType.setBackgroundDrawable(CTX.getResources().getDrawable(R.drawable.shape_falta));
+			}
+
+			if (!Record.get("checkout").toString().equals("false")) {
+				HashMap<String, Object> Checkout = (HashMap<String, Object>) Record.get("checkout");
+				tvCheckout.setText(Checkout.get("hour").toString());
+			} else {
+				tvCheckout.setText(" -- ");
 			}
 
 			tvService.setVisibility(View.VISIBLE);

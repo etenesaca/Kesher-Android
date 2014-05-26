@@ -177,7 +177,9 @@ public class OpenERP extends OpenERPConnection {
 				Attendance.put("id", AttendanceArray[0]);
 				Attendance.put("service", AttendanceArray[1]);
 				Attendance.put("type", AttendanceArray[2]);
-				Attendance.put("date", AttendanceArray[3]);
+				Attendance.put("checkin", AttendanceArray[3]);
+				Attendance.put("checkout", AttendanceArray[4]);
+
 				Records.add((HashMap<String, Object>) Attendance);
 			}
 		} catch (XMLRPCException e) {

@@ -38,11 +38,13 @@ public class DataSourceAttendance {
 		result = oerp_connection.getAttendances(CollaboratorID, AttendancesType, offset, limit);
 
 		for (HashMap<String, Object> Record : result) {
-			HashMap<String, Object> DateAttendance = hupernikao.Convert_UTCtoGMT_Str(Record.get("date").toString());
-			Record.remove("date");
-			Record.put("date", DateAttendance.get("date"));
-			Record.put("hour", DateAttendance.get("hour"));
-			Record.put("day", DateAttendance.get("day_name"));
+			// Checkin
+			Record.put("checkin", hupernikao.Convert_UTCtoGMT_Str(Record.get("checkin").toString()));
+			// Checkout
+			if (!Record.get("checkout").toString().equals("false")) {
+				Record.put("checkout", hupernikao.Convert_UTCtoGMT_Str(Record.get("checkout").toString()));
+			}
+			Record.put("checkout", Record.get("checkout"));
 		}
 
 		offset += limit;
