@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kemas.R;
@@ -74,6 +75,8 @@ public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>
 		TextView tvHour;
 		TextView tvDay;
 		TextView tvCheckout;
+		ImageView imgCheout;
+		ImageView imgCheckin;
 
 		public LoadView(View convertView, HashMap<String, Object> Record) {
 			this.Record = Record;
@@ -91,6 +94,8 @@ public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>
 			tvHour = (TextView) convertView.findViewById(R.id.tvHour);
 			tvDay = (TextView) convertView.findViewById(R.id.tvDay);
 			tvCheckout = (TextView) convertView.findViewById(R.id.tvCheckout);
+			imgCheout = (ImageView) convertView.findViewById(R.id.imgCheout);
+			imgCheckin = (ImageView) convertView.findViewById(R.id.imgCheckin);
 
 			tvService.setVisibility(View.INVISIBLE);
 			tvNumber.setVisibility(View.INVISIBLE);
@@ -98,6 +103,8 @@ public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>
 			tvDate.setVisibility(View.INVISIBLE);
 			tvHour.setVisibility(View.INVISIBLE);
 			tvDay.setVisibility(View.INVISIBLE);
+			tvCheckout.setVisibility(View.INVISIBLE);
+			imgCheckin.setVisibility(View.INVISIBLE);
 		}
 
 		@Override
@@ -132,11 +139,14 @@ public class AttendancesItemAdapter extends ArrayAdapter<HashMap<String, Object>
 
 			if (!Record.get("checkout").toString().equals("false")) {
 				HashMap<String, Object> Checkout = (HashMap<String, Object>) Record.get("checkout");
+				tvCheckout.setVisibility(View.VISIBLE);
 				tvCheckout.setText(Checkout.get("hour").toString());
+				imgCheout.setVisibility(View.VISIBLE);
 			} else {
-				tvCheckout.setText(" -- ");
+				imgCheout.setVisibility(View.INVISIBLE);
 			}
 
+			imgCheckin.setVisibility(View.VISIBLE);
 			tvService.setVisibility(View.VISIBLE);
 			tvNumber.setVisibility(View.VISIBLE);
 			tvType.setVisibility(View.VISIBLE);
