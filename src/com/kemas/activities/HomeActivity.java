@@ -51,7 +51,7 @@ import com.kemas.item.adapters.NavigationMenuItemAdapter;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 @SuppressWarnings("deprecation")
-@SuppressLint("NewApi")
+@SuppressLint({ "NewApi", "InflateParams" })
 public class HomeActivity extends ActionBarActivity {
 	private Configuration config;
 	Context Context = (Context) this;
@@ -82,24 +82,23 @@ public class HomeActivity extends ActionBarActivity {
 		// > Inicio
 		NavItms.add(new NavigationMenuItem("Inicio", R.drawable.ic_action_person));
 		// > Eventos
-		NavItms.add(new NavigationMenuItem("Eventos", R.drawable.ic_action_person));
-		// > Registro de Asistencias
+		NavItms.add(new NavigationMenuItem("Eventos", R.drawable.ic_action_group));
 		NavItms.add(new NavigationMenuItem("Asistencias", R.drawable.ic_action_person));
 		// > Historial de puntos
-		NavItms.add(new NavigationMenuItem("Puntos", R.drawable.ic_action_person));
+		NavItms.add(new NavigationMenuItem("Puntos", R.drawable.ic_action_important));
 		// > Configuraciones
-		NavItms.add(new NavigationMenuItem("Configurar conexión", R.drawable.ic_action_person));
+		NavItms.add(new NavigationMenuItem("Configurar conexión", R.drawable.ic_action_settings));
 		// > Salir
-		NavItms.add(new NavigationMenuItem("Salir", R.drawable.ic_action_person));
+		NavItms.add(new NavigationMenuItem("Salir", R.drawable.ic_action_previous_item));
 		NavAdapter = new NavigationMenuItemAdapter(this, NavItms);
 		drawer.setAdapter(NavAdapter);
 	}
 
 	void BuildMenuOptionsWithoutConfig() {
 		// > Configuraciones
-		NavItms.add(new NavigationMenuItem("Configurar conexión", R.drawable.ic_action_person));
+		NavItms.add(new NavigationMenuItem("Configurar conexión", R.drawable.ic_action_settings));
 		// > Salir
-		NavItms.add(new NavigationMenuItem("Salir", R.drawable.ic_action_person));
+		NavItms.add(new NavigationMenuItem("Salir", R.drawable.ic_action_previous_item));
 		NavAdapter = new NavigationMenuItemAdapter(this, NavItms);
 		drawer.setAdapter(NavAdapter);
 	}
@@ -221,8 +220,7 @@ public class HomeActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_home);
 
 		if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
-			// Habilitar el acceso a la red y poder conectarse al
-			// servidor de OpenERP en el Hilo Principal
+			// Habilitar el acceso a la red y poder conectarse al servidor de OpenERP en el Hilo Principal
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
 		}
@@ -368,8 +366,7 @@ public class HomeActivity extends ActionBarActivity {
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the content
-		// view
+		// If the nav drawer is open, hide action items related to the content view
 		boolean drawerOpen = shouldGoInvisible;
 		hideMenuItems(menu, !drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
