@@ -85,7 +85,7 @@ public class HomeActivity extends ActionBarActivity {
 		NavItms.add(new NavigationMenuItem("Eventos", R.drawable.ic_action_group));
 		NavItms.add(new NavigationMenuItem("Asistencias", R.drawable.ic_action_person));
 		// > Historial de puntos
-		NavItms.add(new NavigationMenuItem("Puntos", R.drawable.ic_action_person));
+		NavItms.add(new NavigationMenuItem("Puntos", R.drawable.ic_action_important));
 		// > Configuraciones
 		NavItms.add(new NavigationMenuItem("Configurar conexión", R.drawable.ic_action_settings));
 		// > Salir
