@@ -195,8 +195,7 @@ public class EventsFragment extends Fragment {
 	}
 
 	/**
-	 * Clase Asincrona para recuparar los datos la primera ves que se muestrar
-	 * la activity al usuario
+	 * Clase Asincrona para recuparar los datos la primera ves que se muestrar la activity al usuario
 	 **/
 	protected class SearchRegisters extends AsyncTask<String, Void, String> {
 		ProgressDialog pDialog;
@@ -238,7 +237,10 @@ public class EventsFragment extends Fragment {
 			EventsItemAdapter AdapterList = new EventsItemAdapter(getActivity(), DataSource.getData(), EventsState);
 			CurrentAdapter = AdapterList;
 			lvEvent.setAdapter(CurrentAdapter);
-			lvEvent.removeFooterView(footerView);
+			try {
+				lvEvent.removeFooterView(footerView);
+			} catch (Exception e) {
+			}
 
 			updateDisplayingTextView(AdapterList.isWithoutItems());
 			pDialog.dismiss();
