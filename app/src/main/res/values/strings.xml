@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Copyright (C) 2012 Daniel Medina <http://danielme.com>
+ * 
+ * This file is part of "Android Paginated ListView Demo".
+ * 
+ * "Android Paginated ListView Demo" is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * "Android Paginated ListView Demo" is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License version 3
+ * along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html/>
+ */
+-->
+<resources>
+
+    <string name="app_name">Késher</string>
+    <string name="activity_connection_title">Configuración de Conexión</string>
+    <string name="total_hours">Total de Horas</string>
+    <string name="cero">00:00:00</string>
+    <string name="last_registers">Entrada: 00:00:00</string>
+    <string name="guion"> - </string>
+    <string name="options">Opciones</string>
+    <string name="display">%1$s de %2$s</string>
+    <string name="selected"> seleccionada</string>
+
+    <!-- Botones -->
+    <string name="refresh">Volver a Cargar</string>
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="register_attendance">--Registrar Asitencia--</string>
+
+    <!-- Settings -->
+    <string name="server">Servidor</string>
+    <string name="port">Puerto</string>
+    <string name="database">Base de Datos</string>
+    <string name="username">Nombre de Usuario</string>
+    <string name="password">Password</string>
+
+    <!-- Menu Home -->
+    <string name="without_connnection">Sin Conexión</string>
+    <string name="reintent">Reintentar</string>
+
+    <!-- Menu Connection -->
+    <string name="action_save">Guardar</string>
+
+    <!-- Menu Collaborator -->
+    <string name="action_edit">Editar</string>
+    <string name="my_info">Mi Datos</string>
+
+    <!-- Menu Perfil -->
+    <string name="action_back">Volver</string>
+    <string name="action_refresh_profile">Actualizar Datos</string>
+
+    <!-- Collaborator -->
+    <string name="personalinfo">Información Personal</string>
+    <string name="contact">Contacto</string>
+    <string name="kemas">Ke+</string>
+    <string name="areas">Áreas</string>
+    <string name="code">Código</string>
+    <string name="complete_name">Nombre completos</string>
+    <string name="nick_name">Nombre</string>
+    <string name="birth">Fecha de nacimiento</string>
+    <string name="age">Edad</string>
+    <string name="marital_status">Estado civíl</string>
+    <string name="address">Dirección</string>
+    <string name="mobile">Celular</string>
+    <string name="telef1">Teléfono 1</string>
+    <string name="telef2">Teléfono 2</string>
+    <string name="im_account">Cuenta de chat</string>
+    <string name="join_date">Fecha de ingreso</string>
+    <string name="age_in_ministry">Tiempo de servicio</string>
+    <string name="points">Puntos</string>
+    <string name="team">Equipo</string>
+    <string name="level">Nivel</string>
+
+    <!-- Menu Register -->
+    <string name="action_refresh">Actualizar</string>
+    <string name="action_settings">Configuraciones</string>
+    <string name="action_exit">Salir</string>
+    <string name="action_acercade">Acerca de</string>
+    <string name="action_search_register">Consultas</string>
+    <string name="action_search_profile">Mi perfil</string>
+
+    <!-- Menu Search -->
+    <string name="action_search_yesterday">Ayer</string>
+    <string name="action_search_today">Hoy</string>
+    <string name="action_search_this_week">Ésta semana</string>
+    <string name="action_search_this_month">Este mes</string>
+
+    <!-- Layouts Titles -->
+    <string name="title_search">Registros de Asistencia</string>
+    <string name="title_config">Configuraciones</string>
+    <string name="title_register">Registrar asistencia</string>
+    <string name="title_user_profile">Perfíl de Usuario</string>
+
+    <!-- Messages -->
+    <string name="error_connection">Error de Conexión</string>
+    <string name="without_account">Primero agregue una Cuenta en Configuraciones</string>
+
+    <!-- Search -->
+    <string name="yesterday">Ayer</string>
+    <string name="today">Hoy</string>
+    <string name="this_week">Semana</string>
+    <string name="this_month">Mes</string>
+    <string name="search">Buscar</string>
+
+    <!-- Profile -->
+    <string name="photo">Foto</string>
+    <string name="name">Nombre</string>
+    <string name="ci">CI/PASS</string>
+    <string name="tz">Zona Horaria</string>
+    <string name="lang">Idioma</string>
+    <string name="email">E-mail</string>
+    <string name="company">Empresa</string>
+
+    <!-- The button label for saving an event -->
+    <string name="save_label">Done</string>
+    <!-- The button label for discarding changes to an event -->
+    <string name="discard_label">Cancel</string>
+
+</resources>
