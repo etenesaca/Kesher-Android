@@ -118,7 +118,7 @@ public class hupernikao {
 		try {
 			oerp = new OpenERP(config.getServer(), config.getPort(), config.getDataBase(), config.getLogin(), config.getPassword(), config.getUserID());
 		} catch (MalformedURLException e) {
-			Log.v("Crando Conector a OpenERP", "No se pudo crear el conector a OpenERP");
+			Log.v("Creando Conector a OpenERP", "No se pudo crear el conector a OpenERP");
 		}
 		return oerp;
 	}

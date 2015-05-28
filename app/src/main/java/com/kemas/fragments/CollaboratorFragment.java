@@ -306,10 +306,10 @@ public class CollaboratorFragment extends Fragment {
 		txtMaritalStatus.setText(Collaborator.get("marital_status").toString());
 		txtAddress.setText(Collaborator.get("address").toString());
 		txtMobile.setText(Collaborator.get("mobile").toString());
-		txtTelef1.setText(Collaborator.get("telef1").toString());
-		txtTelef2.setText(Collaborator.get("telef2").toString());
+		txtTelef1.setText(Collaborator.get("phone").toString());
+		txtTelef2.setText(Collaborator.get("phone").toString());
 		txtEmail.setText(Collaborator.get("email").toString());
-		txtIM.setText(Collaborator.get("im_account").toString());
+		txtIM.setText(Collaborator.get("email").toString());
 		txtJoinDate.setText(Collaborator.get("join_date").toString());
 		txtAgeInMinistry.setText(Collaborator.get("age_in_ministry").toString());
 		txtPoints.setText(Collaborator.get("points").toString());
