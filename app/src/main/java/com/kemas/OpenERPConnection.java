@@ -41,7 +41,7 @@ public class OpenERPConnection {
 	private Integer mUserId;
 	protected URL mUrl;
 
-	protected static final String CONNECTOR_NAME = "OpenERPconn";
+    protected static final String CONNECTOR_NAME = "OpenERPconn";
 
 	public Integer getUserId() {
 		return mUserId;
@@ -517,8 +517,12 @@ public class OpenERPConnection {
 			URL ServerUrl;
 			ServerUrl = new URL("http", server, port, "/xmlrpc/common");
 			XMLRPCClient client = new XMLRPCClient(ServerUrl);
-			Object res = client.call("check_connectivity");
-			result = Boolean.parseBoolean(res + "");
+            /*
+            Object res = client.call("check_connectivity");
+            result = Boolean.parseBoolean(res + "");
+            */
+            client.call("version");
+            result = true;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			return false;

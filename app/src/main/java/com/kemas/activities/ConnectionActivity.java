@@ -138,54 +138,54 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		switch (v.getId()) {
-		case R.id.cmbDb:
-			if (!hupernikao.TestNetwork(Context)) {
-				Toast msg = Toast.makeText(this, "No se puede Establecer conexión. Revise su conexión a Internet.", Toast.LENGTH_SHORT);
-				msg.show();
-				break;
-			}
+			case R.id.cmbDb:
+				if (!hupernikao.TestNetwork(Context)) {
+					Toast msg = Toast.makeText(this, "No se puede Establecer conexión. Revise su conexión a Internet.", Toast.LENGTH_SHORT);
+					msg.show();
+					break;
+				}
 
-			String server = txtServer.getText().toString();
-			String port_str = txtPort.getText().toString();
-			if (server.equals("") || port_str.equals("")) {
-				break;
-			}
+				String server = txtServer.getText().toString();
+				String port_str = txtPort.getText().toString();
+				if (server.equals("") || port_str.equals("")) {
+					break;
+				}
 
-			String value_server = txtPort.getText().toString() + "";
-			String value_port = txtPort.getText().toString() + "";
-			if (value_server != "" && value_port != "") {
-				int port = Integer.parseInt(txtPort.getText().toString());
+				String value_server = txtPort.getText().toString() + "";
+				String value_port = txtPort.getText().toString() + "";
+				if (value_server != "" && value_port != "") {
+					int port = Integer.parseInt(txtPort.getText().toString());
 
-				boolean TestConnection = OpenERP.TestConnection(server, port);
-				ArrayAdapter<String> adaptador;
-				if (TestConnection) {
-					String value_database = "";
-					try {
-						value_database = cmbDb.getSelectedItem().toString();
-					} catch (Exception e) {
-					}
-					String[] list_db = OpenERP.getDatabaseList(server, port);
-					adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list_db);
-					cmbDb.setAdapter(adaptador);
-					if (value_database != "") {
-						for (int i = 0; i < list_db.length; i++) {
-							if (list_db[i].equals(value_database)) {
-								cmbDb.setSelection(i);
+					boolean TestConnection = OpenERP.TestConnection(server, port);
+					ArrayAdapter<String> adaptador;
+					if (TestConnection) {
+						String value_database = "";
+						try {
+							value_database = cmbDb.getSelectedItem().toString();
+						} catch (Exception e) {
+						}
+						String[] list_db = OpenERP.getDatabaseList(server, port);
+						adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list_db);
+						cmbDb.setAdapter(adaptador);
+						if (value_database != "") {
+							for (int i = 0; i < list_db.length; i++) {
+								if (list_db[i].equals(value_database)) {
+									cmbDb.setSelection(i);
+								}
 							}
 						}
+					} else {
+						Toast msg = Toast.makeText(this, "No se pudo conectar al servidor, Verifique los parametros de Conexión.", Toast.LENGTH_SHORT);
+						msg.show();
+						String[] list_db = {};
+						adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list_db);
+						cmbDb.setAdapter(adaptador);
 					}
-				} else {
-					Toast msg = Toast.makeText(this, "No se pudo conectar al servidor, Verifique los parametros de Conexión.", Toast.LENGTH_SHORT);
-					msg.show();
-					String[] list_db = {};
-					adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list_db);
-					cmbDb.setAdapter(adaptador);
 				}
-			}
-			break;
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 		return false;
 	}
@@ -288,33 +288,33 @@ public class ConnectionActivity extends ActionBarActivity implements OnTouchList
 
 			pDialog.dismiss();
 			switch (this.result) {
-			case NotNetworkConnection:
-				dlgAlert.setMessage("Parece que no te encuentras conectado a ninguna red. revisa tu conexión.");
-				dlgAlert.create().show();
-				break;
-			case ConnectionError:
-				dlgAlert.setMessage("No se pudo conectar al servidor, Verifique los parametros de Conexión.");
-				dlgAlert.create().show();
-				break;
-			case BadLogin:
-				dlgAlert.setMessage("Usuario o Contraseña No Válidos.");
-				dlgAlert.create().show();
-				break;
-			case NotModuleKemas:
-				dlgAlert.setMessage("La base de datos seleccionada no tiene instalado el Modulo de Gestión del Eventos y Control de Actividades para Terminales moviles (ke+ Móvil).");
-				dlgAlert.create().show();
-				break;
-			case UserNotCollaborator:
-				dlgAlert.setMessage("La credenciales ingresadas no pertenecen a un Colaborador.");
-				dlgAlert.create().show();
-				break;
-			case Successful:
-				Toast.makeText(ConnectionActivity.this, "Lo Datos Se Guardaron Correctamente.", Toast.LENGTH_SHORT).show();
-				finish();
-				break;
-			default:
-				Toast.makeText(ConnectionActivity.this, "No se pudieron guardar los datos, vuelva a intentarlo.", Toast.LENGTH_SHORT).show();
-				break;
+				case NotNetworkConnection:
+					dlgAlert.setMessage("Parece que no te encuentras conectado a ninguna red. revisa tu conexión.");
+					dlgAlert.create().show();
+					break;
+				case ConnectionError:
+					dlgAlert.setMessage("No se pudo conectar al servidor, Verifique los parametros de Conexión.");
+					dlgAlert.create().show();
+					break;
+				case BadLogin:
+					dlgAlert.setMessage("Usuario o Contraseña No Válidos.");
+					dlgAlert.create().show();
+					break;
+				case NotModuleKemas:
+					dlgAlert.setMessage("La base de datos seleccionada no tiene instalado el Modulo de Gestión del Eventos y Control de Actividades para Terminales moviles (ke+ Móvil).");
+					dlgAlert.create().show();
+					break;
+				case UserNotCollaborator:
+					dlgAlert.setMessage("La credenciales ingresadas no pertenecen a un Colaborador.");
+					dlgAlert.create().show();
+					break;
+				case Successful:
+					Toast.makeText(ConnectionActivity.this, "Lo Datos Se Guardaron Correctamente.", Toast.LENGTH_SHORT).show();
+					finish();
+					break;
+				default:
+					Toast.makeText(ConnectionActivity.this, "No se pudieron guardar los datos, vuelva a intentarlo.", Toast.LENGTH_SHORT).show();
+					break;
 			}
 		}
 
